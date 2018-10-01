@@ -1,6 +1,7 @@
-< AArch64 :
-    {}
-| Alpha :
+< -- AArch64 :
+  --  {}
+-- |
+Alpha :
     {}
 | Arm :
     {}

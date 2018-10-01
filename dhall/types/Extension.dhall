@@ -10,8 +10,8 @@
     Bool
 | BinaryLiterals :
     Bool
-| BlockArguments :
-    Bool
+-- | BlockArguments :
+--    Bool
 | CApiFFI :
     Bool
 | CPP :
@@ -138,8 +138,8 @@
     Bool
 | NumDecimals :
     Bool
-| NumericUnderscores :
-    Bool
+-- | NumericUnderscores :
+--     Bool
 | OverlappingInstances :
     Bool
 | OverloadedLabels :
@@ -168,8 +168,8 @@
     Bool
 | PostfixOperators :
     Bool
-| QuantifiedConstraints :
-    Bool
+-- | QuantifiedConstraints :
+--    Bool
 | QuasiQuotes :
     Bool
 | Rank2Types :
@@ -200,8 +200,8 @@
     Bool
 | StandaloneDeriving :
     Bool
-| StarIsType :
-    Bool
+-- | StarIsType :
+--     Bool
 | StaticPointers :
     Bool
 | Strict :
