@@ -644,7 +644,8 @@ compilerOptions :: Dhall.Type [ ( Cabal.CompilerFlavor, [ String ] ) ]
 compilerOptions =
   Dhall.record $
     sequenceA
-      [ (,) <$> pure Cabal.GHC <*> Dhall.field "GHC" options
+      [ (,) <$> pure Cabal.Eta <*> Dhall.field "Eta" options
+      , (,) <$> pure Cabal.GHC <*> Dhall.field "GHC" options
       , (,) <$> pure Cabal.GHCJS <*> Dhall.field "GHCJS" options
       , (,) <$> pure Cabal.NHC <*> Dhall.field "NHC" options
       , (,) <$> pure Cabal.YHC <*> Dhall.field "YHC" options
@@ -654,7 +655,6 @@ compilerOptions =
       , (,) <$> pure Cabal.JHC <*> Dhall.field "JHC" options
       , (,) <$> pure Cabal.LHC <*> Dhall.field "LHC" options
       , (,) <$> pure Cabal.UHC <*> Dhall.field "UHC" options
-      , (,) <$> pure Cabal.Eta <*> Dhall.field "Eta" options
       ]
 
   where
