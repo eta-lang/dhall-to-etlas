@@ -42,8 +42,6 @@ in  let deps =
               pkg "dhall-to-etlas" prelude.anyVersion
           , filepath =
               pkgVer "filepath" "1.4" "1.5"
-          , insert-ordered-containers =
-              pkgVer "insert-ordered-containers" "0.2.1.0" "0.3"
           , microlens =
               pkgVer "microlens" "0.1.0.0" "0.5"
           , optparse-applicative =
@@ -200,7 +198,6 @@ in    prelude.utils.GitHub-project
                   , deps.contravariant
                   , deps.dhall
                   , deps.hashable
-                  , deps.insert-ordered-containers
                   , deps.text
                   , deps.transformers
                   , deps.vector
@@ -239,7 +236,6 @@ in    prelude.utils.GitHub-project
                     , deps.dhall
                     , deps.dhall-to-etlas
                     , deps.filepath
-                    , deps.insert-ordered-containers
                     , deps.microlens
                     , deps.optparse-applicative
                     , deps.prettyprinter

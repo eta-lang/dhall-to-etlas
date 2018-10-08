@@ -41,10 +41,10 @@ import Data.List ( partition )
 import Data.Maybe ( fromMaybe )
 import Data.Monoid ( (<>) )
 
-import qualified Data.HashMap.Strict.InsOrd as Map
 import qualified Data.Text as StrictText
 import qualified Dhall
 import qualified Dhall.Core
+import qualified Dhall.Map as Map
 import qualified Dhall.Parser
 import qualified Dhall.TypeCheck
 import qualified Distribution.Compiler as Cabal
@@ -73,7 +73,7 @@ import qualified Distribution.Version as Cabal
 import qualified Language.Haskell.Extension as Cabal
 
 import qualified Dhall.Core as Expr
-  ( Chunks(..), Const(..), Expr(..), Var(..) )
+  ( Chunks(..), Const(..), Expr(..) )
 
 import Dhall.Extra
 import DhallToCabal.ConfigTree ( ConfigTree(..), toConfigTree )
@@ -735,7 +735,7 @@ extension =
       sortType Dhall.genericAuto
 
     unitType =
-      Expr.Record Map.empty
+      Expr.Record mempty
 
     extract expr = do
       Expr.UnionLit k v alts <-

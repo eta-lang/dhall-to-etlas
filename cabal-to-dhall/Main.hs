@@ -10,8 +10,6 @@ import Data.Version ( showVersion )
 import qualified Data.ByteString as ByteString
 import qualified Data.Text.Prettyprint.Doc as Pretty
 import qualified Data.Text.Prettyprint.Doc.Render.Text as Pretty
-import qualified Data.Text.Prettyprint.Doc.Symbols.Unicode as Pretty
-import qualified Dhall.Core
 import qualified Options.Applicative as OptParse
 import qualified System.IO
 

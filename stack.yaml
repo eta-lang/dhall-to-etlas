@@ -9,7 +9,7 @@ extra-deps:
   - etlas-cabal
 # - dhall-1.17.0@rev:0
 - github: dhall-lang/dhall-haskell
-  commit: fb2bcc97a95ec6a8d1b19029b4c8c4eb13aa1027
+  commit: 3737b6fecad671c2e03dc86ce77ccebfad7ee9a6
 - ansi-terminal-0.7.1.1
 - ansi-wl-pprint-0.6.8.2
 - cryptonite-0.24
@@ -27,9 +27,8 @@ extra-deps:
 - directory-1.3.1.0
 - foundation-0.0.19
 - process-1.6.2.0
-- repline-0.1.7.0
+- repline-0.2.0.0
 - haskeline-0.7.4.2
-- insert-ordered-containers-0.2.1.0
 - aeson-1.2.3.0
 - th-abstraction-0.2.6.0
 - hashable-1.2.7.0
@@ -41,3 +40,4 @@ extra-deps:
     - cborg
     - serialise
 - tasty-hunit-0.10.0.1
+

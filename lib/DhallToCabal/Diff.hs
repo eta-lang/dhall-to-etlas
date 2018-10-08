@@ -7,7 +7,6 @@ module DhallToCabal.Diff ( Diffable(..) ) where
 import Data.List ( (\\), intersect )
 
 import qualified Distribution.PackageDescription as Cabal
-import qualified Distribution.Types.Executable as Cabal
 import qualified Distribution.Types.ForeignLib as Cabal
 import qualified Distribution.Types.ForeignLibType as Cabal
 import qualified Distribution.Types.UnqualComponentName as Cabal
