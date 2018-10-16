@@ -37,7 +37,7 @@ in  let deps =
           , directory =
               pkgVer "directory" "1.2.7.1" "1.4"
           , dhall =
-              pkgVer "dhall" "1.17.0" "1.18"
+              pkgVer "dhall" "1.18.0" "1.19"
           , dhall-to-etlas =
               pkg "dhall-to-etlas" prelude.anyVersion
           , filepath =
@@ -184,7 +184,7 @@ in    prelude.utils.GitHub-project
       , license-files =
           [ "LICENSE" ]
       , version =
-          v "1.3.0.1"
+          v "1.4.0.0"
       , cabal-version =
           v "1.12"
       , library =

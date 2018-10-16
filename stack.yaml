@@ -7,15 +7,13 @@ extra-deps:
   commit: 2380f80369fea16a24a27c2a95d21236f7fbce71
   subdirs:
   - etlas-cabal
-# - dhall-1.17.0@rev:0
-- github: dhall-lang/dhall-haskell
-  commit: 3737b6fecad671c2e03dc86ce77ccebfad7ee9a6
+- dhall-1.18.0@rev:0
 - ansi-terminal-0.7.1.1
 - ansi-wl-pprint-0.6.8.2
 - cryptonite-0.24
 - formatting-6.3.2
 - parsec-3.1.13.0
-- megaparsec-7.0.0
+- megaparsec-7.0.1
 - parser-combinators-1.0.0
 - optparse-generic-1.3.0
 - optparse-applicative-0.14.0.0
@@ -33,11 +31,5 @@ extra-deps:
 - th-abstraction-0.2.6.0
 - hashable-1.2.7.0
 - Diff-0.3.4
-# Version 0.2.0.0 of cborg, the latest on Hackage, is broken on i386.
-- github: well-typed/cborg
-  commit: master
-  subdirs:
-    - cborg
-    - serialise
+- serialise-0.2.1.0
 - tasty-hunit-0.10.0.1
-
