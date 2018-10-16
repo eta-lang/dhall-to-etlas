@@ -31,5 +31,6 @@ extra-deps:
 - th-abstraction-0.2.6.0
 - hashable-1.2.7.0
 - Diff-0.3.4
+- cborg-0.2.1.0
 - serialise-0.2.1.0
 - tasty-hunit-0.10.0.1
