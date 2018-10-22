@@ -176,4 +176,3 @@ in    prelude.defaults.Package
       , license =
           prelude.types.Licenses.Unspecified {=}
       }
-
