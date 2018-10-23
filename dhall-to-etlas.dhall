@@ -83,7 +83,9 @@ in  let warning-options =
 
 in    prelude.utils.GitHub-project
       { owner = "eta-lang", repo = "dhall-to-etlas" }
-    ⫽ { synopsis =
+    ⫽ { cabal-version =
+          v "1.12"
+       , synopsis =
           "Compile Dhall expressions to Etlas files"
       , description =
           ''
@@ -184,9 +186,7 @@ in    prelude.utils.GitHub-project
       , license-files =
           [ "LICENSE" ]
       , version =
-          v "1.4.0.0"
-      , cabal-version =
-          v "1.12"
+          v "1.3.1.0"
       , library =
           prelude.unconditional.library
           (   prelude.defaults.Library
