@@ -1,42 +1,36 @@
-    let prelude = ../../dhall/prelude.dhall 
+let prelude = ./../../dhall/prelude.dhall
 
-in  let types = ../../dhall/types.dhall 
+let types = ./../../dhall/types.dhall
 
-in  let v = prelude.v
+let v = prelude.v
 
-in  let pkg =
-            λ(name : Text)
-          → λ(version-range : types.VersionRange)
-          → { bounds = version-range, package = name }
+let pkg =
+        λ(name : Text)
+      → λ(version-range : types.VersionRange)
+      → { bounds = version-range, package = name }
 
-in  let pkgAnyVer = λ(packageName : Text) → pkg packageName prelude.anyVersion
+let pkgAnyVer = λ(packageName : Text) → pkg packageName prelude.anyVersion
 
-in  let etaImpl =
-            λ(cfg : types.Config)
-          → λ(ver : types.VersionRange)
-          → cfg.impl (prelude.types.Compilers.Eta {=}) ver
+let etaImpl =
+        λ(cfg : types.Config)
+      → λ(ver : types.VersionRange)
+      → cfg.impl (types.Compiler.Eta {=}) ver
 
-in  let updateRepo =
-          prelude.utils.mapSourceRepos
-          (   λ(srcRepo : types.SourceRepo)
-            →   srcRepo
-              ⫽ { tag =
-                    [ "0.1.5.1" ] : Optional Text
-                , kind =
-                    prelude.types.RepoKind.RepoThis {=}
-                }
-          )
+let updateRepo =
+      prelude.utils.mapSourceRepos
+      (   λ(srcRepo : types.SourceRepo)
+        → srcRepo ⫽ { tag = Some "0.1.5.1", kind = types.RepoKind.RepoThis {=} }
+      )
 
-in  let project =
-          prelude.utils.GitHub-project
-          { owner = "jneira", repo = "wai-servlet" }
+let project =
+      prelude.utils.GitHub-project { owner = "jneira", repo = "wai-servlet" }
 
 in  updateRepo
     (   project
       ⫽ { description =
             "Integration of eta wai applications with the servlet api"
         , license =
-            prelude.types.Licenses.BSD3 {=}
+            types.License.BSD3 {=}
         , license-files =
             [ "LICENSE" ]
         , author =
@@ -79,8 +73,7 @@ in  updateRepo
                   , hs-source-dirs =
                       [ "src" ]
                   , default-language =
-                      [ prelude.types.Languages.Haskell2010 {=}
-                      ] : Optional types.Language
+                      Some (types.Language.Haskell2010 {=})
                   , build-depends =
                         [ pkg
                           "base"
@@ -140,6 +133,6 @@ in  updateRepo
                           else  [] : List Text
                         )
                   }
-            ] : Optional (../../dhall/types/Guarded.dhall  types.Library)
+            ] : Optional (./../../dhall/types/Guarded.dhall types.Library)
         }
     )

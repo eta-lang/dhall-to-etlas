@@ -1,83 +1,82 @@
-    let prelude = ../../dhall/prelude.dhall
+let prelude = ./../../dhall/prelude.dhall
 
-in  let types = ../../dhall/types.dhall
+let types = ./../../dhall/types.dhall
 
-in  let v = prelude.v
+let v = prelude.v
 
-in  let Haskell2010 =
-          [ prelude.types.Languages.Haskell2010 {=} ] : Optional types.Language
+let Haskell2010 = Some (types.Language.Haskell2010 {=})
 
-in  let pkg =
-            λ(name : Text)
-          → λ(version-range : types.VersionRange)
-          → { bounds = version-range, package = name }
+let pkg =
+        λ(name : Text)
+      → λ(version-range : types.VersionRange)
+      → { bounds = version-range, package = name }
 
-in  let pkgVer =
-            λ(packageName : Text)
-          → λ(minor : Text)
-          → λ(major : Text)
-          → pkg
-            packageName
-            ( prelude.intersectVersionRanges
-              (prelude.orLaterVersion (v minor))
-              (prelude.earlierVersion (v major))
-            )
+let pkgVer =
+        λ(packageName : Text)
+      → λ(minor : Text)
+      → λ(major : Text)
+      → pkg
+        packageName
+        ( prelude.intersectVersionRanges
+          (prelude.orLaterVersion (v minor))
+          (prelude.earlierVersion (v major))
+        )
 
-in  let deps =
-          { etlas-cabal =
-              pkgVer "etlas-cabal" "1.3.0.0" "1.4"
-          , Diff =
-              pkgVer "Diff" "0.3.4" "0.4"
-          , base =
-              pkgVer "base" "4.5" "5"
-          , bytestring =
-              pkgVer "bytestring" "0.10" "0.11"
-          , containers =
-              pkgVer "containers" "0.5" "0.6"
-          , directory =
-              pkgVer "directory" "1.3.0.2" "1.4"
-          , dhall =
-              pkgVer "dhall" "1.15.0" "1.16"
-          , dhall-to-etlas =
-              pkg "dhall-to-etlas" prelude.anyVersion
-          , filepath =
-              pkgVer "filepath" "1.4" "1.5"
-          , insert-ordered-containers =
-              pkgVer "insert-ordered-containers" "0.2.1.0" "0.3"
-          , optparse-applicative =
-              pkgVer "optparse-applicative" "0.13.2" "0.15"
-          , prettyprinter =
-              pkgVer "prettyprinter" "1.2.0.1" "1.3"
-          , contravariant =
-              pkgVer "contravariant" "1.4" "1.5"
-          , hashable =
-              pkgVer "hashable" "1.2.6.1" "1.3"
-          , tasty =
-              pkgVer "tasty" "0.11" "1.2"
-          , tasty-golden =
-              pkgVer "tasty-golden" "2.3" "2.4"
-          , text =
-              pkgVer "text" "1.2" "1.3"
-          , transformers =
-              pkgVer "transformers" "0.2.0.0" "0.6"
-          , formatting =
-              pkgVer "formatting" "6.3.1" "6.4"
-          , vector =
-              pkgVer "vector" "0.11.0.0" "0.13"
-          , semigroups =
-              pkgVer "semigroups" "0.18.0" "0.19"
-          }
+let deps =
+      { etlas-cabal =
+          pkgVer "etlas-cabal" "1.3.0.0" "1.4"
+      , Diff =
+          pkgVer "Diff" "0.3.4" "0.4"
+      , base =
+          pkgVer "base" "4.5" "5"
+      , bytestring =
+          pkgVer "bytestring" "0.10" "0.11"
+      , containers =
+          pkgVer "containers" "0.5" "0.6"
+      , directory =
+          pkgVer "directory" "1.3.0.2" "1.4"
+      , dhall =
+          pkgVer "dhall" "1.15.0" "1.16"
+      , dhall-to-etlas =
+          pkg "dhall-to-etlas" prelude.anyVersion
+      , filepath =
+          pkgVer "filepath" "1.4" "1.5"
+      , insert-ordered-containers =
+          pkgVer "insert-ordered-containers" "0.2.1.0" "0.3"
+      , optparse-applicative =
+          pkgVer "optparse-applicative" "0.13.2" "0.15"
+      , prettyprinter =
+          pkgVer "prettyprinter" "1.2.0.1" "1.3"
+      , contravariant =
+          pkgVer "contravariant" "1.4" "1.5"
+      , hashable =
+          pkgVer "hashable" "1.2.6.1" "1.3"
+      , tasty =
+          pkgVer "tasty" "0.11" "1.2"
+      , tasty-golden =
+          pkgVer "tasty-golden" "2.3" "2.4"
+      , text =
+          pkgVer "text" "1.2" "1.3"
+      , transformers =
+          pkgVer "transformers" "0.2.0.0" "0.6"
+      , formatting =
+          pkgVer "formatting" "6.3.1" "6.4"
+      , vector =
+          pkgVer "vector" "0.11.0.0" "0.13"
+      , semigroups =
+          pkgVer "semigroups" "0.18.0" "0.19"
+      }
 
-in  let warning-options =
-          [ "-Wall"
-          , "-fno-warn-safe"
-          , "-fno-warn-unsafe"
-          , "-fno-warn-implicit-prelude"
-          , "-fno-warn-missing-import-lists"
-          , "-fno-warn-missing-local-sigs"
-          , "-fno-warn-monomorphism-restriction"
-          , "-fno-warn-name-shadowing"
-          ]
+let warning-options =
+      [ "-Wall"
+      , "-fno-warn-safe"
+      , "-fno-warn-unsafe"
+      , "-fno-warn-implicit-prelude"
+      , "-fno-warn-missing-import-lists"
+      , "-fno-warn-missing-local-sigs"
+      , "-fno-warn-monomorphism-restriction"
+      , "-fno-warn-name-shadowing"
+      ]
 
 in    prelude.utils.GitHub-project
       { owner = "eta-lang", repo = "dhall-to-etlas" }
@@ -92,10 +91,8 @@ in    prelude.utils.GitHub-project
           ''
       , category =
           "Distribution"
-      -- build-type simple is needed to allow tools compatible with cabal < 2.2 build the package
       , build-type =
-          [ prelude.types.BuildTypes.Simple {=}
-          ] : Optional types.BuildType
+          Some (types.BuildType.Simple {=})
       , maintainer =
           "atreyu.bbb@gmail.com"
       , author =
@@ -178,7 +175,7 @@ in    prelude.utils.GitHub-project
           , "golden-tests/cabal-to-dhall/*.cabal"
           ]
       , license =
-          prelude.types.Licenses.MIT {=}
+          types.License.MIT {=}
       , license-files =
           [ "LICENSE" ]
       , version =
@@ -209,11 +206,11 @@ in    prelude.utils.GitHub-project
               , hs-source-dirs =
                   [ "lib" ]
               , other-extensions =
-                  [ prelude.types.Extensions.GADTs True
-                  , prelude.types.Extensions.GeneralizedNewtypeDeriving True
-                  , prelude.types.Extensions.LambdaCase True
-                  , prelude.types.Extensions.OverloadedStrings True
-                  , prelude.types.Extensions.RecordWildCards True
+                  [ types.Extension.GADTs True
+                  , types.Extension.GeneralizedNewtypeDeriving True
+                  , types.Extension.LambdaCase True
+                  , types.Extension.OverloadedStrings True
+                  , types.Extension.RecordWildCards True
                   ]
               , other-modules =
                   [ "DhallToCabal.ConfigTree"
@@ -247,7 +244,7 @@ in    prelude.utils.GitHub-project
                 , main-is =
                     "Main.hs"
                 , other-extensions =
-                    [ prelude.types.Extensions.NamedFieldPuns True ]
+                    [ types.Extension.NamedFieldPuns True ]
                 , other-modules =
                     [ "Paths_dhall_to_cabal" ]
                 , default-language =
@@ -273,7 +270,7 @@ in    prelude.utils.GitHub-project
                 , main-is =
                     "Main.hs"
                 , other-extensions =
-                    [ prelude.types.Extensions.NamedFieldPuns True ]
+                    [ types.Extension.NamedFieldPuns True ]
                 , other-modules =
                     [ "Paths_dhall_to_etlas" ]
                 , default-language =
@@ -282,7 +279,7 @@ in    prelude.utils.GitHub-project
             )
           , prelude.unconditional.executable
             "dhall-to-cabal-meta"
-            (    prelude.defaults.Executable
+            (   prelude.defaults.Executable
               ⫽ { build-depends =
                     [ deps.base
                     , deps.directory
@@ -297,8 +294,7 @@ in    prelude.utils.GitHub-project
                 , default-language =
                     Haskell2010
                 , compiler-options =
-                      prelude.defaults.CompilerOptions
-                    ⫽ { GHC = warning-options }
+                    prelude.defaults.CompilerOptions ⫽ { GHC = warning-options }
                 , main-is =
                     "Main.hs"
                 }
@@ -326,8 +322,7 @@ in    prelude.utils.GitHub-project
                 , hs-source-dirs =
                     [ "golden-tests" ]
                 , type =
-                    prelude.types.TestTypes.exitcode-stdio
-                    { main-is = "GoldenTests.hs" }
+                    types.TestType.exitcode-stdio { main-is = "GoldenTests.hs" }
                 , default-language =
                     Haskell2010
                 }
