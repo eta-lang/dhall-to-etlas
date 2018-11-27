@@ -98,7 +98,7 @@ in    prelude.utils.GitHub-project
       , category =
           "Distribution"
       , build-type =
-          Some (types.BuildType.Simple {=})
+          Some ( types.BuildType.Simple {=} )
       , maintainer =
           "Javier Neira <atreyu.bbb@gmail.com>"
       , author =
