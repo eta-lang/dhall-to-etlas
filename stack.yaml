@@ -34,3 +34,4 @@ extra-deps:
 - cborg-0.2.1.0
 - serialise-0.2.1.0
 - tasty-hunit-0.10.0.1
+- dotgen-0.4.2
