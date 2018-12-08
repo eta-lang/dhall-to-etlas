@@ -4,7 +4,7 @@ packages:
 extra-deps:
 # - etlas-1.6.0.0
 - github: typelead/etlas
-  commit: 2380f80369fea16a24a27c2a95d21236f7fbce71
+  commit: 7442c168957b69b51b9c198341c79911a22c1c18
   subdirs:
   - etlas-cabal
 - dhall-1.19.1
