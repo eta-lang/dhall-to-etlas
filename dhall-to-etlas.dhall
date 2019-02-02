@@ -38,7 +38,7 @@ let deps =
       , directory =
           pkgVer "directory" "1.2.7.1" "1.4"
       , dhall =
-          pkgVer "dhall" "1.18.0" "1.19"
+          pkgVer "dhall" "1.20.1" "1.21"
       , dhall-to-etlas =
           pkg "dhall-to-etlas" anyVersion
       , filepath =
@@ -251,7 +251,7 @@ in    prelude.utils.GitHub-project
                 , other-extensions =
                     [ types.Extension.NamedFieldPuns True ]
                 , other-modules =
-                    [ "Paths_dhall_to_cabal" ]
+                    [ "Paths_dhall_to_etlas" ]
                 , default-language =
                     Haskell2010
                 }
