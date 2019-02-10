@@ -361,11 +361,15 @@ buildInfoDefault resolve = fields
       , ( "compiler-options", resolve ( PreludeDefault CompilerOptions ) )
       , emptyListDefault "cpp-options" Expr.Text
       , emptyListDefault "default-extensions" ( generaliseDeclared extension )
-      , emptyOptionalDefault "default-language" ( generaliseDeclared language )
+      , ( "default-language"
+        , Expr.App
+            ( resolveType TypeLanguage `Expr.Field` "Haskell2010" )
+            ( Expr.RecordLit mempty )
+        )
       , emptyListDefault "extra-framework-dirs" Expr.Text
       , emptyListDefault "extra-ghci-libraries" Expr.Text
       , emptyListDefault "extra-lib-dirs" Expr.Text
-      , emptyListDefault "extra-libraries" Expr.Text
+      , emptyListDefault "maven-depends" Expr.Text
       , emptyListDefault "frameworks" Expr.Text
       , emptyListDefault "hs-source-dirs" Expr.Text
       , emptyListDefault "includes" Expr.Text
@@ -379,8 +383,9 @@ buildInfoDefault resolve = fields
       , emptyListDefault "pkgconfig-depends" ( generaliseDeclared pkgconfigDependency )
       , ( "profiling-options", resolve ( PreludeDefault CompilerOptions ) )
       , ( "shared-options", resolve ( PreludeDefault CompilerOptions ) )
-      , ( "static-options", resolve ( PreludeDefault CompilerOptions ) )
+      -- , ( "static-options", resolve ( PreludeDefault CompilerOptions ) )
       , emptyListDefault "mixins" ( generaliseDeclared mixin )
+      , emptyListDefault "java-sources" Expr.Text
       , emptyListDefault "asm-options" Expr.Text
       , emptyListDefault "asm-sources" Expr.Text
       , emptyListDefault "cmm-options" Expr.Text
@@ -414,6 +419,8 @@ testSuiteDefault = buildInfoDefault
 
 
 executableDefault :: Default s a
+executableDefault resolve = buildInfoDefault resolve
+{--
 executableDefault resolve = buildInfoDefault resolve <> specificFields
   where
     specificFields =
@@ -422,6 +429,7 @@ executableDefault resolve = buildInfoDefault resolve <> specificFields
             ( resolveType TypeScope `Expr.Field` "Public" )
             ( Expr.RecordLit mempty )
         )
+--}
 
 
 packageDefault :: Default s a
@@ -447,12 +455,18 @@ packageDefault resolve = fields
       , emptyListDefault "flags" ( generaliseDeclared flag )
       , emptyListDefault "benchmarks" ( named "benchmark" benchmark )
       , textFieldDefault "bug-reports" ""
-      , emptyOptionalDefault "build-type"
-          ( generaliseDeclared buildType )
+      , ( "build-type"
+        , ( Expr.Some
+            ( Expr.App
+              ( resolveType TypeBuildType `Expr.Field` "Simple" )
+              ( Expr.RecordLit mempty )
+            )
+          )
+        )
       , ( "cabal-version"
         , Expr.App
             ( resolve PreludeV )
-            ( Expr.TextLit ( Dhall.Core.Chunks [] "2.2" ) )
+            ( Expr.TextLit ( Dhall.Core.Chunks [] "1.12" ) )
         )
       , textFieldDefault "category" ""
       , textFieldDefault "copyright" ""
@@ -473,7 +487,7 @@ packageDefault resolve = fields
           )
       , ( "license"
         , Expr.App
-            ( resolveType TypeLicense `Expr.Field` "AllRightsReserved" )
+            ( resolveType TypeLicense `Expr.Field` "Unspecified" )
             ( Expr.RecordLit mempty )
         )
       , emptyListDefault "license-files" Expr.Text
@@ -515,9 +529,10 @@ sourceRepoDefault _ = fields
       , emptyOptionalDefault "subdir" Expr.Text
       , ( "kind"
         , Expr.App
-            ( resolveType TypeRepoKind `Expr.Field` "RepoHead" )
+            ( resolveType TypeRepoKind `Expr.Field` "RepoThis" )
             ( Expr.RecordLit mempty )
         )
+      , emptyOptionalDefault "commit" Expr.Text
       ]
 
 

@@ -23,7 +23,7 @@ in  { autogen-modules =
     , default-extensions =
         [] : List types.Extension
     , default-language =
-        None types.Language
+        types.Language.Haskell2010 {=}
     , extra-framework-dirs =
         [] : List Text
     , extra-ghci-libraries =
@@ -58,13 +58,11 @@ in  { autogen-modules =
         ././CompilerOptions.dhall
     , shared-options =
         ././CompilerOptions.dhall
---  , static-options =
---      ././CompilerOptions.dhall
     , mixins =
         [] : List types.Mixin
     , java-sources =
         [] : List Text
-{-  , asm-options =
+    , asm-options =
         [] : List Text
     , asm-sources =
         [] : List Text
@@ -82,4 +80,4 @@ in  { autogen-modules =
         [] : List Text
     , extra-bundled-libs =
         [] : List Text
--}  }
+    }

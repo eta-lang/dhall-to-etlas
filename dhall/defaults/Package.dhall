@@ -16,7 +16,7 @@ in  { author =
     , bug-reports =
         ""
     , build-type =
-        Some ( types.BuildType.Simple {=} ) 
+        Some (types.BuildType.Simple {=})
     , cabal-version =
         ./../Version/v.dhall "1.12"
     , category =
@@ -84,4 +84,3 @@ in  { author =
     , custom-setup =
         None types.CustomSetup
     }
-
