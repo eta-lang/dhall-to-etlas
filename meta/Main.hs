@@ -115,7 +115,7 @@ meta (MetaOptions {..}) = do
           PreludeV ->
             Expr.Embed
               ( importFile ( relativeTo localDest "./Version/v.dhall" ) )
-          other -> resolvePreludeVar other
+          other -> error $ "Error resolving " ++ show other ++ " locally."
             
         expr :: Expr.Expr Dhall.Parser.Src Dhall.Core.Import
         expr =
