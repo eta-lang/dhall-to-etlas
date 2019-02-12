@@ -47,7 +47,6 @@ import qualified Distribution.Types.PackageId as Cabal
 import qualified Distribution.Types.PackageName as Cabal
 import qualified Options.Applicative as OptParse
 import qualified System.IO
-import Debug.Trace
 
 data Command
   = RunDhallToCabal DhallToCabalOptions
@@ -242,8 +241,7 @@ runDhallToCabal DhallToCabalOptions { dhallFilePath, explain, outputDirection } 
 
       Just filePath ->
         StrictText.readFile filePath
-  traceIO $ "Input dir: " ++ inputDir
-  traceIO $ "Dhall file path: " ++ show dhallFilePath
+
   let
     settings = Dhall.defaultInputSettings
       & set Dhall.rootDirectory inputDir
