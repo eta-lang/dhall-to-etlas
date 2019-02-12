@@ -334,7 +334,7 @@ compilerOptionsDefault :: Default s a
 compilerOptionsDefault _resolve =
   ( Map.fromList
     [ emptyListDefault "Eta" Expr.Text
-    , emptyListDefault "GHC" Expr.Text
+    , ( "GHC" , Expr.ListLit ( Just Expr.Text ) opts )
     , emptyListDefault "GHCJS" Expr.Text
     , emptyListDefault "HBC" Expr.Text
     , emptyListDefault "Helium" Expr.Text
@@ -346,6 +346,11 @@ compilerOptionsDefault _resolve =
     , emptyListDefault "YHC" Expr.Text
     ]
   )
+  where opts = Seq.fromList
+                 [ "-Wall"
+                 , "-fwarn-incomplete-uni-patterns"
+                 , "-fwarn-incomplete-record-updates"
+                 ]
 
 
 buildInfoDefault :: Default s a
