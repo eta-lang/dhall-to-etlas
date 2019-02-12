@@ -360,7 +360,8 @@ buildInfoDefault resolve = fields
       , emptyListDefault "cc-options" Expr.Text
       , ( "compiler-options", resolve ( PreludeDefault CompilerOptions ) )
       , emptyListDefault "cpp-options" Expr.Text
-      , emptyListDefault "default-extensions" ( generaliseDeclared extension )
+--      , emptyListDefault "default-extensions" ( generaliseDeclared extension )
+      , ( "default-extensions" , Expr.ListLit Nothing defaultExtensions )
       , ( "default-language"
         , Expr.App
             ( resolveType TypeLanguage `Expr.Field` "Haskell2010" )
@@ -396,7 +397,7 @@ buildInfoDefault resolve = fields
       , emptyListDefault "extra-lib-flavours" Expr.Text
       , emptyListDefault "extra-bundled-libs" Expr.Text
       ]
-
+  where defaultExtensions = undefined
 
 libraryDefault :: Default s a
 libraryDefault resolve = buildInfoDefault resolve <> specificFields
