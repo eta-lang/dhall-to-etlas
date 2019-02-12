@@ -149,6 +149,7 @@ data PreludeReference
   | PreludeV
   | PreludeVersionRange VersionRange
   | PreludeSPDX Dhall.Text
+  deriving ( Show )
 
 data TypeReference
   = TypeBenchmark
@@ -324,6 +325,7 @@ textFieldDefault name def =
   , Expr.TextLit ( Dhall.Core.Chunks [] def )
   )
 
+generaliseDeclared :: Dhall.InputType t -> Expr.Expr s a
 generaliseDeclared =
   Dhall.Core.denote . fmap Dhall.TypeCheck.absurd . Dhall.declared
 
@@ -361,7 +363,7 @@ buildInfoDefault resolve = fields
       , ( "compiler-options", resolve ( PreludeDefault CompilerOptions ) )
       , emptyListDefault "cpp-options" Expr.Text
 --      , emptyListDefault "default-extensions" ( generaliseDeclared extension )
-      , ( "default-extensions" , Expr.ListLit Nothing defaultExtensions )
+      , ( "default-extensions" , defaultExtensions )
       , ( "default-language"
         , Expr.App
             ( resolveType TypeLanguage `Expr.Field` "Haskell2010" )
@@ -397,7 +399,40 @@ buildInfoDefault resolve = fields
       , emptyListDefault "extra-lib-flavours" Expr.Text
       , emptyListDefault "extra-bundled-libs" Expr.Text
       ]
-  where defaultExtensions = undefined
+
+defaultExtensions :: Expr.Expr s a
+defaultExtensions =
+  Expr.ListLit ( Just ( generaliseDeclared extension ) )
+               ( fmap ( generaliseEmbed extension ) ( Seq.fromList cabalExts ) )
+  where generaliseEmbed a = Dhall.Core.denote . fmap Dhall.TypeCheck.absurd . ( Dhall.embed a )
+        cabalExts = 
+          map Cabal.EnableExtension
+            [ Cabal.BangPatterns
+            , Cabal.DataKinds
+            , Cabal.DeriveFoldable
+            , Cabal.DeriveFunctor
+            , Cabal.DeriveGeneric
+            , Cabal.DeriveLift
+            , Cabal.DeriveTraversable
+            , Cabal.EmptyCase
+            , Cabal.ExistentialQuantification
+            , Cabal.FlexibleContexts
+            , Cabal.FlexibleInstances
+            , Cabal.FunctionalDependencies
+            , Cabal.GeneralizedNewtypeDeriving
+            , Cabal.MagicHash
+            , Cabal.MultiParamTypeClasses
+            , Cabal.MultiWayIf
+            , Cabal.LambdaCase
+            , Cabal.OverloadedStrings
+            , Cabal.RankNTypes
+            , Cabal.RecordWildCards
+            , Cabal.StandaloneDeriving
+            , Cabal.ScopedTypeVariables
+            , Cabal.TupleSections
+            , Cabal.TypeFamilies
+            , Cabal.TypeOperators
+            ]
 
 libraryDefault :: Default s a
 libraryDefault resolve = buildInfoDefault resolve <> specificFields
@@ -760,6 +795,7 @@ licenseToDhall =
            license "Unspecified" ( Expr.RecordLit mempty )
          Cabal.OtherLicense ->
            license "Other" ( Expr.RecordLit mempty )
+         other -> error $ "Unknown license: " ++ show other
     , Dhall.declared =
         Expr.Var "types" `Expr.Field` "License"
     }

@@ -17,7 +17,7 @@ import System.FilePath
   )
 
 import CabalToDhall
-  ( KnownDefault, PreludeReference (..), getDefault , resolvePreludeVar)
+  ( KnownDefault, PreludeReference (..), getDefault )
 
 import qualified Data.Text.Prettyprint.Doc as Pretty
 import qualified Data.Text.Prettyprint.Doc.Render.Text as Pretty

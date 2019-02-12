@@ -21,7 +21,32 @@ in  { autogen-modules =
     , cpp-options =
         [] : List Text
     , default-extensions =
-        [] : List types.Extension
+        [ types.Extension.BangPatterns True
+        , types.Extension.DataKinds True
+        , types.Extension.DeriveFoldable True
+        , types.Extension.DeriveFunctor True
+        , types.Extension.DeriveGeneric True
+        , types.Extension.DeriveLift True
+        , types.Extension.DeriveTraversable True
+        , types.Extension.EmptyCase True
+        , types.Extension.ExistentialQuantification True
+        , types.Extension.FlexibleContexts True
+        , types.Extension.FlexibleInstances True
+        , types.Extension.FunctionalDependencies True
+        , types.Extension.GeneralizedNewtypeDeriving True
+        , types.Extension.MagicHash True
+        , types.Extension.MultiParamTypeClasses True
+        , types.Extension.MultiWayIf True
+        , types.Extension.LambdaCase True
+        , types.Extension.OverloadedStrings True
+        , types.Extension.RankNTypes True
+        , types.Extension.RecordWildCards True
+        , types.Extension.StandaloneDeriving True
+        , types.Extension.ScopedTypeVariables True
+        , types.Extension.TupleSections True
+        , types.Extension.TypeFamilies True
+        , types.Extension.TypeOperators True
+        ] : List types.Extension
     , default-language =
         types.Language.Haskell2010 {=}
     , extra-framework-dirs =
