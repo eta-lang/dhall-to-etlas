@@ -4,7 +4,7 @@ let gitHubProject =
         λ(github : GitHubProject)
       → let gitHubRoot = "https://github.com/${github.owner}/${github.repo}"
         
-        in    ./../defaults/Package.dhall
+        in    ../defaults/Package.dhall
             ⫽ { name =
                   github.repo
               , bug-reports =
@@ -12,11 +12,11 @@ let gitHubProject =
               , homepage =
                   gitHubRoot
               , source-repos =
-                  [   ./../defaults/SourceRepo.dhall
+                  [   ../defaults/SourceRepo.dhall
                     ⫽ { location =
                           Some gitHubRoot
                       , type =
-                          Some ((./../types/RepoType.dhall).Git {=})
+                          Some ((../types/RepoType.dhall).Git {=})
                       }
                   ]
               }

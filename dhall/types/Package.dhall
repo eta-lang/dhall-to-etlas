@@ -59,7 +59,7 @@
 , tested-with :
     List { compiler : ./Compiler.dhall , version : ./VersionRange.dhall  }
 , version :
-    ./Version.dhall 
+    ./Version.dhall
 , x-fields :
     List { _1 : Text, _2 : Text }
 }
