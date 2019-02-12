@@ -346,11 +346,12 @@ compilerOptionsDefault _resolve =
     , emptyListDefault "YHC" Expr.Text
     ]
   )
-  where opts = Seq.fromList
-                 [ "-Wall"
-                 , "-fwarn-incomplete-uni-patterns"
-                 , "-fwarn-incomplete-record-updates"
-                 ]
+  where opts =
+          Seq.fromList $ map Expr.TextLit
+                          [ "-Wall"
+                          , "-fwarn-incomplete-uni-patterns"
+                          , "-fwarn-incomplete-record-updates"
+                          ]
 
 
 buildInfoDefault :: Default s a
@@ -370,9 +371,11 @@ buildInfoDefault resolve = fields
 --      , emptyListDefault "default-extensions" ( generaliseDeclared extension )
       , ( "default-extensions" , defaultExtensions )
       , ( "default-language"
-        , Expr.App
-            ( resolveType TypeLanguage `Expr.Field` "Haskell2010" )
-            ( Expr.RecordLit mempty )
+        , Expr.Some
+            ( Expr.App
+              ( resolveType TypeLanguage `Expr.Field` "Haskell2010" )
+              ( Expr.RecordLit mempty )
+            )
         )
       , emptyListDefault "extra-framework-dirs" Expr.Text
       , emptyListDefault "extra-ghci-libraries" Expr.Text
@@ -394,7 +397,7 @@ buildInfoDefault resolve = fields
       -- , ( "static-options", resolve ( PreludeDefault CompilerOptions ) )
       , emptyListDefault "mixins" ( generaliseDeclared mixin )
       , emptyListDefault "java-sources" Expr.Text
-      , emptyListDefault "asm-options" Expr.Text
+{--   , emptyListDefault "asm-options" Expr.Text
       , emptyListDefault "asm-sources" Expr.Text
       , emptyListDefault "cmm-options" Expr.Text
       , emptyListDefault "cmm-sources" Expr.Text
@@ -403,6 +406,7 @@ buildInfoDefault resolve = fields
       , emptyListDefault "virtual-modules" Expr.Text
       , emptyListDefault "extra-lib-flavours" Expr.Text
       , emptyListDefault "extra-bundled-libs" Expr.Text
+--}
       ]
 
 defaultExtensions :: Expr.Expr s a

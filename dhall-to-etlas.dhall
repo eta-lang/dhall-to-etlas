@@ -186,7 +186,7 @@ in    prelude.utils.GitHub-project
       , license-files =
           [ "LICENSE" ]
       , version =
-          v "1.4.0.0"
+          v "1.3.1.0"
       , library =
           prelude.unconditional.library
           (   prelude.defaults.Library
@@ -197,6 +197,7 @@ in    prelude.utils.GitHub-project
                   , deps.containers
                   , deps.contravariant
                   , deps.dhall
+                  , deps.filepath
                   , deps.hashable
                   , deps.text
                   , deps.transformers
@@ -206,7 +207,11 @@ in    prelude.utils.GitHub-project
               , compiler-options =
                   prelude.defaults.CompilerOptions ⫽ { GHC = warning-options }
               , exposed-modules =
-                  [ "DhallToCabal", "DhallLocation", "CabalToDhall" ]
+                  [ "CabalToDhall"
+                  , "DhallLocation"
+                  , "DhallToCabal"
+                  , "DhallToCabal.Util"
+                  ]
               , hs-source-dirs =
                   [ "lib" ]
               , other-extensions =
@@ -235,10 +240,12 @@ in    prelude.utils.GitHub-project
                     , deps.base
                     , deps.dhall
                     , deps.dhall-to-etlas
+                    , deps.directory
                     , deps.filepath
                     , deps.microlens
                     , deps.optparse-applicative
                     , deps.prettyprinter
+                    , deps.semigroups
                     , deps.text
                     , deps.transformers
                     ]

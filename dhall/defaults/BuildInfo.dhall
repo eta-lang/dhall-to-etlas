@@ -48,7 +48,7 @@ in  { autogen-modules =
         , types.Extension.TypeOperators True
         ] : List types.Extension
     , default-language =
-        types.Language.Haskell2010 {=}
+        Some (types.Language.Haskell2010 {=})
     , extra-framework-dirs =
         [] : List Text
     , extra-ghci-libraries =
@@ -86,23 +86,5 @@ in  { autogen-modules =
     , mixins =
         [] : List types.Mixin
     , java-sources =
-        [] : List Text
-    , asm-options =
-        [] : List Text
-    , asm-sources =
-        [] : List Text
-    , cmm-options =
-        [] : List Text
-    , cmm-sources =
-        [] : List Text
-    , cxx-options =
-        [] : List Text
-    , cxx-sources =
-        [] : List Text
-    , virtual-modules =
-        [] : List Text
-    , extra-lib-flavours =
-        [] : List Text
-    , extra-bundled-libs =
         [] : List Text
     }

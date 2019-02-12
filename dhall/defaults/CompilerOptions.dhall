@@ -4,9 +4,9 @@ let types = ./../types.dhall
 in  { Eta =
         [] : List Text
     , GHC =
-        [ `-Wall`
-        , `-fwarn-incomplete-uni-patterns`
-        , `-fwarn-incomplete-record-updates`
+        [ "-Wall"
+        , "-fwarn-incomplete-uni-patterns"
+        , "-fwarn-incomplete-record-updates"
         ] : List Text
     , GHCJS =
         [] : List Text
