@@ -10,5 +10,8 @@ in    prelude.defaults.Package
       , cabal-version =
           prelude.v "2.2"
       , library =
-          prelude.unconditional.library prelude.defaults.Library
+          prelude.unconditional.library
+          ( prelude.utils.resetComponent.library
+            prelude.defaults.Library
+          )
       }
