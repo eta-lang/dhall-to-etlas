@@ -2,10 +2,10 @@ let Version = ../types/Version.dhall
 
 let VersionRange = ../types/VersionRange.dhall
 
-let majorBoundVersion = ../VersionRange/majorBoundVersion.dhall
+let thisVersion = ../VersionRange/thisVersion.dhall
 
-let majorVersions
+let thisVersions
     : Text → List Version → { package : Text, bounds : VersionRange }
-    = ./anyOfVersions.dhall majorBoundVersion
+    = ./anyOfVersions.dhall thisVersion
 
-in majorVersions
+in  thisVersions
