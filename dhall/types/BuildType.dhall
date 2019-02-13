@@ -1,4 +1,5 @@
-< Configure :
+< Configur
+e :
     {}
 | Custom :
     {}

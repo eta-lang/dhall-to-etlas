@@ -4,8 +4,6 @@ let types = ./dhall/types.dhall
 
 let v = prelude.v
 
-let Haskell2010 = Some (types.Languages.Haskell2010 {=})
-
 let anyVersion = prelude.anyVersion
 
 let pkg =
@@ -98,7 +96,7 @@ in    prelude.utils.GitHub-project
       , category =
           "Distribution"
       , build-type =
-          Some ( types.BuildType.Simple {=} )
+          Some (types.BuildType.Simple {=})
       , maintainer =
           "Javier Neira <atreyu.bbb@gmail.com>"
       , author =
@@ -186,7 +184,7 @@ in    prelude.utils.GitHub-project
       , license-files =
           [ "LICENSE" ]
       , version =
-          v "1.3.1.0"
+          v "1.3.2.0"
       , library =
           prelude.unconditional.library
           (   prelude.defaults.Library
@@ -228,7 +226,7 @@ in    prelude.utils.GitHub-project
                   , "Paths_dhall_to_etlas"
                   ]
               , default-language =
-                  Haskell2010
+                  Some (types.Language.Haskell2010 {=})
               }
           )
       , executables =
@@ -260,7 +258,7 @@ in    prelude.utils.GitHub-project
                 , other-modules =
                     [ "Paths_dhall_to_etlas" ]
                 , default-language =
-                    Haskell2010
+                    Some (types.Language.Haskell2010 {=})
                 }
             )
           , prelude.unconditional.executable
@@ -286,7 +284,7 @@ in    prelude.utils.GitHub-project
                 , other-modules =
                     [ "Paths_dhall_to_etlas" ]
                 , default-language =
-                    Haskell2010
+                    Some (types.Language.Haskell2010 {=})
                 }
             )
           , prelude.unconditional.executable
@@ -304,7 +302,7 @@ in    prelude.utils.GitHub-project
                 , hs-source-dirs =
                     [ "meta" ]
                 , default-language =
-                    Haskell2010
+                    Some (types.Language.Haskell2010 {=})
                 , compiler-options =
                     prelude.defaults.CompilerOptions ⫽ { GHC = warning-options }
                 , main-is =
@@ -359,7 +357,7 @@ in    prelude.utils.GitHub-project
                 , type =
                     types.TestType.exitcode-stdio { main-is = "Tests.hs" }
                 , default-language =
-                    Haskell2010
+                    Some (types.Language.Haskell2010 {=})
                 , other-modules =
                     [ "DhallToCabal.Tests" ]
                 }

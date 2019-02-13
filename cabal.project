@@ -5,3 +5,4 @@ source-repository-package
     location: https://github.com/typelead/etlas
     tag: 7442c168957b69b51b9c198341c79911a22c1c18
     subdir: etlas-cabal
+

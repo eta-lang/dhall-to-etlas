@@ -1,5 +1,5 @@
 { type :
-    Optional ./RepoType.dhall 
+    Optional ./RepoType.dhall
 , location :
     Optional Text
 , module :
