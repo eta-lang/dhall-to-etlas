@@ -1,21 +1,11 @@
 { defaults =
-    { CompilerOptions =
-        ./defaults/CompilerOptions.dhall
-    , Library =
-        ./defaults/Library.dhall
-    , Benchmark =
-        ./defaults/Benchmark.dhall
-    , Executable =
-        ./defaults/Executable.dhall
-    , Package =
-        ./defaults/Package.dhall
-    , SourceRepo =
-        ./defaults/SourceRepo.dhall
-    , TestSuite =
-        ./defaults/TestSuite.dhall
-    }
+    ./defaults/all.dhall
+, Dependency =
+    ./Dependency/package.dhall
 , anyVersion =
-    ./VersionRange/anyVersion.dhall 
+    ./VersionRange/anyVersion.dhall
+, anyOfVersions =
+    ./VersionRange/anyOfVersions.dhall
 , earlierVersion =
     ./VersionRange/earlierVersion.dhall 
 , orEarlierVersion =

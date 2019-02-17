@@ -1,11 +1,7 @@
-{ anyOfVersions =
-    ./anyOfVersions.dhall
-, GitHub-project =
+{ GitHub-project =
     ./GitHub-project.dhall
 , GitHubTag-project =
     ./GitHubTag-project.dhall
-, majorVersions =
-    ./majorVersions.dhall
 , mapBuildInfo =
     ./mapBuildInfo.dhall
 , mapSourceRepos =
@@ -14,6 +10,6 @@
     ./resetBuildInfo.dhall
 , resetComponent =
     ./resetComponent.dhall
-, thisVersions =
-    ./thisVersions.dhall
+, toBuildInfo =
+    ./toBuildInfo.dhall
 }

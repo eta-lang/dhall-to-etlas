@@ -1,6 +1,6 @@
-let VersionRange = ../../types/VersionRange.dhall
+let VersionRange = ../types/VersionRange.dhall
 
-let Dependency = ../../types/Dependency.dhall
+let Dependency = ../types/Dependency.dhall
 
 let cons
     : Text → VersionRange → Dependency
