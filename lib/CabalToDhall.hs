@@ -421,7 +421,6 @@ defaultExtensions =
             , Cabal.DeriveFoldable
             , Cabal.DeriveFunctor
             , Cabal.DeriveGeneric
-            , Cabal.DeriveLift
             , Cabal.DeriveTraversable
             , Cabal.EmptyCase
             , Cabal.ExistentialQuantification
