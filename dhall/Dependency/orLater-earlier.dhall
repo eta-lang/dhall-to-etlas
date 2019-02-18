@@ -10,11 +10,11 @@ let orLater = ../VersionRange/orLaterVersion.dhall
 
 let earlier = ../VersionRange/earlierVersion.dhall
 
-let pvp
+let orLater-earlier
     : Text → Text → Text → Dependency
     =   λ(packageName : Text)
       → λ(minor : Text)
       → λ(major : Text)
       → cons packageName (and (orLater (v minor)) (earlier (v major)))
 
-in  pvp
+in  orLater-earlier
