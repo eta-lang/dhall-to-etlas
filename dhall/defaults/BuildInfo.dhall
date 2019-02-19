@@ -26,7 +26,6 @@ in  { autogen-modules =
         , types.Extension.DeriveFoldable True
         , types.Extension.DeriveFunctor True
         , types.Extension.DeriveGeneric True
-        , types.Extension.DeriveLift True
         , types.Extension.DeriveTraversable True
         , types.Extension.EmptyCase True
         , types.Extension.ExistentialQuantification True
