@@ -5,7 +5,7 @@ let cons = ./cons.dhall
 let anyVer = ../VersionRange/anyVersion.dhall
 
 let anyDep
-    : Text → Text → Dependency
+    : Text → Dependency
     = λ(pkgName : Text) → cons pkgName anyVer
 
 in  anyDep
