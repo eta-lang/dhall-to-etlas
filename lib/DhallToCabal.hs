@@ -374,6 +374,7 @@ versionRange =
                 `Expr.App` "intersectVersionRanges"
                 `Expr.App` "differenceVersionRanges"
                 `Expr.App` "invertVersionRange"
+                `Expr.App` "intervalVersionRange"
             )
             `asTypeOf` e
         )
@@ -412,7 +413,7 @@ versionRange =
 
         Expr.App "majorBoundVersion" components ->
           Cabal.majorBoundVersion <$> Dhall.extract version components
-
+    
         Expr.App ( Expr.App "unionVersionRanges" a ) b ->
           Cabal.unionVersionRanges <$> go a <*> go b
 
@@ -422,6 +423,9 @@ versionRange =
         Expr.App ( Expr.App "differenceVersionRanges" a ) b ->
           Cabal.differenceVersionRanges <$> go a <*> go b
 
+        Expr.App "intervalVersionRange" intervals ->
+          Cabal.fromVersionIntervals <$> Dhall.extract versionIntervals intervals
+        
         _ ->
           Nothing
 
@@ -436,7 +440,13 @@ versionRange =
             ( Dhall.expected version )
             versionRange
 
-        combine =
+        textListToVersionRange =
+          Expr.Pi
+            "_"
+            ( Dhall.expected versionIntervals )
+            versionRange
+            
+        combine = 
           Expr.Pi "_" versionRange ( Expr.Pi "_" versionRange versionRange )
 
       in
@@ -458,9 +468,24 @@ versionRange =
             "invertVersionRange"
             ( Expr.Pi "_" versionRange versionRange )
             versionRange
+        $ Expr.Pi "intervalVersionRange" textToVersionRange
 
   in Dhall.Type { .. }
 
+versionIntervals :: Dhall.Type Cabal.VersionIntervals
+versionIntervals = 
+  let
+    (Dhall.Type extractIn expectedIn) = Dhall.list versionInterval
+    
+    extract vs = Cabal.mkVersionIntervals <$> extractIn vs
+    
+    expected = expectedIn
+
+  in Dhall.Type { .. }
+
+versionInterval :: DhallType Cabal.VersionInterval
+versionInterval =
+  let 
 
 
 buildType :: Dhall.Type Cabal.BuildType
