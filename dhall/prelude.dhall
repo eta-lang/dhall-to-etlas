@@ -25,7 +25,9 @@
 , notThisVersion =
     ./VersionRange/notThisVersion.dhall 
 , withinVersion =
-    ./VersionRange/withinVersion.dhall 
+    ./VersionRange/withinVersion.dhall
+, intervalsVersionRange =
+    ./VersionRange/intervalsVersionRange.dhall
 , v =
     ./Version/v.dhall 
 , noVersion =

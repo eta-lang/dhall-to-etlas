@@ -13,5 +13,5 @@
 → ∀(intersectVersionRanges : VersionRange → VersionRange → VersionRange)
 → ∀(differenceVersionRanges : VersionRange → VersionRange → VersionRange)
 → ∀(invertVersionRange : VersionRange → VersionRange)
-→ ∀(intervalVersionRange : List Text → VersionRange)
+→ ∀(intervalsVersionRange : List Text → VersionRange)
 → VersionRange

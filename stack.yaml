@@ -3,8 +3,8 @@ packages:
   - .
 extra-deps:
 # - etlas-1.6.0.0
-- github: typelead/etlas
-  commit: 7442c168957b69b51b9c198341c79911a22c1c18
+- github: jneira/etlas
+  commit: 7328c6d3c7f4e660e266fe1063f5afd1fabf0149
   subdirs:
   - etlas-cabal
 - dhall-1.20.1

@@ -423,7 +423,7 @@ versionRange =
         Expr.App ( Expr.App "differenceVersionRanges" a ) b ->
           Cabal.differenceVersionRanges <$> go a <*> go b
 
-        Expr.App "intervalVersionRange" intervals ->
+        Expr.App "intervalsVersionRange" intervals ->
           Cabal.fromVersionIntervals <$> Dhall.extract versionIntervals intervals
         
         _ ->
@@ -440,14 +440,16 @@ versionRange =
             ( Dhall.expected version )
             versionRange
 
-        textListToVersionRange =
+        versionIntervalsToVersionRange =
           Expr.Pi
             "_"
             ( Dhall.expected versionIntervals )
             versionRange
+
+        endoVersionRange = Expr.Pi "_" versionRange versionRange
             
         combine = 
-          Expr.Pi "_" versionRange ( Expr.Pi "_" versionRange versionRange )
+          Expr.Pi "_" versionRange endoVersionRange
 
       in
       Expr.Pi "VersionRange" ( Expr.Const Expr.Type )
@@ -464,28 +466,38 @@ versionRange =
         $ Expr.Pi "unionVersionRanges" combine
         $ Expr.Pi "intersectVersionRanges" combine
         $ Expr.Pi "differenceVersionRanges" combine
+        $ Expr.Pi "invertVersionRange" endoVersionRange
         $ Expr.Pi
-            "invertVersionRange"
-            ( Expr.Pi "_" versionRange versionRange )
-            versionRange
-        $ Expr.Pi "intervalVersionRange" textToVersionRange
+            "intervalsVersionRange"
+            versionIntervalsToVersionRange
+        $ versionRange
 
   in Dhall.Type { .. }
+
 
 versionIntervals :: Dhall.Type Cabal.VersionIntervals
 versionIntervals = 
   let
     (Dhall.Type extractIn expectedIn) = Dhall.list versionInterval
     
-    extract vs = Cabal.mkVersionIntervals <$> extractIn vs
+    extract vis = Cabal.mkVersionIntervals =<< extractIn vis
     
-    expected = expectedIn
+    expected = Expr.App Expr.List expectedIn
 
   in Dhall.Type { .. }
 
-versionInterval :: DhallType Cabal.VersionInterval
+
+versionInterval :: Dhall.Type Cabal.VersionInterval
 versionInterval =
-  let 
+  let extract = \case
+        Expr.TextLit (Expr.Chunks [] txt) ->
+          Cabal.simpleParse ( StrictText.unpack txt )
+        _ ->
+          Nothing
+        
+      expected = Expr.Text
+
+  in Dhall.Type { .. }
 
 
 buildType :: Dhall.Type Cabal.BuildType

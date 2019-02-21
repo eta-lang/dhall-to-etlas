@@ -4,6 +4,7 @@
 {-# language MultiWayIf #-}
 {-# language NamedFieldPuns #-}
 {-# language OverloadedStrings #-}
+{-# language ScopedTypeVariables #-}
 {-# language ViewPatterns #-}
 
 module CabalToDhall
@@ -134,6 +135,7 @@ data VersionRange
   | EarlierVersion
   | OrEarlierVersion
   | IntersectVersionRanges
+  | IntervalVersionRange
   | UnionVersionRanges
   | MajorBoundVersion
   | OrLaterVersion
@@ -1033,6 +1035,20 @@ compilerFlavor =
     }
 
 
+intervalVersionRange :: Dhall.InputType Cabal.VersionRange
+intervalVersionRange = Dhall.InputType 
+    { Dhall.embed =
+        \vr ->
+          let vis = Cabal.versionIntervals
+                    ( Cabal.toVersionIntervals vr )
+              vis' = map ( StrictText.pack . show . Cabal.disp ) vis
+
+          in Expr.App ( resolveVersionRange IntervalVersionRange )
+                      ( (Dhall.embed Dhall.inject) vis' )
+          
+    , Dhall.declared = resolveType TypeVersionRange
+    }
+
 versionRange :: Dhall.InputType Cabal.VersionRange
 versionRange =
   Dhall.InputType
@@ -1073,7 +1089,7 @@ versionRange =
                   )
                   b
               )
-
+              
           in
           go ( Cabal.fromVersionIntervals ( Cabal.toVersionIntervals versionRange0 ) )
     , Dhall.declared = resolveType TypeVersionRange
@@ -1203,7 +1219,7 @@ dependency =
   runRecordInputType
     ( mconcat
         [ recordField "package" ( contramap ( \( Cabal.Dependency p _ ) -> p ) packageNameToDhall )
-        , recordField "bounds" ( contramap ( \( Cabal.Dependency _ a ) -> a ) versionRange )
+        , recordField "bounds" ( contramap ( \( Cabal.Dependency _ a ) -> a ) intervalVersionRange )
         ]
     )
 
@@ -1488,7 +1504,7 @@ exeDependency =
     ( mconcat
         [ recordField "package" ( ( \( Cabal.ExeDependency packageName _ _ ) -> packageName ) >$< packageNameToDhall )
         , recordField "component" ( ( \( Cabal.ExeDependency _ component _ ) -> component ) >$< unqualComponentName )
-        , recordField "version" ( ( \( Cabal.ExeDependency _ _ version ) -> version ) >$< versionRange )
+        , recordField "version" ( ( \( Cabal.ExeDependency _ _ version ) -> version ) >$< intervalVersionRange )
         ]
     )
 
@@ -1503,7 +1519,7 @@ pkgconfigDependency =
   runRecordInputType
     ( mconcat
         [ recordField "name" ( ( \( Cabal.PkgconfigDependency a _version ) -> a ) >$< pkgconfigName )
-        , recordField "version" ( ( \( Cabal.PkgconfigDependency _name a ) -> a ) >$< versionRange )
+        , recordField "version" ( ( \( Cabal.PkgconfigDependency _name a ) -> a ) >$< intervalVersionRange )
         ]
     )
 

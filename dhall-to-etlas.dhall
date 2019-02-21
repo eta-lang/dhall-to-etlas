@@ -28,7 +28,7 @@ let deps =
       , Diff =
           pkgVer "Diff" "0.3.4" "0.4"
       , base =
-          pkgVer "base" "4.5" "5"
+          pkg "base" (prelude.intervalsVersionRange ["[4.5,5)"]) -- pkgVer "base" "4.5" "5"
       , bytestring =
           pkgVer "bytestring" "0.10" "0.11"
       , containers =
@@ -335,7 +335,7 @@ in    prelude.utils.GitHub-project
                 , type =
                     types.TestType.exitcode-stdio { main-is = "GoldenTests.hs" }
                 , default-language =
-                    Haskell2010
+                    Some (types.Language.Haskell2010 {=})
                 }
             )
           , prelude.unconditional.test-suite

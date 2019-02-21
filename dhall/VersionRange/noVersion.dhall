@@ -13,4 +13,5 @@
 → λ(intersectVersionRanges : VersionRange → VersionRange → VersionRange)
 → λ(differenceVersionRanges : VersionRange → VersionRange → VersionRange)
 → λ(invertVersionRange : VersionRange → VersionRange)
+→ λ(intervalsVersionRange : List Text → VersionRange)
 → noVersion

@@ -1,4 +1,5 @@
-  λ(VersionRange : Type)
+  λ(intervals : List Text)
+→ λ(VersionRange : Type)
 → λ(anyVersion : VersionRange)
 → λ(noVersion : VersionRange)
 → λ(thisVersion : ../types/Version.dhall → VersionRange)
@@ -14,4 +15,4 @@
 → λ(differenceVersionRanges : VersionRange → VersionRange → VersionRange)
 → λ(invertVersionRange : VersionRange → VersionRange)
 → λ(intervalsVersionRange : List Text → VersionRange)
-→ anyVersion
+→ intervalsVersionRange intervals
