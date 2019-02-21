@@ -482,7 +482,7 @@ versionIntervals =
     
     extract vis = Cabal.mkVersionIntervals =<< extractIn vis
     
-    expected = Expr.App Expr.List expectedIn
+    expected = expectedIn
 
   in Dhall.Type { .. }
 
