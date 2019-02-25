@@ -29,6 +29,7 @@ module DhallToCabal
   , benchmark
   , foreignLib
   , buildType
+  , versionInterval
   , versionRange
   , version
   , configRecordType
@@ -41,6 +42,7 @@ import Data.List ( partition )
 import Data.Maybe ( fromMaybe )
 import Data.Monoid ( (<>) )
 
+import qualified Control.Exception
 import qualified Data.Text as StrictText
 import qualified Dhall
 import qualified Dhall.Core
@@ -78,7 +80,6 @@ import qualified Dhall.Core as Expr
 import Dhall.Extra
 import DhallToCabal.ConfigTree ( ConfigTree(..), toConfigTree )
 import DhallToCabal.Diff ( Diffable(..)  )
-import Debug.Trace
 
 
 packageIdentifier :: Dhall.RecordType Cabal.PackageIdentifier
@@ -374,7 +375,7 @@ versionRange =
                 `Expr.App` "intersectVersionRanges"
                 `Expr.App` "differenceVersionRanges"
                 `Expr.App` "invertVersionRange"
-                `Expr.App` "intervalVersionRange"
+                `Expr.App` "intervalsVersionRange"
             )
             `asTypeOf` e
         )
@@ -467,8 +468,7 @@ versionRange =
         $ Expr.Pi "intersectVersionRanges" combine
         $ Expr.Pi "differenceVersionRanges" combine
         $ Expr.Pi "invertVersionRange" endoVersionRange
-        $ Expr.Pi
-            "intervalsVersionRange"
+        $ Expr.Pi "intervalsVersionRange"
             versionIntervalsToVersionRange
         $ versionRange
 
@@ -487,11 +487,23 @@ versionIntervals =
   in Dhall.Type { .. }
 
 
+data VersionIntervalParseError = VersionIntervalParseError String
+  deriving ( Show )
+
+instance Control.Exception.Exception VersionIntervalParseError
+
 versionInterval :: Dhall.Type Cabal.VersionInterval
 versionInterval =
   let extract = \case
         Expr.TextLit (Expr.Chunks [] txt) ->
-          Cabal.simpleParse ( StrictText.unpack txt )
+          let str = StrictText.unpack txt
+          in maybe
+               ( Control.Exception.throw
+                 ( VersionIntervalParseError
+                   ( "Unable to parse interval: " ++ str ) ) ) 
+               Just
+               ( Cabal.simpleParse str )
+             
         _ ->
           Nothing
         
