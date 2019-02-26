@@ -1038,14 +1038,19 @@ compilerFlavor =
 intervalVersionRange :: Dhall.InputType Cabal.VersionRange
 intervalVersionRange = Dhall.InputType 
     { Dhall.embed =
-        \vr ->
+        \any@AnyVersion -> viaVersionRange any
+
+         this@(ThisVersion _) -> viaVersionRange this
+                       
+         vr ->
           let vis = Cabal.versionIntervals
                     ( Cabal.toVersionIntervals vr )
               vis' = map ( StrictText.pack . show . Cabal.disp ) vis
 
           in Expr.App ( resolveVersionRange IntervalVersionRange )
                       ( (Dhall.embed Dhall.inject) vis' )
-          
+         where viaVersionRange =  Dhall.embed versionRange
+
     , Dhall.declared = resolveType TypeVersionRange
     }
 
