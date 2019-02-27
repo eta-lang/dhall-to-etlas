@@ -2,6 +2,8 @@
     ./GitHub-project.dhall
 , GitHubTag-project =
     ./GitHubTag-project.dhall
+, default-project =
+    ./default-project.dhall
 , mapBuildInfo =
     ./mapBuildInfo.dhall
 , mapSourceRepos =

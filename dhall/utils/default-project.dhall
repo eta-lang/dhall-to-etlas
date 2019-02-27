@@ -1,6 +1,6 @@
 let Package = ./../types/Package.dhall
 
-let DefaultProject : Type = { owner : Text, repo : Text } ⩓ Package
+let DefaultProject : Type = { owner : Text } ⩓ Package
 
 let gitHubTag-project = ./GitHubTag-project.dhall
 
@@ -10,7 +10,9 @@ let default-project
     : DefaultProject → Package
     =   λ(project : DefaultProject)
       →   gitHubTag-project
-          (project.{ owner, repo } ⫽ { version = vToText project.version })
+          (   project.{ owner }
+            ⫽ { repo = project.name, version = vToText project.version }
+          )
         ⫽ project.{ author
                   , benchmarks
                   , bug-reports
