@@ -4,19 +4,13 @@ let DefaultProject : Type = { owner : Text, repo : Text } ⩓ Package
 
 let gitHubTag-project = ./GitHubTag-project.dhall
 
-let Version = ./../types/Version.dhall
+let vToText = ./../Version/toText.dhall
 
-let id = λ(a : Type) → λ(x : a) → x
-
-let extractVersion : Version → Text = λ(v : Version) → v Text (id Text)
-
-let defaultProject
+let default-project
     : DefaultProject → Package
     =   λ(project : DefaultProject)
       →   gitHubTag-project
-          (   project.{ owner, repo }
-            ⫽ { version = extractVersion project.version }
-          )
+          (project.{ owner, repo } ⫽ { version = vToText project.version })
         ⫽ project.{ author
                   , benchmarks
                   , bug-reports
@@ -51,4 +45,4 @@ let defaultProject
                   , x-fields
                   }
 
-in  defaultProject
+in  default-project
