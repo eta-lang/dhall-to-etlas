@@ -1039,21 +1039,23 @@ intervalVersionRange :: Dhall.InputType Cabal.VersionRange
 intervalVersionRange = Dhall.InputType 
     { Dhall.embed =
         \case
-          any@Cabal.AnyVersion -> viaVersionRange any
+          and@(Cabal.IntersectVersionRanges _ _) ->
+            viaInterval and
 
-          this@(Cabal.ThisVersion _) -> viaVersionRange this
-                       
-          vr ->
-            let vis = Cabal.versionIntervals
-                      ( Cabal.toVersionIntervals vr )
-                vis' = map ( StrictText.pack . show . Cabal.disp ) vis
+          or@(Cabal.UnionVersionRanges _ _) ->
+            viaInterval or
 
-            in Expr.App ( resolveVersionRange IntervalVersionRange )
-                        ( (Dhall.embed Dhall.inject) vis' )
+          vr -> Dhall.embed versionRange vr
     
     , Dhall.declared = resolveType TypeVersionRange
     }
-    where viaVersionRange = Dhall.embed versionRange
+    where viaInterval vr =
+             let vis = Cabal.versionIntervals
+                      ( Cabal.toVersionIntervals vr )
+                 vis' = map ( StrictText.pack . show . Cabal.disp ) vis
+
+             in Expr.App ( resolveVersionRange IntervalVersionRange )
+                         ( (Dhall.embed Dhall.inject) vis' )
 
 versionRange :: Dhall.InputType Cabal.VersionRange
 versionRange =
