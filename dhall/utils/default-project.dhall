@@ -1,6 +1,6 @@
 let Guarded = ./../types/Guarded.dhall
 
-let Package = ./../types/package.dhall
+let Package = ./../types/Package.dhall
 
 let DefaultProject =
       { repo-owner :
@@ -38,7 +38,7 @@ let default-project
     =   λ(project : DefaultProject)
       →   gitHubTag-project
           (   project.{ version }
-           ⫽ { owner = project.repo-owner ,repo = project.name }
+            ⫽ { owner = project.repo-owner, repo = project.name }
           )
         ⫽ project.{ author
                   , category
