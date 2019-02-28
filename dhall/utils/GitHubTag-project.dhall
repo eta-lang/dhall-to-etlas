@@ -18,7 +18,10 @@ let gitHubTag-project =
         λ(github : GitHubTagProject)
       → let project = ./GitHub-project.dhall github.{ owner, repo }
         
-        let projectV = project ⫽ { version = v github.version }
+        let projectV = project
+        ⫽ { version = v github.version
+           , package-url = project.homepage
+           }
         
         in  setTag github.version projectV
 

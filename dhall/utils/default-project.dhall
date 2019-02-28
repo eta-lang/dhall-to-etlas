@@ -1,50 +1,56 @@
-let Package = ./../types/Package.dhall
+let Guarded = ./../types/Guarded.dhall
 
-let DefaultProject : Type = { owner : Text } ⩓ Package
+let Package = ./../types/package.dhall
+
+let DefaultProject =
+      { repo-owner :
+          Text
+      , author :
+          Text
+      , category :
+          Text
+      , description :
+          Text
+      , executables :
+          List { executable : Guarded ./../types/Executable.dhall, name : Text }
+      , extra-source-files :
+          List Text
+      , library :
+          Optional (Guarded ./../types/Library.dhall)
+      , license :
+          ./../types/License.dhall
+      , license-files :
+          List Text
+      , maintainer :
+          Text
+      , name :
+          Text
+      , test-suites :
+          List { name : Text, test-suite : Guarded ./../types/TestSuite.dhall }
+      , version :
+          Text
+      }
 
 let gitHubTag-project = ./GitHubTag-project.dhall
-
-let vToText = ./../Version/toText.dhall
 
 let default-project
     : DefaultProject → Package
     =   λ(project : DefaultProject)
       →   gitHubTag-project
-          (   project.{ owner }
-            ⫽ { repo = project.name, version = vToText project.version }
+          (   project.{ version }
+            ⫽ { owner = project.repo-owner, repo = project.name }
           )
         ⫽ project.{ author
-                  , benchmarks
-                  , bug-reports
-                  , build-type
-                  , cabal-version
                   , category
-                  , copyright
-                  , custom-setup
-                  , data-dir
-                  , data-files
                   , description
                   , executables
-                  , extra-doc-files
                   , extra-source-files
-                  , extra-tmp-files
-                  , flags
-                  , foreign-libraries
-                  , homepage
                   , library
                   , license
                   , license-files
                   , maintainer
                   , name
-                  , package-url
-                  , source-repos
-                  , stability
-                  , sub-libraries
-                  , synopsis
                   , test-suites
-                  , tested-with
-                  , version
-                  , x-fields
                   }
 
 in  default-project
