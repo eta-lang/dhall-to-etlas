@@ -7,49 +7,35 @@
 , anyOfVersions =
     ./VersionRange/anyOfVersions.dhall
 , earlierVersion =
-    ./VersionRange/earlierVersion.dhall 
+    ./VersionRange/earlierVersion.dhall
 , orEarlierVersion =
-    ./VersionRange/orEarlierVersion.dhall 
+    ./VersionRange/orEarlierVersion.dhall
 , intersectVersionRanges =
-    ./VersionRange/intersectVersionRanges.dhall 
+    ./VersionRange/intersectVersionRanges.dhall
 , unionVersionRanges =
-    ./VersionRange/unionVersionRanges.dhall 
+    ./VersionRange/unionVersionRanges.dhall
 , majorBoundVersion =
-    ./VersionRange/majorBoundVersion.dhall 
+    ./VersionRange/majorBoundVersion.dhall
 , orLaterVersion =
-    ./VersionRange/orLaterVersion.dhall 
+    ./VersionRange/orLaterVersion.dhall
 , laterVersion =
-    ./VersionRange/laterVersion.dhall 
+    ./VersionRange/laterVersion.dhall
 , thisVersion =
-    ./VersionRange/thisVersion.dhall 
+    ./VersionRange/thisVersion.dhall
 , notThisVersion =
-    ./VersionRange/notThisVersion.dhall 
+    ./VersionRange/notThisVersion.dhall
 , withinVersion =
     ./VersionRange/withinVersion.dhall
 , intervalsVersionRange =
     ./VersionRange/intervalsVersionRange.dhall
 , v =
-    ./Version/v.dhall 
+    ./Version/v.dhall
 , noVersion =
-    ./VersionRange/noVersion.dhall 
+    ./VersionRange/noVersion.dhall
 , utils =
     ./utils/package.dhall
 , unconditional =
     ./unconditional.dhall
 , SPDX =
-    { license =
-        ./SPDX/license.dhall
-    , licenseVersionOrLater =
-        ./SPDX/licenseVersionOrLater.dhall
-    , ref =
-        ./SPDX/ref.dhall
-    , refWithFile =
-        ./SPDX/refWithFile.dhall
-    , and =
-        ./SPDX/and.dhall
-    , or =
-        ./SPDX/or.dhall
-    , noException =
-        None ./types/SPDX/LicenseExceptionId.dhall
-    }
+    ./SPDX/package.dhall
 }
