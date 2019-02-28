@@ -9,8 +9,6 @@ let DefaultProject =
           Text
       , category :
           Text
-      , description :
-          Text
       , executables :
           List { executable : Guarded ./../types/Executable.dhall, name : Text }
       , extra-source-files :
@@ -25,6 +23,8 @@ let DefaultProject =
           Text
       , name :
           Text
+      , synopsis :
+          Text
       , test-suites :
           List { name : Text, test-suite : Guarded ./../types/TestSuite.dhall }
       , version :
@@ -38,11 +38,10 @@ let default-project
     =   λ(project : DefaultProject)
       →   gitHubTag-project
           (   project.{ version }
-            ⫽ { owner = project.repo-owner, repo = project.name }
+           ⫽ { owner = project.repo-owner ,repo = project.name }
           )
         ⫽ project.{ author
                   , category
-                  , description
                   , executables
                   , extra-source-files
                   , library
@@ -50,6 +49,7 @@ let default-project
                   , license-files
                   , maintainer
                   , name
+                  , synopsis
                   , test-suites
                   }
 
