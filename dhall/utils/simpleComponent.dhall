@@ -34,7 +34,14 @@ let benchmark
       → uncond.benchmark
         benchmark.name
         (   defaultBenchmark
-          ⫽ benchmark.{ build-depends, main-is, hs-source-dirs }
+          ⫽ benchmark.{ build-depends
+                      , compiler-options
+                      , hs-source-dirs
+                      , java-sources
+                      , main-is
+                      , maven-depends
+                      , other-modules
+                      }
         )
 
 let executable
@@ -43,7 +50,14 @@ let executable
       → uncond.executable
         executable.name
         (   defaultExecutable
-          ⫽ executable.{ build-depends, main-is, hs-source-dirs }
+          ⫽ executable.{ build-depends
+                       , compiler-options
+                       , hs-source-dirs
+                       , java-sources
+                       , main-is
+                       , maven-depends
+                       , other-modules
+                       }
         )
 
 let library
@@ -56,7 +70,13 @@ let test-suite
       → uncond.test-suite
         testSuite.name
         (   defaultTestSuite
-          ⫽ testSuite.{ build-depends, hs-source-dirs }
+          ⫽ testSuite.{ build-depends
+                      , compiler-options
+                      , hs-source-dirs
+                      , java-sources
+                      , maven-depends
+                      , other-modules
+                      }
           ⫽ { type = ty.TestType.exitcode-stdio testSuite.{ main-is } }
         )
 
