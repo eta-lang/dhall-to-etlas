@@ -2,6 +2,23 @@ let unconditional
     : ∀(A : Type) → A → ./types/Guarded.dhall A
     = λ(A : Type) → λ(a : A) → λ(_ : ./types/Config.dhall) → a
 
+let benchmark
+    :   ∀(name : Text)
+      → ∀(executable : ./types/Benchmark.dhall)
+      → { name :
+            Text
+        , benchmark :
+            ./types/Guarded.dhall ./types/Benchmark.dhall
+        }
+    =   λ(name : Text)
+      → λ(benchmark : ./types/Benchmark.dhall)
+      → { name =
+            name
+        , benchmark =
+            unconditional ./types/Benchmark.dhall benchmark
+        }
+
+
 let executable
     :   ∀(name : Text)
       → ∀(executable : ./types/Executable.dhall)
@@ -40,4 +57,8 @@ let test-suite
             unconditional ./types/TestSuite.dhall test-suite
         }
 
-in  { executable = executable, library = library, test-suite = test-suite }
+in  { benchmark = benchmark
+    , executable = executable
+    , library = library
+    , test-suite = test-suite
+    }
