@@ -12,8 +12,8 @@
     ./resetBuildInfo.dhall
 , resetComponent =
     ./resetComponent.dhall
-, simple-component =
-    ./simple-component.dhall
+, simpleComponent =
+    ./simpleComponent.dhall
 , toBuildInfo =
     ./toBuildInfo.dhall
 }
