@@ -331,6 +331,10 @@ generaliseDeclared :: Dhall.InputType t -> Expr.Expr s a
 generaliseDeclared =
   Dhall.Core.denote . fmap Dhall.TypeCheck.absurd . Dhall.declared
 
+generaliseEmbed :: Dhall.InputType t -> t -> Expr.Expr s a
+generaliseEmbed a =
+  Dhall.Core.denote . fmap Dhall.TypeCheck.absurd . ( Dhall.embed a )
+
 
 compilerOptionsDefault :: Default s a
 compilerOptionsDefault _resolve =
@@ -415,8 +419,7 @@ defaultExtensions :: Expr.Expr s a
 defaultExtensions =
   Expr.ListLit ( Just ( generaliseDeclared extension ) )
                ( fmap ( generaliseEmbed extension ) ( Seq.fromList cabalExts ) )
-  where generaliseEmbed a = Dhall.Core.denote . fmap Dhall.TypeCheck.absurd . ( Dhall.embed a )
-        cabalExts = 
+  where cabalExts = 
           map Cabal.EnableExtension
             [ Cabal.BangPatterns
             , Cabal.DataKinds
@@ -463,9 +466,8 @@ benchmarkDefault = buildInfoDefault
 testSuiteDefault :: Default s a
 testSuiteDefault = buildInfoDefault
 
-
 executableDefault :: Default s a
-executableDefault resolve = buildInfoDefault resolve
+executableDefault = buildInfoDefault
 {--
 executableDefault resolve = buildInfoDefault resolve <> specificFields
   where
@@ -1206,6 +1208,9 @@ buildType =
             ( buildTypeType `Expr.Field` "Make" )
             ( Expr.RecordLit mempty )
 
+        Cabal.UnknownBuildType unknown ->
+           error ( "Unable to embed Cabal.UnknownBuildType " ++ unknown ) 
+        
     , Dhall.declared = buildTypeType
     }
   where buildTypeType = resolveType TypeBuildType
