@@ -33,7 +33,7 @@ let SimpleGithubProject =
 
 let gitHubTag-project = ./GitHubTag-project.dhall
 
-let simple-GitHub-project
+let GitHubTag-simple-project
     : SimpleGithubProject → Package
     =   λ(project : SimpleGithubProject)
       →   gitHubTag-project
@@ -53,4 +53,4 @@ let simple-GitHub-project
                   , test-suites
                   }
 
-in  simple-GitHub-project
+in  GitHubTag-simple-project

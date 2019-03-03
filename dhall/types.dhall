@@ -56,6 +56,8 @@
     ./types/SetupBuildInfo.dhall
 , SPDX =
     ./types/SPDX.dhall
+, SimpleBuildInfo =
+    ./types/SimpleBuildInfo.dhall
 , SourceRepo =
     ./types/SourceRepo.dhall
 , TestSuite =

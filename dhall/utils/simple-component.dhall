@@ -2,16 +2,13 @@ let ty = ../types.dhall
 
 let Guarded = ./../types/Guarded.dhall
 
-let SimpleBuildInfo =
-      { build-depends : List ty.Dependency, hs-source-dirs : List Text }
-
-let SimpleLibrary = SimpleBuildInfo ⩓ { exposed-modules : List Text }
+let SimpleLibrary = ty.SimpleBuildInfo ⩓ { exposed-modules : List Text }
 
 let PackageLibrary = Optional (Guarded ty.Library)
 
 let defaultLibrary = ./../defaults/Library.dhall
 
-let SimpleExecutable = SimpleBuildInfo ⩓ { name : Text, main-is : Text }
+let SimpleExecutable = ty.SimpleBuildInfo ⩓ { name : Text, main-is : Text }
 
 let SimpleBenchmark = SimpleExecutable
 

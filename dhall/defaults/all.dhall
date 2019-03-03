@@ -8,6 +8,8 @@
     ./Executable.dhall
 , Package =
     ./Package.dhall
+, SimpleBuildInfo =
+    ./SimpleBuildInfo.dhall
 , SourceRepo =
     ./SourceRepo.dhall
 , TestSuite =
