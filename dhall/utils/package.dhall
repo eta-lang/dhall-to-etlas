@@ -2,8 +2,8 @@
     ./GitHub-project.dhall
 , GitHubTag-project =
     ./GitHubTag-project.dhall
-, default-project =
-    ./default-project.dhall
+, GitHubTag-simple-project =
+    ./GitHubTag-simple-project.dhall
 , mapBuildInfo =
     ./mapBuildInfo.dhall
 , mapSourceRepos =
@@ -12,6 +12,8 @@
     ./resetBuildInfo.dhall
 , resetComponent =
     ./resetComponent.dhall
+, simple-component =
+    ./simple-component.dhall
 , toBuildInfo =
     ./toBuildInfo.dhall
 }
