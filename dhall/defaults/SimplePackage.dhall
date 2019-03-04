@@ -8,6 +8,6 @@
                   , license
                   , license-files
                   , maintainer
-                  , synopsys
+                  , synopsis
                   , test-suites
                   }
