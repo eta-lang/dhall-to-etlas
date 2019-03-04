@@ -58,6 +58,8 @@
     ./types/SPDX.dhall
 , SimpleBuildInfo =
     ./types/SimpleBuildInfo.dhall
+, SimplePackage =
+    ./types/SimplePackage.dhall
 , SourceRepo =
     ./types/SourceRepo.dhall
 , TestSuite =

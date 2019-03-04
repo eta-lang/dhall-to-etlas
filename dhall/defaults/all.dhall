@@ -10,6 +10,8 @@
     ./Package.dhall
 , SimpleBuildInfo =
     ./SimpleBuildInfo.dhall
+, SimplePackage =
+    ./SimplePackage.dhall
 , SourceRepo =
     ./SourceRepo.dhall
 , TestSuite =
