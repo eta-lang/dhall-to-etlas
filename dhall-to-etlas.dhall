@@ -1,6 +1,8 @@
-let prelude = ./dhall/prelude.dhall
+let prelude =
+      https://raw.githubusercontent.com/dhall-lang/dhall-to-cabal/master/dhall/prelude.dhall sha256:a2374478ca4c8e3d783ad6715481872a68f5edc2e548d80784ad2f01c86ab71c
 
-let types = ./dhall/types.dhall
+let types =
+      https://raw.githubusercontent.com/dhall-lang/dhall-to-cabal/master/dhall/types.dhall sha256:a4650e83aece26287ffb8bd0d9698df65853ff63509bb3dc947fde7199964ab9
 
 let v = prelude.v
 
@@ -28,7 +30,7 @@ let deps =
       , Diff =
           pkgVer "Diff" "0.3.4" "0.4"
       , base =
-          pkg "base" (prelude.intervalsVersionRange ["[4.5,5)"]) -- pkgVer "base" "4.5" "5"
+          pkgVer "base" "4.5" "5"
       , bytestring =
           pkgVer "bytestring" "0.10" "0.11"
       , containers =
@@ -104,76 +106,15 @@ in    prelude.utils.GitHub-project
       , extra-source-files =
           [ "Changelog.md"
           , "README.md"
-          , "dhall/SPDX/and.dhall"
-          , "dhall/SPDX/license.dhall"
-          , "dhall/SPDX/licenseVersionOrLater.dhall"
-          , "dhall/SPDX/or.dhall"
-          , "dhall/SPDX/ref.dhall"
-          , "dhall/SPDX/refWithFile.dhall"
-          , "dhall/Version/v.dhall"
-          , "dhall/VersionRange/anyVersion.dhall"
-          , "dhall/VersionRange/differenceVersionRanges.dhall"
-          , "dhall/VersionRange/earlierVersion.dhall"
-          , "dhall/VersionRange/intersectVersionRanges.dhall"
-          , "dhall/VersionRange/invertVersionRange.dhall"
-          , "dhall/VersionRange/laterVersion.dhall"
-          , "dhall/VersionRange/majorBoundVersion.dhall"
-          , "dhall/VersionRange/noVersion.dhall"
-          , "dhall/VersionRange/notThisVersion.dhall"
-          , "dhall/VersionRange/orEarlierVersion.dhall"
-          , "dhall/VersionRange/orLaterVersion.dhall"
-          , "dhall/VersionRange/thisVersion.dhall"
-          , "dhall/VersionRange/unionVersionRanges.dhall"
-          , "dhall/VersionRange/withinVersion.dhall"
-          , "dhall/defaults/Benchmark.dhall"
-          , "dhall/defaults/BuildInfo.dhall"
-          , "dhall/defaults/CompilerOptions.dhall"
-          , "dhall/defaults/Executable.dhall"
-          , "dhall/defaults/Library.dhall"
-          , "dhall/defaults/Package.dhall"
-          , "dhall/defaults/SourceRepo.dhall"
-          , "dhall/defaults/TestSuite.dhall"
-          , "dhall/prelude.dhall"
-          , "dhall/types.dhall"
-          , "dhall/types/Arch.dhall"
-          , "dhall/types/Benchmark.dhall"
-          , "dhall/types/BuildInfo.dhall"
-          , "dhall/types/BuildType.dhall"
-          , "dhall/types/Compiler.dhall"
-          , "dhall/types/CompilerOptions.dhall"
-          , "dhall/types/Config.dhall"
-          , "dhall/types/CustomSetup.dhall"
-          , "dhall/types/Dependency.dhall"
-          , "dhall/types/Executable.dhall"
-          , "dhall/types/Extension.dhall"
-          , "dhall/types/Flag.dhall"
-          , "dhall/types/ForeignLibrary.dhall"
-          , "dhall/types/Guarded.dhall"
-          , "dhall/types/Language.dhall"
-          , "dhall/types/Library.dhall"
-          , "dhall/types/License.dhall"
-          , "dhall/types/Mixin.dhall"
-          , "dhall/types/ModuleRenaming.dhall"
-          , "dhall/types/OS.dhall"
-          , "dhall/types/Package.dhall"
-          , "dhall/types/RepoKind.dhall"
-          , "dhall/types/RepoType.dhall"
-          , "dhall/types/SPDX.dhall"
-          , "dhall/types/SPDX/LicenseExceptionId.dhall"
-          , "dhall/types/SPDX/LicenseId.dhall"
-          , "dhall/types/Scope.dhall"
-          , "dhall/types/SetupBuildInfo.dhall"
-          , "dhall/types/SourceRepo.dhall"
-          , "dhall/types/TestSuite.dhall"
-          , "dhall/types/TestType.dhall"
-          , "dhall/types/Version.dhall"
-          , "dhall/types/VersionRange.dhall"
-          , "dhall/types/builtin.dhall"
-          , "dhall/unconditional.dhall"
-          , "dhall/utils/GitHub-project.dhall"
-          , "dhall/utils/majorVersions.dhall"
-          , "dhall/utils/mapSourceRepos.dhall"
-          , "dhall/utils/package.dhall"
+          , "dhall/*.dhall"
+          , "dhall/defaults/*.dhall"
+          , "dhall/Dependency/*.dhall"
+          , "dhall/SPDX/*.dhall"
+          , "dhall/types/*.dhall"
+          , "dhall/utils/*.dhall"
+          , "dhall/Version/*.dhall"
+          , "dhall/VersionRange/*.dhall"
+          , "dhall/types/SPDX/*.dhall"
           , "golden-tests/dhall-to-cabal/*.dhall"
           , "golden-tests/dhall-to-cabal/*.cabal"
           , "golden-tests/cabal-to-dhall/*.dhall"
@@ -184,7 +125,7 @@ in    prelude.utils.GitHub-project
       , license-files =
           [ "LICENSE" ]
       , version =
-          v "1.3.2.0"
+          v "1.4.0.0"
       , library =
           prelude.unconditional.library
           (   prelude.defaults.Library
