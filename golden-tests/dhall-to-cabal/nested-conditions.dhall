@@ -12,7 +12,7 @@ in    prelude.defaults.Package
       , library =
           Some
           (   λ(config : types.Config)
-            →   prelude.defaults.Library
+            →    prelude.utils.resetComponent.library prelude.defaults.Library
               ⫽ { compiler-options =
                       prelude.defaults.CompilerOptions
                     ⫽ { GHC =
