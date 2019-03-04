@@ -503,13 +503,8 @@ packageDefault resolve = fields
       , emptyListDefault "flags" ( generaliseDeclared flag )
       , emptyListDefault "benchmarks" ( named "benchmark" benchmark )
       , textFieldDefault "bug-reports" ""
-      , ( "build-type"
-        , ( Expr.Some
-            ( Expr.App
-              ( resolveType TypeBuildType `Expr.Field` "Simple" )
-              ( Expr.RecordLit mempty )
-            )
-          )
+      , ( "build-type" 
+        , generaliseEmbed ( maybeToDhall buildType ) ( Just Cabal.Simple )
         )
       , ( "cabal-version"
         , Expr.App
