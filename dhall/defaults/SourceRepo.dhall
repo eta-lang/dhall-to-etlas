@@ -14,7 +14,7 @@ in  { type =
     , subdir =
         None Text
     , kind =
-        types.RepoKind.RepoThis {=}
+        types.RepoKind.RepoHead {=}
     , commit =
         None Text
     }

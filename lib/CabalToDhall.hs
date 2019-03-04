@@ -571,9 +571,7 @@ sourceRepoDefault _ = fields
       , emptyOptionalDefault "tag" Expr.Text
       , emptyOptionalDefault "subdir" Expr.Text
       , ( "kind"
-        , Expr.App
-            ( resolveType TypeRepoKind `Expr.Field` "RepoThis" )
-            ( Expr.RecordLit mempty )
+        , generaliseEmbed repoKind Cabal.RepoHead
         )
       , emptyOptionalDefault "commit" Expr.Text
       ]
