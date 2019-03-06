@@ -22,9 +22,9 @@ in    prelude.defaults.Package
           ]
       , library =
           Some
-          ( prelude.utils.resetComponent.library
-            (   λ(config : types.Config)
-              →       if config.impl
+          (   λ(config : types.Config)
+            → prelude.utils.resetComponent.library
+              (       if config.impl
                          (types.Compiler.GHC {=})
                          (prelude.orLaterVersion (prelude.v "0.0.9"))
                 
@@ -46,6 +46,6 @@ in    prelude.defaults.Package
                       ⫽ { cpp-options = [ "-DWAI_SERVLET_DEBUG" ] }
                 
                 else  prelude.defaults.Library
-            )
+              )
           )
       }

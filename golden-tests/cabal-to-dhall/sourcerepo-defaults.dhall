@@ -7,8 +7,10 @@ in    prelude.defaults.Package
           "test"
       , version =
           prelude.v "0"
-      , license =
-          types.License.Unspecified {=}
+      , build-type =
+          None types.BuildType
+      , cabal-version =
+          prelude.v "2.2"
       , source-repos =
           [   prelude.defaults.SourceRepo
             ⫽ { type =

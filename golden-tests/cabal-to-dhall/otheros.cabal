@@ -5,6 +5,7 @@ version: 0
 library
   exposed-modules:
     A
+  default-language: Haskell2010                
   if os(multics)
     exposed-modules:
       B
