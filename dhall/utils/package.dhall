@@ -10,8 +10,6 @@
     ./mapSourceRepos.dhall
 , resetBuildInfo =
     ./resetBuildInfo.dhall
-, resetComponent =
-    ./resetComponent.dhall
 , simpleComponent =
     ./simpleComponent.dhall
 , toBuildInfo =

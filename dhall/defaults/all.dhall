@@ -6,6 +6,8 @@
     ./Benchmark.dhall
 , Executable =
     ./Executable.dhall
+, empty =
+    ./empty.dhall
 , Package =
     ./Package.dhall
 , SimpleBuildInfo =
