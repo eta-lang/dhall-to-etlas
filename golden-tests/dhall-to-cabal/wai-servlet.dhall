@@ -60,7 +60,7 @@ in  updateRepo
             ]
         , library =
             [   λ(config : types.Config)
-              →   prelude.utils.resetComponent.library prelude.defaults.Library
+              →   prelude.defaults.empty.Library
                 ⫽ { exposed-modules =
                       [ "Network.Wai.Servlet", "Network.Wai.Servlet.Examples" ]
                   , other-modules =

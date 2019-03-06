@@ -7,6 +7,6 @@ in    prelude.defaults.Package
           "test"
       , version =
           prelude.v "1.0"
-      , license =
-          types.License.Unspecified {=}
+      , cabal-version =
+          prelude.v "2.2"
       }

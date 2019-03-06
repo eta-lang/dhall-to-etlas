@@ -12,8 +12,5 @@ in    prelude.defaults.Package
       , license =
           types.License.AllRightsReserved {=}
       , library =
-          prelude.unconditional.library
-          ( prelude.utils.resetComponent.library
-            prelude.defaults.Library
-          )
+          prelude.unconditional.library prelude.defaults.empty.Library
       }

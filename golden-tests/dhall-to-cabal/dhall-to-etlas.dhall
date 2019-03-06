@@ -184,7 +184,7 @@ in    prelude.utils.GitHub-project
           v "1.12"
       , library =
           prelude.unconditional.library
-          (   prelude.defaults.Library
+          (   prelude.defaults.empty.Library
             ⫽ { build-depends =
                   [ deps.etlas-cabal
                   , deps.base
@@ -225,7 +225,7 @@ in    prelude.utils.GitHub-project
       , executables =
           [ prelude.unconditional.executable
             "dhall-to-etlas"
-            (   prelude.defaults.Executable
+            (   prelude.defaults.empty.Executable
               ⫽ { build-depends =
                     [ deps.etlas-cabal
                     , deps.base
@@ -253,7 +253,7 @@ in    prelude.utils.GitHub-project
             )
           , prelude.unconditional.executable
             "etlas-to-dhall"
-            (   prelude.defaults.Executable
+            (   prelude.defaults.empty.Executable
               ⫽ { build-depends =
                     [ deps.base
                     , deps.dhall
@@ -279,7 +279,7 @@ in    prelude.utils.GitHub-project
             )
           , prelude.unconditional.executable
             "dhall-to-cabal-meta"
-            (   prelude.defaults.Executable
+            (   prelude.defaults.empty.Executable
               ⫽ { build-depends =
                     [ deps.base
                     , deps.directory
@@ -303,7 +303,7 @@ in    prelude.utils.GitHub-project
       , test-suites =
           [ prelude.unconditional.test-suite
             "golden-tests"
-            (   prelude.defaults.TestSuite
+            (   prelude.defaults.empty.TestSuite
               ⫽ { build-depends =
                     [ deps.base
                     , deps.etlas-cabal

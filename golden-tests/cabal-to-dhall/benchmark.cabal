@@ -1,7 +1,8 @@
 cabal-version: 2.0
 name: blah
 version: 1
-
+build-type: Simple
+            
 benchmark fancy-benchmark
   type: exitcode-stdio-1.0
   main-is: Main.hs

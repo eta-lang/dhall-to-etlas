@@ -58,7 +58,7 @@ in  updateRepo
             "Experimental"
         , library =
             prelude.unconditional.library
-            (   prelude.defaults.Library
+            (   prelude.defaults.empty.Library
               ⫽ { exposed-modules =
                     [ "Network.Wai.Servlet.Handler.Jetty" ]
                 , hs-source-dirs =
@@ -76,7 +76,7 @@ in  updateRepo
         , executables =
             [ prelude.unconditional.executable
               "wai-servlet-jetty-example"
-              (   prelude.defaults.Executable
+              (   prelude.defaults.empty.Executable
                 ⫽ { build-depends =
                       commonDeps # [ pkgAnyVer "wai-servlet-handler-jetty" ]
                   , hs-source-dirs =

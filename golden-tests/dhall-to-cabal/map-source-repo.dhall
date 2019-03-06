@@ -19,8 +19,7 @@ in  updateRepo
                   "foo"
               , executable =
                     λ(config : types.Config)
-                  → prelude.utils.resetComponent.executable
-                    (prelude.defaults.Executable ⫽ { main-is = "Main.hs" })
+                  → prelude.defaults.empty.Executable ⫽ { main-is = "Main.hs" }
               }
             ]
         }

@@ -8,8 +8,7 @@
             "foo"
         , executable =
               λ(config : ../../dhall/types/Config.dhall)
-            →   (../../utils/resetComponent.dhall).library
-                ../../dhall/defaults/Executable.dhall
+            →   (../../dhall/defaults/empty.dhall).Executable
               ⫽ { main-is = "Main.hs" }
         }
       ]
