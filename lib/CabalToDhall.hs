@@ -282,8 +282,7 @@ getDefault typesLoc resolve typ = withTypesImport expr
                   ( resolve ( PreludeDefault BuildInfo ) )
                   ( Expr.RecordLit ( Map.difference fields shared ) )
 
-    expr =
-      case typ of
+    expr =      case typ of
         CompilerOptions ->
           Expr.RecordLit ( compilerOptionsDefault resolve )
         BuildInfo ->
@@ -374,7 +373,6 @@ buildInfoDefault resolve = fields
       , emptyListDefault "cc-options" Expr.Text
       , ( "compiler-options", resolve ( PreludeDefault CompilerOptions ) )
       , emptyListDefault "cpp-options" Expr.Text
---      , emptyListDefault "default-extensions" ( generaliseDeclared extension )
       , ( "default-extensions" , defaultExtensions )
       , ( "default-language"
         , Expr.Some
@@ -386,6 +384,7 @@ buildInfoDefault resolve = fields
       , emptyListDefault "extra-framework-dirs" Expr.Text
       , emptyListDefault "extra-ghci-libraries" Expr.Text
       , emptyListDefault "extra-lib-dirs" Expr.Text
+--      , emptyListDefault "extra-libraries" Expr.Text
       , emptyListDefault "maven-depends" Expr.Text
       , emptyListDefault "frameworks" Expr.Text
       , emptyListDefault "hs-source-dirs" Expr.Text
@@ -1364,37 +1363,21 @@ os =
   Dhall.InputType
     { Dhall.embed = \case
         Cabal.Linux      -> os "Linux"
-
         Cabal.Windows    -> os "Windows"
-
         Cabal.OSX        -> os "OSX"
-
         Cabal.FreeBSD    -> os "FreeBSD"
-
         Cabal.OpenBSD    -> os "OpenBSD"
-
         Cabal.NetBSD     -> os "NetBSD"
-
         Cabal.DragonFly  -> os "DragonFly"
-
         Cabal.Solaris    -> os "Solaris"
-
         Cabal.AIX        -> os "AIX"
-
         Cabal.HPUX       -> os "HPUX"
-
         Cabal.IRIX       -> os "IRIX"
-
         Cabal.HaLVM      -> os "HaLVM"
-
         Cabal.Hurd       -> os "Hurd"
-
         Cabal.IOS        -> os "IOS"
-
         Cabal.Android    -> os "Android"
-
         Cabal.Ghcjs      -> os "Ghcjs"
-
         Cabal.OtherOS os ->
             appOS "OtherOS"
             ( Expr.RecordLit ( Map.singleton "_1" ( dhallString os ) ) )
@@ -1451,7 +1434,8 @@ buildInfoRecord =
     , recordField "other-languages" ( contramap Cabal.otherLanguages ( listOf language ) )
     , recordField "default-extensions" ( Cabal.defaultExtensions >$< listOf extension )
     , recordField "other-extensions" ( Cabal.otherExtensions >$< listOf extension )
-    , recordField "extra-libraries" ( Cabal.extraLibs >$< listOf stringToDhall )
+--    , recordField "extra-libraries" ( Cabal.extraLibs >$< listOf stringToDhall )
+    , recordField "maven-depends" ( Cabal.extraLibs >$< listOf stringToDhall )
     , recordField "extra-ghci-libraries" ( Cabal.extraGHCiLibs >$< listOf stringToDhall )
     , recordField "extra-lib-dirs" ( Cabal.extraLibDirs >$< listOf stringToDhall )
     , recordField "include-dirs" ( Cabal.includeDirs >$< listOf stringToDhall )
@@ -1537,15 +1521,21 @@ pkgconfigName =
 
 language :: Dhall.InputType Cabal.Language
 language =
-  ( runUnion
-      ( mconcat
-          [ unionAlt "Haskell2010" ( \x -> case x of Cabal.Haskell2010 -> Just () ; _ -> Nothing ) Dhall.inject
-          , unionAlt "UnknownLanguage" ( \x -> case x of Cabal.UnknownLanguage s -> Just s ; _ -> Nothing ) ( runRecordInputType ( recordField "_1" stringToDhall ) )
-          , unionAlt "Haskell98" ( \x -> case x of Cabal.Haskell98 -> Just () ; _ -> Nothing ) Dhall.inject
-          ]
-      )
-  )
-    { Dhall.declared = resolveType TypeLanguage }
+  Dhall.InputType
+    { Dhall.embed = \case
+        Cabal.Haskell2010 ->
+          lang "Haskell2010" ( Expr.RecordLit mempty )
+        Cabal.Haskell98 ->
+          lang "Haskell98" ( Expr.RecordLit mempty )
+        Cabal.UnknownLanguage s ->
+          lang "UnknownLanguage" ( Dhall.embed pairInputType s ) 
+      
+    , Dhall.declared = langType  
+    }
+  where langType = resolveType TypeLanguage
+        lang name = Expr.App ( langType `Expr.Field` name )
+        pairInputType = runRecordInputType ( recordField "_1" stringToDhall )
+
 
 extension :: Dhall.InputType Cabal.Extension
 extension =
