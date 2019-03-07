@@ -16,6 +16,8 @@ in    prelude.defaults.Package
                     , compiler-options =
                           prelude.defaults.CompilerOptions
                         ⫽ { GHC = [ "-O2" ] : List Text }
+                    , default-extensions =
+                        [] : List types.Extension
                     }
             , name =
                 "fancy-benchmark"

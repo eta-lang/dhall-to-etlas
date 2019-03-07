@@ -1,6 +1,8 @@
 cabal-version: 2.0
 name: blah
 version: 1
-
+build-type: Simple
+            
 executable hello
   main-is: Main.hs
+  default-language: Haskell2010

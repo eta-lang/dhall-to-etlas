@@ -1,6 +1,8 @@
-let prelude = ./../../dhall/prelude.dhall
+let prelude =
+      https://raw.githubusercontent.com/eta-lang/dhall-to-etlas/1.4.0.0/dhall/prelude.dhall
 
-let types = ./../../dhall/types.dhall
+let types =
+      https://raw.githubusercontent.com/eta-lang/dhall-to-etlas/1.4.0.0/dhall/types.dhall
 
 in    prelude.defaults.Package
     ⫽ { name =
@@ -44,20 +46,22 @@ in    prelude.defaults.Package
                           then        if config.flag "wai-servlet-debug"
                                 
                                 then    prelude.defaults.Library
-                                      ⫽ { c-sources =
-                                            [ "java/Utils.java" ]
-                                        , cpp-options =
+                                      ⫽ { cpp-options =
                                             [ "-DINTEROP"
                                             , "-DPURE_JAVA_WITH"
                                             , "-DWAI_SERVLET_DEBUG"
                                             ]
+                                        , default-extensions =
+                                            [] : List types.Extension
+                                        , maven-depends =
+                                            [ "javax.servlet:servlet-api:2.5" ]
                                         }
                                 
                                 else    prelude.defaults.Library
-                                      ⫽ { c-sources =
-                                            [ "java/Utils.java" ]
-                                        , cpp-options =
+                                      ⫽ { cpp-options =
                                             [ "-DINTEROP", "-DPURE_JAVA_WITH" ]
+                                        , default-extensions =
+                                            [] : List types.Extension
                                         }
                           
                           else  if config.flag "wai-servlet-debug"
@@ -68,11 +72,17 @@ in    prelude.defaults.Package
                                       , "-DPURE_JAVA_WITH"
                                       , "-DWAI_SERVLET_DEBUG"
                                       ]
+                                  , default-extensions =
+                                      [] : List types.Extension
+                                  , maven-depends =
+                                      [ "javax.servlet:servlet-api:2.5" ]
                                   }
                           
                           else    prelude.defaults.Library
                                 ⫽ { cpp-options =
                                       [ "-DINTEROP", "-DPURE_JAVA_WITH" ]
+                                  , default-extensions =
+                                      [] : List types.Extension
                                   }
                     
                     else  if config.impl
@@ -85,17 +95,19 @@ in    prelude.defaults.Package
                     then        if config.flag "wai-servlet-debug"
                           
                           then    prelude.defaults.Library
-                                ⫽ { c-sources =
-                                      [ "java/Utils.java" ]
-                                  , cpp-options =
+                                ⫽ { cpp-options =
                                       [ "-DINTEROP", "-DWAI_SERVLET_DEBUG" ]
+                                  , default-extensions =
+                                      [] : List types.Extension
+                                  , maven-depends =
+                                      [ "javax.servlet:servlet-api:2.5" ]
                                   }
                           
                           else    prelude.defaults.Library
-                                ⫽ { c-sources =
-                                      [ "java/Utils.java" ]
-                                  , cpp-options =
+                                ⫽ { cpp-options =
                                       [ "-DINTEROP" ]
+                                  , default-extensions =
+                                      [] : List types.Extension
                                   }
                     
                     else  if config.flag "wai-servlet-debug"
@@ -103,10 +115,18 @@ in    prelude.defaults.Package
                     then    prelude.defaults.Library
                           ⫽ { cpp-options =
                                 [ "-DINTEROP", "-DWAI_SERVLET_DEBUG" ]
+                            , default-extensions =
+                                [] : List types.Extension
+                            , maven-depends =
+                                [ "javax.servlet:servlet-api:2.5" ]
                             }
                     
                     else    prelude.defaults.Library
-                          ⫽ { cpp-options = [ "-DINTEROP" ] }
+                          ⫽ { cpp-options =
+                                [ "-DINTEROP" ]
+                            , default-extensions =
+                                [] : List types.Extension
+                            }
               
               else  if config.impl
                        (types.Compiler.GHC {=})
@@ -122,19 +142,21 @@ in    prelude.defaults.Package
                     then        if config.flag "wai-servlet-debug"
                           
                           then    prelude.defaults.Library
-                                ⫽ { c-sources =
-                                      [ "java/Utils.java" ]
-                                  , cpp-options =
+                                ⫽ { cpp-options =
                                       [ "-DPURE_JAVA_WITH"
                                       , "-DWAI_SERVLET_DEBUG"
                                       ]
+                                  , default-extensions =
+                                      [] : List types.Extension
+                                  , maven-depends =
+                                      [ "javax.servlet:servlet-api:2.5" ]
                                   }
                           
                           else    prelude.defaults.Library
-                                ⫽ { c-sources =
-                                      [ "java/Utils.java" ]
-                                  , cpp-options =
+                                ⫽ { cpp-options =
                                       [ "-DPURE_JAVA_WITH" ]
+                                  , default-extensions =
+                                      [] : List types.Extension
                                   }
                     
                     else  if config.flag "wai-servlet-debug"
@@ -142,10 +164,18 @@ in    prelude.defaults.Package
                     then    prelude.defaults.Library
                           ⫽ { cpp-options =
                                 [ "-DPURE_JAVA_WITH", "-DWAI_SERVLET_DEBUG" ]
+                            , default-extensions =
+                                [] : List types.Extension
+                            , maven-depends =
+                                [ "javax.servlet:servlet-api:2.5" ]
                             }
                     
                     else    prelude.defaults.Library
-                          ⫽ { cpp-options = [ "-DPURE_JAVA_WITH" ] }
+                          ⫽ { cpp-options =
+                                [ "-DPURE_JAVA_WITH" ]
+                            , default-extensions =
+                                [] : List types.Extension
+                            }
               
               else  if config.impl
                        (types.Compiler.GHC {=})
@@ -157,22 +187,29 @@ in    prelude.defaults.Package
               then        if config.flag "wai-servlet-debug"
                     
                     then    prelude.defaults.Library
-                          ⫽ { c-sources =
-                                [ "java/Utils.java" ]
-                            , cpp-options =
+                          ⫽ { cpp-options =
                                 [ "-DWAI_SERVLET_DEBUG" ]
+                            , default-extensions =
+                                [] : List types.Extension
+                            , maven-depends =
+                                [ "javax.servlet:servlet-api:2.5" ]
                             }
                     
                     else    prelude.defaults.Library
-                          ⫽ { c-sources = [ "java/Utils.java" ] }
+                          ⫽ { default-extensions = [] : List types.Extension }
               
               else  if config.flag "wai-servlet-debug"
               
               then    prelude.defaults.Library
-                    ⫽ { cpp-options = [ "-DWAI_SERVLET_DEBUG" ] }
+                    ⫽ { cpp-options =
+                          [ "-DWAI_SERVLET_DEBUG" ]
+                      , default-extensions =
+                          [] : List types.Extension
+                      , maven-depends =
+                          [ "javax.servlet:servlet-api:2.5" ]
+                      }
               
-              else  prelude.defaults.Library
+              else    prelude.defaults.Library
+                    ⫽ { default-extensions = [] : List types.Extension }
           )
-      , license =
-          types.License.Unspecified {=}
       }
