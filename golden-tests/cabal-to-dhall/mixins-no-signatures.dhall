@@ -7,11 +7,15 @@ in    prelude.defaults.Package
           "mixins-test"
       , version =
           prelude.v "0"
+      , cabal-version =
+          prelude.v "2.2"
       , library =
           Some
           (   λ(config : types.Config)
             →   prelude.defaults.Library
-              ⫽ { mixins =
+              ⫽ { default-extensions =
+                    [] : List types.Extension
+                , mixins =
                     [ { package =
                           "foo"
                       , renaming =
@@ -51,6 +55,4 @@ in    prelude.defaults.Package
                     ]
                 }
           )
-      , license =
-          types.License.Unspecified {=}
       }

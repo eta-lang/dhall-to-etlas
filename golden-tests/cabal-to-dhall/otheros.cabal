@@ -1,7 +1,8 @@
 cabal-version: 2.0
 name: test
 version: 0
-
+build-type: Simple
+            
 library
   exposed-modules:
     A

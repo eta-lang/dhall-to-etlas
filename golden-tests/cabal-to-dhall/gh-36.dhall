@@ -1,8 +1,6 @@
-let prelude =
-      https://raw.githubusercontent.com/eta-lang/dhall-to-etlas/1.4.0.0/dhall/prelude.dhall
+let prelude = ./../../dhall/prelude.dhall
 
-let types =
-      https://raw.githubusercontent.com/eta-lang/dhall-to-etlas/1.4.0.0/dhall/types.dhall
+let types = ./../../dhall/types.dhall
 
 in    prelude.defaults.Package
     ⫽ { name =

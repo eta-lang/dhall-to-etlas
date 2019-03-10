@@ -15,10 +15,17 @@ in    prelude.defaults.Package
             →       if config.os (types.OS.OtherOS { _1 = "multics" })
               
               then    prelude.defaults.Library
-                    ⫽ { exposed-modules = [ "A", "B" ] }
+                    ⫽ { default-extensions =
+                          [] : List types.Extension
+                      , exposed-modules =
+                          [ "A", "B" ]
+                      }
               
-              else  prelude.defaults.Library ⫽ { exposed-modules = [ "A" ] }
+              else    prelude.defaults.Library
+                    ⫽ { default-extensions =
+                          [] : List types.Extension
+                      , exposed-modules =
+                          [ "A" ]
+                      }
           )
-      , license =
-          types.License.Unspecified {=}
       }

@@ -13,10 +13,11 @@ in    prelude.defaults.Package
           [ { executable =
                   λ(config : types.Config)
                 →   prelude.defaults.Executable
-                  ⫽ { main-is = "Main.hs"
-                     , default-extensions =
+                  ⫽ { main-is =
+                        "Main.hs"
+                    , default-extensions =
                         [] : List types.Extension
-                     }
+                    }
             , name =
                 "hello"
             }

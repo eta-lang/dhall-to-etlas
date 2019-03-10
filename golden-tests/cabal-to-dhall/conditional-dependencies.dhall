@@ -32,18 +32,18 @@ in    prelude.defaults.Package
                                 , { bounds = prelude.anyVersion, package = "B" }
                                 , { bounds = prelude.anyVersion, package = "C" }
                                 ]
-                             , default-extensions =
+                            , default-extensions =
                                 [] : List types.Extension
-                             }
+                            }
                     
                     else    prelude.defaults.Library
                           ⫽ { build-depends =
                                 [ { bounds = prelude.anyVersion, package = "A" }
                                 , { bounds = prelude.anyVersion, package = "B" }
                                 ]
-                             , default-extensions =
+                            , default-extensions =
                                 [] : List types.Extension
-                             }
+                            }
               
               else  if config.impl
                        (types.Compiler.GHC {=})
@@ -57,15 +57,15 @@ in    prelude.defaults.Package
                           [ { bounds = prelude.anyVersion, package = "A" }
                           , { bounds = prelude.anyVersion, package = "C" }
                           ]
-                       , default-extensions =
+                      , default-extensions =
                           [] : List types.Extension
-                       }
+                      }
               
               else    prelude.defaults.Library
                     ⫽ { build-depends =
                           [ { bounds = prelude.anyVersion, package = "A" } ]
-                       , default-extensions =
+                      , default-extensions =
                           [] : List types.Extension
-                       }
+                      }
           )
       }
