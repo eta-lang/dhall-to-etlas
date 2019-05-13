@@ -513,50 +513,28 @@ buildType =
 
 
 license :: Dhall.Type Cabal.License
-license =
-  makeUnion
-    ( Map.fromList
-        [ ( "GPL", Cabal.GPL <$> Dhall.maybe version )
-        , ( "AGPL", Cabal.AGPL <$> Dhall.maybe version )
-        , ( "LGPL", Cabal.LGPL <$> Dhall.maybe version )
-        , ( "BSD2", Cabal.BSD2 <$ Dhall.unit )
-        , ( "BSD3", Cabal.BSD3 <$ Dhall.unit )
-        , ( "BSD4", Cabal.BSD4 <$ Dhall.unit )
-        , ( "MIT", Cabal.MIT <$ Dhall.unit )
-        , ( "ISC", Cabal.ISC <$ Dhall.unit )
-        , ( "MPL", Cabal.MPL <$> version )
-        , ( "Apache", Cabal.Apache <$> Dhall.maybe version )
-        , ( "PublicDomain", Cabal.PublicDomain <$ Dhall.unit )
-        , ( "AllRightsReserved", Cabal.AllRightsReserved<$ Dhall.unit )
-        , ( "Unspecified", Cabal.UnspecifiedLicense <$ Dhall.unit )
-        , ( "Other", Cabal.OtherLicense <$ Dhall.unit )
-        ]
-    )
-
-{--
-license :: Dhall.Type (Either SPDX.License Cabal.License)
 license = Dhall.union
   ( mconcat
-    [ Right . Cabal.GPL <$> Dhall.constructor "GPL" ( Dhall.maybe version )
-    , Right . Cabal.AGPL <$> Dhall.constructor "AGPL" ( Dhall.maybe version )
-    , Right . Cabal.LGPL <$> Dhall.constructor "LGPL" ( Dhall.maybe version )
-    , Right Cabal.BSD2 <$ Dhall.constructor "BSD2" Dhall.unit
-    , Right Cabal.BSD3 <$ Dhall.constructor "BSD3" Dhall.unit
-    , Right Cabal.BSD4 <$ Dhall.constructor "BSD4" Dhall.unit
-    , Right Cabal.MIT <$ Dhall.constructor "MIT" Dhall.unit
-    , Right Cabal.ISC <$ Dhall.constructor "ISC" Dhall.unit
-    , Right . Cabal.MPL <$> Dhall.constructor "MPL" version
-    , Right . Cabal.Apache <$> Dhall.constructor "Apache" ( Dhall.maybe version )
-    , Right Cabal.PublicDomain <$ Dhall.constructor "PublicDomain" Dhall.unit
-    , Right Cabal.AllRightsReserved <$ Dhall.constructor "AllRightsReserved" Dhall.unit
-    , Right Cabal.UnspecifiedLicense <$ Dhall.constructor "Unspecified" Dhall.unit
-    , Right . Cabal.UnknownLicense <$> Dhall.constructor "Unknown" Dhall.string
-    , Right Cabal.OtherLicense <$ Dhall.constructor "Other" Dhall.unit
-    , Left . SPDX.License <$> Dhall.constructor "SPDX" spdxLicense
+    [ Cabal.GPL <$> Dhall.constructor "GPL" ( Dhall.maybe version )
+    , Cabal.AGPL <$> Dhall.constructor "AGPL" ( Dhall.maybe version )
+    , Cabal.LGPL <$> Dhall.constructor "LGPL" ( Dhall.maybe version )
+    , Cabal.BSD2 <$ Dhall.constructor "BSD2" Dhall.unit
+    , Cabal.BSD3 <$ Dhall.constructor "BSD3" Dhall.unit
+    , Cabal.BSD4 <$ Dhall.constructor "BSD4" Dhall.unit
+    , Cabal.MIT <$ Dhall.constructor "MIT" Dhall.unit
+    , Cabal.ISC <$ Dhall.constructor "ISC" Dhall.unit
+    , Cabal.MPL <$> Dhall.constructor "MPL" version
+    , Cabal.Apache <$> Dhall.constructor "Apache" ( Dhall.maybe version )
+    , Cabal.PublicDomain <$ Dhall.constructor "PublicDomain" Dhall.unit
+    , Cabal.AllRightsReserved <$ Dhall.constructor "AllRightsReserved" Dhall.unit
+    , Cabal.UnspecifiedLicense <$ Dhall.constructor "Unspecified" Dhall.unit
+    , Cabal.UnknownLicense <$> Dhall.constructor "Unknown" Dhall.string
+    , Cabal.OtherLicense <$ Dhall.constructor "Other" Dhall.unit
+--    , SPDX.License <$> Dhall.constructor "SPDX" spdxLicense
     ]
   )
 
-
+{--
 spdxLicense :: Dhall.Type SPDX.LicenseExpression
 spdxLicense =
   let

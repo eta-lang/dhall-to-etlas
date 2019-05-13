@@ -473,7 +473,7 @@ executableDefault resolve = buildInfoDefault resolve <> specificFields
   where
     specificFields =
       Map.singleton "scope"
-        ( resolve PreludeConstructorsScope `Expr.Field` "Public" )
+        ( resolveType TypeScope `Expr.Field` "Public" )
 --}
 
 
@@ -791,14 +791,14 @@ licenseToDhall =
             licenseNullary "AllRightsReserved"
           -- Note: SPDX.NONE is what Cabal reports for a file without
           -- a 'license' field, even for pre-2.2 spec versions.
-          Left SPDX.NONE ->
-            licenseNullary "AllRightsReserved"
+--          Left SPDX.NONE ->
+--            licenseNullary "AllRightsReserved"
           Cabal.UnspecifiedLicense ->
             licenseNullary "Unspecified"
-          Cabal.UnknownLicense "UnspecifiedLicense" ) ->
+          Cabal.UnknownLicense "UnspecifiedLicense"  ->
             licenseNullary "Unspecified"
           Cabal.UnknownLicense l ->
-            license "Unspecified" ( Expr.TextLit (Expr.Chunks [] (StrictText.pack l)) )
+            license "Unspecified" ( Expr.TextLit (Dhall.Core.Chunks [] (StrictText.pack l)) )
           Cabal.OtherLicense ->
             licenseNullary "Other"
 --          Left ( SPDX.License x ) ->
@@ -873,9 +873,8 @@ spdxLicenseIdToDhall :: Dhall.InputType SPDX.LicenseId
 spdxLicenseIdToDhall =
   Dhall.InputType
     { Dhall.embed = \ident ->
-        Expr.Var "types" `Expr.Field` "LicenseId" `Expr.Field` identName ident
-    , Dhall.declared =
-        Expr.Var "types" `Expr.Field` "LicenseId"
+        licenseIdType `Expr.Field` identName ident
+    , Dhall.declared = licenseIdType
     }
 
   where
@@ -888,9 +887,8 @@ spdxLicenseExceptionIdToDhall :: Dhall.InputType SPDX.LicenseExceptionId
 spdxLicenseExceptionIdToDhall =
   Dhall.InputType
     { Dhall.embed = \ident ->
-        Expr.Var "types" `Expr.Field` "LicenseExceptionId" `Expr.Field` identName ident
-    , Dhall.declared =
-        Expr.Var "types" `Expr.Field` "LicenseExceptionId"
+        licenseExIdType `Expr.Field` identName ident
+    , Dhall.declared = licenseExIdType
     }
 
   where
