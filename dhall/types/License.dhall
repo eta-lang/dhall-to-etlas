@@ -4,28 +4,20 @@
     {}
 | Apache :
     Optional ./Version.dhall 
-| BSD2 :
-    {}
-| BSD3 :
-    {}
-| BSD4 :
-    {}
+| BSD2
+| BSD3 
+| BSD4
 | GPL :
     Optional ./Version.dhall 
-| ISC :
-    {}
+| ISC
 | LGPL :
     Optional ./Version.dhall 
-| MIT :
-    {}
+| MIT
 | MPL :
     ./Version.dhall 
-| Other :
-    {}
-| PublicDomain :
-    {}
-| Unspecified :
-    {}
+| Other
+| PublicDomain
+| Unspecified
 -- | SPDX :
 --    ./SPDX.dhall
 >

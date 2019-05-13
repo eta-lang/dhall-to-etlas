@@ -38,7 +38,7 @@ let deps =
       , directory =
           pkgVer "directory" "1.2.7.1" "1.4"
       , dhall =
-          pkgVer "dhall" "1.20.1" "1.21"
+          pkgVer "dhall" "1.23.0" "1.24"
       , dhall-to-etlas =
           pkg "dhall-to-etlas" anyVersion
       , filepath =

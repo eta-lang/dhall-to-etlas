@@ -667,16 +667,13 @@ liftCSE subrecord name body expr =
           Expr.RecordLit <$> traverse ( `go` v ) fields
 
         Expr.Union fields ->
-          Expr.Union <$> traverse ( `go` v ) fields
+          Expr.Union <$> traverse ( traverse ( `go` v ) ) fields
 
         Expr.UnionLit n a fields ->
-          Expr.UnionLit n <$> go a v <*> traverse ( `go` v ) fields
+          Expr.UnionLit n <$> go a v <*> traverse ( traverse ( `go` v ) ) fields
 
         Expr.Merge a b t ->
           Expr.Merge <$> go a v <*> go b v <*> traverse ( `go` v ) t
-
-        Expr.Constructors e ->
-          Expr.Constructors <$> go e v
 
         Expr.Field e f ->
           Expr.Field <$> go e v <*> pure f
@@ -760,6 +757,9 @@ liftCSE subrecord name body expr =
           pure e
 
         Expr.TextLit{} ->
+          pure e
+
+        Expr.TextShow ->
           pure e
 
         Expr.List ->

@@ -465,6 +465,7 @@ benchmarkDefault = buildInfoDefault
 testSuiteDefault :: Default s a
 testSuiteDefault = buildInfoDefault
 
+
 executableDefault :: Default s a
 executableDefault = buildInfoDefault
 {--
@@ -472,10 +473,7 @@ executableDefault resolve = buildInfoDefault resolve <> specificFields
   where
     specificFields =
       Map.singleton "scope"
-        ( Expr.App
-            ( resolveType TypeScope `Expr.Field` "Public" )
-            ( Expr.RecordLit mempty )
-        )
+        ( resolve PreludeConstructorsScope `Expr.Field` "Public" )
 --}
 
 
@@ -528,9 +526,7 @@ packageDefault resolve = fields
               ( generaliseDeclared library )
           )
       , ( "license"
-        , Expr.App
-            ( resolveType TypeLicense `Expr.Field` "Unspecified" )
-            ( Expr.RecordLit mempty )
+        , resolveType TypeLicense `Expr.Field` "Unspecified"
         )
       , emptyListDefault "license-files" Expr.Text
       , textFieldDefault "maintainer" ""
@@ -766,46 +762,53 @@ stringToDhall =
 
 licenseToDhall :: Dhall.InputType Cabal.License
 licenseToDhall =
-   Dhall.InputType
-   { Dhall.embed = \l ->
-       case l of
-         Cabal.GPL v  ->
-           license "GPL" ( Dhall.embed ( maybeToDhall versionToDhall ) v )
-         Cabal.AGPL v ->
-           license "AGPL" ( Dhall.embed ( maybeToDhall versionToDhall ) v )
-         Cabal.LGPL v ->
-           license "LGPL" ( Dhall.embed ( maybeToDhall versionToDhall ) v )
-         Cabal.BSD2 ->
-           license "BSD2" ( Expr.RecordLit mempty )
-         Cabal.BSD3 ->
-           license "BSD3" ( Expr.RecordLit mempty )
-         Cabal.BSD4 ->
-           license "BSD4" ( Expr.RecordLit mempty )
-         Cabal.MIT ->
-           license "MIT" ( Expr.RecordLit mempty )
-         Cabal.ISC ->
-           license "ISC" ( Expr.RecordLit mempty )
-         Cabal.MPL v ->
-           license "MPL" ( Dhall.embed versionToDhall v )
-         Cabal.Apache v ->
-           license "Apache" ( Dhall.embed ( maybeToDhall versionToDhall ) v )
-         Cabal.PublicDomain ->
-           license "PublicDomain" ( Expr.RecordLit mempty )
-         Cabal.AllRightsReserved ->
-           license "AllRightsReserved" ( Expr.RecordLit mempty )
-         Cabal.UnspecifiedLicense ->
-           license "Unspecified" ( Expr.RecordLit mempty )
-         Cabal.UnknownLicense "UnspecifiedLicense" ->
-           license "Unspecified" ( Expr.RecordLit mempty )
-         Cabal.OtherLicense ->
-           license "Other" ( Expr.RecordLit mempty )
-         other -> error $ "Unknown license: " ++ show other
-    , Dhall.declared =
-        Expr.Var "types" `Expr.Field` "License"
+  Dhall.InputType
+    { Dhall.embed = \l ->
+        case l of
+          Cabal.GPL v ->
+            license "GPL" ( Dhall.embed ( maybeToDhall versionToDhall ) v )
+          Cabal.AGPL v ->
+            license "AGPL" ( Dhall.embed ( maybeToDhall versionToDhall ) v )
+          Cabal.LGPL v ->
+            license "LGPL" ( Dhall.embed ( maybeToDhall versionToDhall ) v )
+          Cabal.BSD2 ->
+            licenseNullary "BSD2"
+          Cabal.BSD3 ->
+            licenseNullary "BSD3"
+          Cabal.BSD4 ->
+            licenseNullary "BSD4"
+          Cabal.MIT ->
+            licenseNullary "MIT"
+          Cabal.ISC ->
+            licenseNullary "ISC"
+          Cabal.MPL v ->
+            license "MPL" ( Dhall.embed versionToDhall v )
+          Cabal.Apache v ->
+            license "Apache" ( Dhall.embed ( maybeToDhall versionToDhall ) v )
+          Cabal.PublicDomain ->
+            licenseNullary "PublicDomain"
+          Cabal.AllRightsReserved ->
+            licenseNullary "AllRightsReserved"
+          -- Note: SPDX.NONE is what Cabal reports for a file without
+          -- a 'license' field, even for pre-2.2 spec versions.
+          Left SPDX.NONE ->
+            licenseNullary "AllRightsReserved"
+          Cabal.UnspecifiedLicense ->
+            licenseNullary "Unspecified"
+          Cabal.UnknownLicense "UnspecifiedLicense" ) ->
+            licenseNullary "Unspecified"
+          Cabal.UnknownLicense l ->
+            license "Unspecified" ( Expr.TextLit (Expr.Chunks [] (StrictText.pack l)) )
+          Cabal.OtherLicense ->
+            licenseNullary "Other"
+--          Left ( SPDX.License x ) ->
+--            license "SPDX" ( Dhall.embed spdxLicenseExpressionToDhall x )
+    , Dhall.declared = typeLicense
     }
   where
     typeLicense = resolveType TypeLicense
-    license name = Expr.App ( typeLicense `Expr.Field` name )
+    licenseNullary name = typeLicense `Expr.Field` name
+    license = Expr.App . licenseNullary
 
 {--
 spdxLicenseExpressionToDhall :: Dhall.InputType SPDX.LicenseExpression
@@ -870,10 +873,9 @@ spdxLicenseIdToDhall :: Dhall.InputType SPDX.LicenseId
 spdxLicenseIdToDhall =
   Dhall.InputType
     { Dhall.embed = \ident ->
-        Expr.App
-          ( licenseIdType `Expr.Field` identName ident )
-          ( Expr.RecordLit mempty )
-    , Dhall.declared = licenseIdType
+        Expr.Var "types" `Expr.Field` "LicenseId" `Expr.Field` identName ident
+    , Dhall.declared =
+        Expr.Var "types" `Expr.Field` "LicenseId"
     }
 
   where
@@ -886,10 +888,9 @@ spdxLicenseExceptionIdToDhall :: Dhall.InputType SPDX.LicenseExceptionId
 spdxLicenseExceptionIdToDhall =
   Dhall.InputType
     { Dhall.embed = \ident ->
-        Expr.App
-          ( licenseExIdType `Expr.Field` identName ident )
-          ( Expr.RecordLit mempty )
-    , Dhall.declared = licenseExIdType
+        Expr.Var "types" `Expr.Field` "LicenseExceptionId" `Expr.Field` identName ident
+    , Dhall.declared =
+        Expr.Var "types" `Expr.Field` "LicenseExceptionId"
     }
 
   where
@@ -922,9 +923,9 @@ runUnion ( Union ( f, t ) ) =
               error $ "Union did not match anything. Given " ++ show a
 
             ( First ( Just ( k, v ) ), alts ) ->
-              Expr.UnionLit k v alts
+              Expr.UnionLit k v ( Just <$> alts )
     , Dhall.declared =
-        sortExpr ( Expr.Union t )
+        sortExpr ( Expr.Union ( Just <$> t ) )
     }
 
 
@@ -979,52 +980,52 @@ compilerFlavor :: Dhall.InputType Cabal.CompilerFlavor
 compilerFlavor =
   let
     compilerType = resolveType TypeCompiler
-    appCompiler k v = Expr.App ( compilerType `Expr.Field` k ) v
+    nullary k = compilerType `Expr.Field` k
+    appCompiler k v = Expr.App ( nullary k ) v
     compiler k = appCompiler k ( Expr.RecordLit mempty )
-
   in
   Dhall.InputType
     { Dhall.embed = \case
         Cabal.Eta ->
-          compiler "Eta"
+          nullary "Eta"
 
         Cabal.GHC ->
-          compiler "GHC"
+          nullary "GHC"
 
         Cabal.GHCJS ->
-          compiler "GHCJS"
+          nullary "GHCJS"
 
         Cabal.HBC ->
-          compiler "HBC"
+          nullary "HBC"
 
         Cabal.HaskellSuite v ->
           appCompiler "HaskellSuite"
           ( Expr.Record ( Map.singleton "_1" ( dhallString v ) ) )
 
         Cabal.Helium ->
-          compiler "Helium"
+          nullary "Helium"
 
         Cabal.Hugs ->
-          compiler "Hugs"
+          nullary "Hugs"
 
         Cabal.JHC ->
-          compiler "JHC"
+          nullary "JHC"
 
         Cabal.LHC ->
-          compiler "LHC"
+          nullary "LHC"
 
         Cabal.NHC ->
-          compiler "NHC"
+          nullary "NHC"
 
         Cabal.OtherCompiler v ->
           appCompiler "OtherCompiler"
           ( Expr.Record ( Map.singleton "_1" ( dhallString v ) ) )
 
         Cabal.UHC ->
-          compiler "UHC"
+          nullary "UHC"
 
         Cabal.YHC ->
-          compiler "YHC"
+          nullary "YHC"
     , Dhall.declared = compilerType
     }
 
@@ -1122,13 +1123,9 @@ repoKind =
   Dhall.InputType
     { Dhall.embed = \case
         Cabal.RepoThis ->
-          Expr.App
-            ( repoKindType `Expr.Field` "RepoThis" )
-            ( Expr.RecordLit mempty )
+          repoKindType `Expr.Field` "RepoThis"
         Cabal.RepoHead ->
-          Expr.App
-            ( repoKindType `Expr.Field` "RepoHead" )
-            ( Expr.RecordLit mempty )
+          repoKindType `Expr.Field` "RepoHead"
         Cabal.RepoKindUnknown str ->
           Expr.App
             ( repoKindType `Expr.Field` "RepoThis" )
@@ -1142,21 +1139,21 @@ repoType =
   Dhall.InputType
     { Dhall.embed = \case
         Cabal.Darcs ->
-          Expr.App ( constr "Darcs" ) ( Expr.RecordLit mempty )
+          constr "Darcs"
         Cabal.Git ->
-          Expr.App ( constr "Git" ) ( Expr.RecordLit mempty )
+          constr "Git"
         Cabal.SVN ->
-          Expr.App ( constr "SVN" ) ( Expr.RecordLit mempty )
+          constr "SVN"
         Cabal.CVS ->
-          Expr.App ( constr "CVS" ) ( Expr.RecordLit mempty )
+          constr "CVS"
         Cabal.Mercurial ->
-          Expr.App ( constr "Mercurial" ) ( Expr.RecordLit mempty )
+          constr "Mercurial"
         Cabal.GnuArch ->
-          Expr.App ( constr "GnuArch" ) ( Expr.RecordLit mempty )
+          constr "GnuArch"
         Cabal.Monotone ->
-          Expr.App ( constr "Monotone" ) ( Expr.RecordLit mempty )
+          constr "Monotone"
         Cabal.Bazaar ->
-          Expr.App ( constr "Bazaar" ) ( Expr.RecordLit mempty )
+          constr "Bazaar"
         Cabal.OtherRepoType str ->
           Expr.App
             ( constr "OtherRepoType" )
@@ -1181,24 +1178,16 @@ buildType =
   Dhall.InputType
     { Dhall.embed = \case
         Cabal.Simple ->
-          Expr.App
-            ( buildTypeType `Expr.Field` "Simple" )
-            ( Expr.RecordLit mempty )
+          buildTypeType `Expr.Field` "Simple"
 
         Cabal.Configure ->
-          Expr.App
-            ( buildTypeType `Expr.Field` "Configure" )
-            ( Expr.RecordLit mempty )
+          buildTypeType `Expr.Field` "Configure"
 
         Cabal.Custom ->
-          Expr.App
-            ( buildTypeType `Expr.Field` "Custom" )
-            ( Expr.RecordLit mempty )
+          buildTypeType `Expr.Field` "Custom"
 
         Cabal.Make ->
-          Expr.App
-            ( buildTypeType `Expr.Field` "Make" )
-            ( Expr.RecordLit mempty )
+          buildTypeType `Expr.Field` "Make"
 
         Cabal.UnknownBuildType unknown ->
            error ( "Unable to embed Cabal.UnknownBuildType " ++ unknown ) 
@@ -1385,8 +1374,9 @@ os =
     , Dhall.declared = osType
     }
   where osType = resolveType TypeOS
-        appOS name = Expr.App ( osType `Expr.Field` name )
-        os name = appOS name ( Expr.RecordLit mempty )
+        os name = osType `Expr.Field` name
+        appOS name = Expr.App ( os name )
+        
 
 arch :: Dhall.InputType Cabal.Arch
 arch =
@@ -1633,9 +1623,7 @@ moduleRenaming =
                     )
                 )
             Cabal.DefaultRenaming ->
-              Expr.App
-                ( moduleRenamingType `Expr.Field` "default" )
-                ( Expr.RecordLit mempty )
+              moduleRenamingType `Expr.Field` "default"
             Cabal.HidingRenaming hidden ->
               Expr.App
                 ( moduleRenamingType `Expr.Field` "hiding" )
@@ -1719,13 +1707,9 @@ executableScope =
   Dhall.InputType
     { Dhall.embed = \case
         Cabal.ExecutablePublic ->
-          Expr.App
-            ( typeScope `Expr.Field` "Public" )
-            ( Expr.RecordLit mempty )
+            Expr.Var "types" `Expr.Field` "Scope" `Expr.Field` "Public"
         Cabal.ExecutablePrivate ->
-          Expr.App
-            ( typeScope `Expr.Field` "Private" )
-            ( Expr.RecordLit mempty )
+            Expr.Var "types" `Expr.Field` "Scope" `Expr.Field` "Private"
     , Dhall.declared =
         typeScope
     }

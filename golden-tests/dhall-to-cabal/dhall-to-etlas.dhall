@@ -4,8 +4,6 @@ let types = ./../../dhall/types.dhall
 
 let v = prelude.v
 
-let Haskell2010 = Some (types.Language.Haskell2010 {=})
-
 let pkg =
         λ(name : Text)
       → λ(version-range : types.VersionRange)
@@ -36,9 +34,11 @@ let deps =
       , directory =
           pkgVer "directory" "1.3.0.2" "1.4"
       , dhall =
-          pkgVer "dhall" "1.15.0" "1.16"
+          pkgVer "dhall" "1.23.0" "1.24"
       , dhall-to-etlas =
           pkg "dhall-to-etlas" prelude.anyVersion
+      , dhall-to-cabal =
+          package "dhall-to-cabal" anyVersion
       , filepath =
           pkgVer "filepath" "1.4" "1.5"
       , insert-ordered-containers =
@@ -52,7 +52,7 @@ let deps =
       , hashable =
           pkgVer "hashable" "1.2.6.1" "1.3"
       , tasty =
-          pkgVer "tasty" "0.11" "1.2"
+          pkgVer "tasty" "0.11" "1.3"
       , tasty-golden =
           pkgVer "tasty-golden" "2.3" "2.4"
       , text =
@@ -92,7 +92,7 @@ in    prelude.utils.GitHub-project
       , category =
           "Distribution"
       , build-type =
-          Some (types.BuildType.Simple {=})
+          Some types.BuildType.Simple
       , maintainer =
           "atreyu.bbb@gmail.com"
       , author =
@@ -100,82 +100,21 @@ in    prelude.utils.GitHub-project
       , extra-source-files =
           [ "Changelog.md"
           , "README.md"
-          , "dhall/SPDX/and.dhall"
-          , "dhall/SPDX/license.dhall"
-          , "dhall/SPDX/licenseVersionOrLater.dhall"
-          , "dhall/SPDX/or.dhall"
-          , "dhall/SPDX/ref.dhall"
-          , "dhall/SPDX/refWithFile.dhall"
-          , "dhall/Version/v.dhall"
-          , "dhall/VersionRange/anyVersion.dhall"
-          , "dhall/VersionRange/differenceVersionRanges.dhall"
-          , "dhall/VersionRange/earlierVersion.dhall"
-          , "dhall/VersionRange/intersectVersionRanges.dhall"
-          , "dhall/VersionRange/invertVersionRange.dhall"
-          , "dhall/VersionRange/laterVersion.dhall"
-          , "dhall/VersionRange/majorBoundVersion.dhall"
-          , "dhall/VersionRange/noVersion.dhall"
-          , "dhall/VersionRange/notThisVersion.dhall"
-          , "dhall/VersionRange/orEarlierVersion.dhall"
-          , "dhall/VersionRange/orLaterVersion.dhall"
-          , "dhall/VersionRange/thisVersion.dhall"
-          , "dhall/VersionRange/unionVersionRanges.dhall"
-          , "dhall/VersionRange/withinVersion.dhall"
-          , "dhall/defaults/Benchmark.dhall"
-          , "dhall/defaults/BuildInfo.dhall"
-          , "dhall/defaults/CompilerOptions.dhall"
-          , "dhall/defaults/Executable.dhall"
-          , "dhall/defaults/Library.dhall"
-          , "dhall/defaults/Package.dhall"
-          , "dhall/defaults/SourceRepo.dhall"
-          , "dhall/defaults/TestSuite.dhall"
-          , "dhall/prelude.dhall"
-          , "dhall/types.dhall"
-          , "dhall/types/Arch.dhall"
-          , "dhall/types/Benchmark.dhall"
-          , "dhall/types/BuildType.dhall"
-          , "dhall/types/Compiler.dhall"
-          , "dhall/types/CompilerOptions.dhall"
-          , "dhall/types/Config.dhall"
-          , "dhall/types/CustomSetup.dhall"
-          , "dhall/types/Dependency.dhall"
-          , "dhall/types/Executable.dhall"
-          , "dhall/types/Extension.dhall"
-          , "dhall/types/Flag.dhall"
-          , "dhall/types/ForeignLibrary.dhall"
-          , "dhall/types/Guarded.dhall"
-          , "dhall/types/Language.dhall"
-          , "dhall/types/Library.dhall"
-          , "dhall/types/License.dhall"
-          , "dhall/types/Mixin.dhall"
-          , "dhall/types/ModuleRenaming.dhall"
-          , "dhall/types/OS.dhall"
-          , "dhall/types/Package.dhall"
-          , "dhall/types/RepoKind.dhall"
-          , "dhall/types/RepoType.dhall"
-          , "dhall/types/SPDX.dhall"
-          , "dhall/types/SPDX/LicenseExceptionId.dhall"
-          , "dhall/types/SPDX/LicenseId.dhall"
-          , "dhall/types/Scope.dhall"
-          , "dhall/types/SetupBuildInfo.dhall"
-          , "dhall/types/SourceRepo.dhall"
-          , "dhall/types/TestSuite.dhall"
-          , "dhall/types/TestType.dhall"
-          , "dhall/types/Version.dhall"
-          , "dhall/types/VersionRange.dhall"
-          , "dhall/types/builtin.dhall"
-          , "dhall/unconditional.dhall"
-          , "dhall/utils/GitHub-project.dhall"
-          , "dhall/utils/majorVersions.dhall"
-          , "dhall/utils/mapSourceRepos.dhall"
-          , "dhall/utils/package.dhall"
+          , "dhall/SPDX/*.dhall"
+          , "dhall/Version/*.dhall"
+          , "dhall/VersionRange/*.dhall"
+          , "dhall/defaults/*.dhall"
+          , "dhall/*.dhall"
+          , "dhall/types/*.dhall"
+          , "dhall/types/SPDX/*.dhall"
+          , "dhall/utils/*.dhall"
           , "golden-tests/dhall-to-cabal/*.dhall"
           , "golden-tests/dhall-to-cabal/*.cabal"
           , "golden-tests/cabal-to-dhall/*.dhall"
           , "golden-tests/cabal-to-dhall/*.cabal"
           ]
       , license =
-          types.License.MIT {=}
+          types.License.MIT
       , license-files =
           [ "LICENSE" ]
       , version =
@@ -219,7 +158,7 @@ in    prelude.utils.GitHub-project
                   , "Paths_dhall_to_etlas"
                   ]
               , default-language =
-                  Haskell2010
+                  Some types.Language.Haskell2010
               }
           )
       , executables =
@@ -274,7 +213,7 @@ in    prelude.utils.GitHub-project
                 , other-modules =
                     [ "Paths_dhall_to_etlas" ]
                 , default-language =
-                    Haskell2010
+                    Some types.Language.Haskell2010
                 }
             )
           , prelude.unconditional.executable
@@ -292,7 +231,7 @@ in    prelude.utils.GitHub-project
                 , hs-source-dirs =
                     [ "meta" ]
                 , default-language =
-                    Haskell2010
+                    Some types.Language.Haskell2010
                 , compiler-options =
                     prelude.defaults.CompilerOptions ⫽ { GHC = warning-options }
                 , main-is =
@@ -324,7 +263,31 @@ in    prelude.utils.GitHub-project
                 , type =
                     types.TestType.exitcode-stdio { main-is = "GoldenTests.hs" }
                 , default-language =
-                    Haskell2010
+                    Some types.Language.Haskell2010
+                }
+            )
+          , prelude.unconditional.test-suite
+            "unit-tests"
+            (   prelude.defaults.TestSuite
+              ⫽ { build-depends =
+                    [ deps.base
+                    , deps.Cabal
+                    , deps.dhall
+                    , deps.dhall-to-cabal
+                    , deps.tasty
+                    , deps.tasty-hunit
+                    , deps.text
+                    ]
+                , compiler-options =
+                    prelude.defaults.CompilerOptions ⫽ { GHC = warning-options }
+                , hs-source-dirs =
+                    [ "tests" ]
+                , type =
+                    types.TestType.exitcode-stdio { main-is = "Tests.hs" }
+                , default-language =
+                    Some types.Language.Haskell2010
+                , other-modules =
+                    [ "DhallToCabal.Tests" ]
                 }
             )
           ]

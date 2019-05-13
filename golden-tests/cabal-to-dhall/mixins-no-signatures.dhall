@@ -20,9 +20,9 @@ in    prelude.defaults.Package
                           "foo"
                       , renaming =
                           { provides =
-                              types.ModuleRenaming.default {=}
+                              types.ModuleRenaming.default
                           , requires =
-                              types.ModuleRenaming.default {=}
+                              types.ModuleRenaming.default
                           }
                       }
                     , { package =
@@ -39,7 +39,7 @@ in    prelude.defaults.Package
                               , { rename = "Third.Module", to = "Renamed" }
                               ]
                           , requires =
-                              types.ModuleRenaming.default {=}
+                              types.ModuleRenaming.default
                           }
                       }
                     , { package =
@@ -49,7 +49,7 @@ in    prelude.defaults.Package
                               types.ModuleRenaming.hiding
                               [ "Hidden", "Also.Hidden" ]
                           , requires =
-                              types.ModuleRenaming.default {=}
+                              types.ModuleRenaming.default
                           }
                       }
                     ]

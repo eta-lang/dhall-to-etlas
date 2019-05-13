@@ -1,5 +1,14 @@
 # dhall-to-cabal change log
 
+## Next
+
+* All constructors that previously took an empty record now use the
+  new nullary syntax instead. This is a breaking change for user code.
+  For example, instead of `types.Compiler.GHC {=}`, now you just write
+  `types.Compiler.GHC`.
+
+* Use `dhall` version 1.23.0.
+
 ## 1.3.2.0 -- 2019-02-12
 
 * Use `dhall` version 1.20.1.

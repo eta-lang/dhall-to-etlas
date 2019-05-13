@@ -7,7 +7,7 @@ extra-deps:
   commit: 7328c6d3c7f4e660e266fe1063f5afd1fabf0149
   subdirs:
   - etlas-cabal
-- dhall-1.20.1
+- dhall-1.23
 - ansi-terminal-0.7.1.1
 - ansi-wl-pprint-0.6.8.2
 - cryptonite-0.24
