@@ -33,10 +33,10 @@ extra-source-files:
     dhall/Dependency/*.dhall
     dhall/SPDX/*.dhall
     dhall/types/*.dhall
+    dhall/types/SPDX/*.dhall
     dhall/utils/*.dhall
     dhall/Version/*.dhall
     dhall/VersionRange/*.dhall
-    dhall/types/SPDX/*.dhall
     golden-tests/dhall-to-cabal/*.dhall
     golden-tests/dhall-to-cabal/*.cabal
     golden-tests/cabal-to-dhall/*.dhall
