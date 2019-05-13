@@ -14,12 +14,12 @@ let pkgAnyVer = λ(packageName : Text) → pkg packageName prelude.anyVersion
 let etaImpl =
         λ(cfg : types.Config)
       → λ(ver : types.VersionRange)
-      → cfg.impl (types.Compiler.Eta {=}) ver
+      → cfg.impl types.Compiler.Eta ver
 
 let updateRepo =
       prelude.utils.mapSourceRepos
       (   λ(srcRepo : types.SourceRepo)
-        → srcRepo ⫽ { tag = Some "0.1.5.1", kind = types.RepoKind.RepoThis {=} }
+        → srcRepo ⫽ { tag = Some "0.1.5.1", kind = types.RepoKind.RepoThis }
       )
 
 let project =

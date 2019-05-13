@@ -38,7 +38,7 @@ let deps =
       , dhall-to-etlas =
           pkg "dhall-to-etlas" prelude.anyVersion
       , dhall-to-cabal =
-          package "dhall-to-cabal" anyVersion
+          pkg "dhall-to-cabal" prelude.anyVersion
       , filepath =
           pkgVer "filepath" "1.4" "1.5"
       , insert-ordered-containers =
@@ -55,6 +55,8 @@ let deps =
           pkgVer "tasty" "0.11" "1.3"
       , tasty-golden =
           pkgVer "tasty-golden" "2.3" "2.4"
+      , tasty-hunit =
+          pkgVer "tasty-hunit" "0.10.0.1" "0.11"
       , text =
           pkgVer "text" "1.2" "1.3"
       , transformers =
@@ -187,7 +189,7 @@ in    prelude.utils.GitHub-project
                 , other-modules =
                     [ "Paths_dhall_to_cabal" ]
                 , default-language =
-                    Haskell2010
+                    Some types.Language.Haskell2010
                 }
             )
           , prelude.unconditional.executable
@@ -271,7 +273,7 @@ in    prelude.utils.GitHub-project
             (   prelude.defaults.TestSuite
               ⫽ { build-depends =
                     [ deps.base
-                    , deps.Cabal
+                    , deps.etlas-cabal
                     , deps.dhall
                     , deps.dhall-to-cabal
                     , deps.tasty
