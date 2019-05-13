@@ -1,8 +1,6 @@
-let prelude =
-      https://raw.githubusercontent.com/dhall-lang/dhall-to-cabal/master/dhall/prelude.dhall sha256:a2374478ca4c8e3d783ad6715481872a68f5edc2e548d80784ad2f01c86ab71c
+let prelude = ./dhall/prelude.dhall
 
-let types =
-      https://raw.githubusercontent.com/dhall-lang/dhall-to-cabal/master/dhall/types.dhall sha256:a4650e83aece26287ffb8bd0d9698df65853ff63509bb3dc947fde7199964ab9
+let types = ./dhall/types.dhall
 
 let v = prelude.v
 
@@ -98,7 +96,7 @@ in    prelude.utils.GitHub-project
       , category =
           "Distribution"
       , build-type =
-          Some (types.BuildType.Simple {=})
+          Some types.BuildType.Simple
       , maintainer =
           "Javier Neira <atreyu.bbb@gmail.com>"
       , author =
@@ -121,7 +119,7 @@ in    prelude.utils.GitHub-project
           , "golden-tests/cabal-to-dhall/*.cabal"
           ]
       , license =
-          types.License.MIT {=}
+          types.License.MIT
       , license-files =
           [ "LICENSE" ]
       , version =
@@ -167,7 +165,7 @@ in    prelude.utils.GitHub-project
                   , "Paths_dhall_to_etlas"
                   ]
               , default-language =
-                  Some (types.Language.Haskell2010 {=})
+                  Some types.Language.Haskell2010
               }
           )
       , executables =
@@ -199,7 +197,7 @@ in    prelude.utils.GitHub-project
                 , other-modules =
                     [ "Paths_dhall_to_etlas" ]
                 , default-language =
-                    Some (types.Language.Haskell2010 {=})
+                    Some types.Language.Haskell2010
                 }
             )
           , prelude.unconditional.executable
@@ -225,7 +223,7 @@ in    prelude.utils.GitHub-project
                 , other-modules =
                     [ "Paths_dhall_to_etlas" ]
                 , default-language =
-                    Some (types.Language.Haskell2010 {=})
+                    Some types.Language.Haskell2010
                 }
             )
           , prelude.unconditional.executable
@@ -243,7 +241,7 @@ in    prelude.utils.GitHub-project
                 , hs-source-dirs =
                     [ "meta" ]
                 , default-language =
-                    Some (types.Language.Haskell2010 {=})
+                    Some types.Language.Haskell2010
                 , compiler-options =
                     prelude.defaults.CompilerOptions ⫽ { GHC = warning-options }
                 , main-is =
@@ -276,7 +274,7 @@ in    prelude.utils.GitHub-project
                 , type =
                     types.TestType.exitcode-stdio { main-is = "GoldenTests.hs" }
                 , default-language =
-                    Some (types.Language.Haskell2010 {=})
+                    Some types.Language.Haskell2010
                 }
             )
           , prelude.unconditional.test-suite
@@ -298,7 +296,7 @@ in    prelude.utils.GitHub-project
                 , type =
                     types.TestType.exitcode-stdio { main-is = "Tests.hs" }
                 , default-language =
-                    Some (types.Language.Haskell2010 {=})
+                    Some types.Language.Haskell2010
                 , other-modules =
                     [ "DhallToCabal.Tests" ]
                 }
