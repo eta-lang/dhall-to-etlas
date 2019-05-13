@@ -38,7 +38,6 @@ extra-deps:
 - transformers-compat-0.6.4
 - exceptions-0.10.1
 # dhall-to-etlas
-- hashable-1.2.7.0
 - parsec-3.1.13.0
 # golden-tests
 - Diff-0.3.4

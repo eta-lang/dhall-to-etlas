@@ -51,8 +51,6 @@ let deps =
           pkgVer "prettyprinter" "1.2.0.1" "1.3"
       , contravariant =
           pkgVer "contravariant" "1.4" "1.5"
-      , hashable =
-          pkgVer "hashable" "1.2.6.1" "1.3"
       , tasty =
           pkgVer "tasty" "0.11" "1.3"
       , tasty-golden =
@@ -137,7 +135,6 @@ in    prelude.utils.GitHub-project
                   , deps.contravariant
                   , deps.dhall
                   , deps.filepath
-                  , deps.hashable
                   , deps.text
                   , deps.transformers
                   , deps.vector
