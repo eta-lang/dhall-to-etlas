@@ -1,7 +1,6 @@
 < AGPL :
     Optional ./Version.dhall 
-| AllRightsReserved :
-    {}
+| AllRightsReserved
 | Apache :
     Optional ./Version.dhall 
 | BSD2
@@ -18,6 +17,8 @@
 | Other
 | PublicDomain
 | Unspecified
+| Unknown :
+    Text
 -- | SPDX :
 --    ./SPDX.dhall
 >
