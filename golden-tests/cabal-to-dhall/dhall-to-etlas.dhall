@@ -441,7 +441,7 @@ in    prelude.defaults.Package
                 }
           )
       , license =
-          types.License.MIT {=}
+          types.License.MIT
       , license-files =
           [ "LICENSE" ]
       , maintainer =
@@ -449,7 +449,7 @@ in    prelude.defaults.Package
       , source-repos =
           [   prelude.defaults.SourceRepo
             ⫽ { type =
-                  Some (types.RepoType.Git {=})
+                  Some types.RepoType.Git
               , location =
                   Some "https://github.com/eta-lang/dhall-to-etlas"
               }

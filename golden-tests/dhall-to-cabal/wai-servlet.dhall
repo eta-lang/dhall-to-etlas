@@ -30,7 +30,7 @@ in  updateRepo
       ⫽ { description =
             "Integration of eta wai applications with the servlet api"
         , license =
-            types.License.BSD3 {=}
+            types.License.BSD3
         , license-files =
             [ "LICENSE" ]
         , author =
@@ -73,7 +73,7 @@ in  updateRepo
                   , hs-source-dirs =
                       [ "src" ]
                   , default-language =
-                      Some (types.Language.Haskell2010 {=})
+                      Some types.Language.Haskell2010
                   , build-depends =
                         [ pkg
                           "base"

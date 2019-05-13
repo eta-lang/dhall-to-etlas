@@ -4,7 +4,7 @@ let types = ./../../dhall/types.dhall
 
 let v = prelude.v
 
-let defaultLang = Some (types.Language.Haskell2010 {=})
+let defaultLang = Some types.Language.Haskell2010
 
 let pkg =
         λ(name : Text)
@@ -27,7 +27,7 @@ let commonDeps =
 let updateRepo =
       prelude.utils.mapSourceRepos
       (   λ(srcRepo : types.SourceRepo)
-        → srcRepo ⫽ { tag = Some "0.1.2.0", kind = types.RepoKind.RepoThis {=} }
+        → srcRepo ⫽ { tag = Some "0.1.2.0", kind = types.RepoKind.RepoThis }
       )
 
 let project =
@@ -39,7 +39,7 @@ in  updateRepo
       ⫽ { description =
             "Wai handler to run wai applications in a embedded jetty server"
         , license =
-            types.License.BSD3 {=}
+            types.License.BSD3
         , license-files =
             [ "LICENSE" ]
         , author =

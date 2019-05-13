@@ -103,7 +103,7 @@ in  prelude.utils.GitHubTag-simple-project
             , "src/test/resources/import/success/*.dhall"
             ]
         , license =
-            types.License.BSD3 {=}
+            types.License.BSD3
         , license-files =
             [ "LICENSE" ]
         , library =
