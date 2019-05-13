@@ -54,7 +54,7 @@ let deps =
       , hashable =
           pkgVer "hashable" "1.2.6.1" "1.3"
       , tasty =
-          pkgVer "tasty" "0.11" "1.2"
+          pkgVer "tasty" "0.11" "1.3"
       , tasty-golden =
           pkgVer "tasty-golden" "2.3" "2.4"
       , tasty-hunit =

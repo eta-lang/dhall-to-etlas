@@ -160,7 +160,7 @@ test-suite golden-tests
         filepath >=1.4 && <1.5,
         microlens >=0.1.0.0 && <0.5,
         prettyprinter >=1.2.0.1 && <1.3,
-        tasty >=0.11 && <1.2,
+        tasty >=0.11 && <1.3,
         tasty-golden >=2.3 && <2.4,
         text >=1.2 && <1.3
 
@@ -180,6 +180,6 @@ test-suite unit-tests
         etlas-cabal -any,
         dhall >=1.23.0 && <1.24,
         dhall-to-etlas -any,
-        tasty >=0.11 && <1.2,
+        tasty >=0.11 && <1.3,
         tasty-hunit >=0.10.0.1 && <0.11,
         text >=1.2 && <1.3
