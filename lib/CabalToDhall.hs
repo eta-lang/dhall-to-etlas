@@ -798,7 +798,7 @@ licenseToDhall =
           Cabal.UnknownLicense "UnspecifiedLicense"  ->
             licenseNullary "Unspecified"
           Cabal.UnknownLicense l ->
-            license "Unspecified" ( Expr.TextLit (Dhall.Core.Chunks [] (StrictText.pack l)) )
+            license "Unknown" ( Expr.TextLit (Dhall.Core.Chunks [] (StrictText.pack l)) )
           Cabal.OtherLicense ->
             licenseNullary "Other"
 --          Left ( SPDX.License x ) ->
