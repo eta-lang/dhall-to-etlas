@@ -10,7 +10,7 @@ let setTag =
             ⫽ { tag =
                   Some version
               , kind =
-                  (../types/RepoKind.dhall).RepoThis {=}
+                  (../types/RepoKind.dhall).RepoThis
               }
         )
 

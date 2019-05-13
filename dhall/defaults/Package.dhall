@@ -16,7 +16,7 @@ in  { author =
     , bug-reports =
         ""
     , build-type =
-        Some (types.BuildType.Simple {=})
+        Some types.BuildType.Simple
     , cabal-version =
         ./../Version/v.dhall "1.12"
     , category =
@@ -54,7 +54,7 @@ in  { author =
     , library =
         None (∀(config : types.Config) → types.Library)
     , license =
-        types.License.Unspecified {=}
+        types.License.Unspecified
     , license-files =
         [] : List Text
     , maintainer =

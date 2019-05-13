@@ -47,7 +47,7 @@ in  { autogen-modules =
         , types.Extension.TypeOperators True
         ] : List types.Extension
     , default-language =
-        Some (types.Language.Haskell2010 {=})
+        Some types.Language.Haskell2010
     , extra-framework-dirs =
         [] : List Text
     , extra-ghci-libraries =
