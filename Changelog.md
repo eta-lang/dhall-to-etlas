@@ -1,18 +1,47 @@
 # dhall-to-cabal change log
 
-## Next
+## Next -- [YYYY-MM-DD]
+
+* Use `dhall` version 1.25.
+
+## 1.3.4.0 -- 2019-07-05
+
+* Add compatibility for `optparse-applicative-0.15`.
+
+* Remove `dhall/types/CustomSetup.dhall` in favour of the identical
+  `dhall/types/SetupBuildInfo.dhall`.
+
+* `cabal-to-dhall` no longer generates bogus output for an unknown
+  kind of `source-repository` stanza.
+
+* Added `dhall/types/ForeignLibOption.dhall`, also available as
+  `types.ForeignLibOption`, and `--print-type ForeignLibOption`.
+  Likewise `ForeignLibType`.
+
+* Support `prettyprinter` 1.3.
+
+* Teach `--print-type` about `Dependency`, `SetupBuildInfo`, `TestType`,
+  `Mixin` and `Flag`.
+
+* Use `dhall` version 1.24.
+
+## 1.3.3.0 -- 2019-05-15
 
 * All constructors that previously took an empty record now use the
   new nullary syntax instead. This is a breaking change for user code.
   For example, instead of `types.Compiler.GHC {=}`, now you just write
   `types.Compiler.GHC`.
 
-* Improved `--print-type` and `--print-default` output to use
-  multi-binding `let`.
+* Use `dhall` version 1.23.0.
 
 * Educated `--print-type` about `Scope` and `ModuleRenaming`.
 
-* Use `dhall` version 1.23.0.
+* Fix `cabal-to-dhall` output for unknown licenses using `cabal` spec
+  version below `2.0`. Now it uses values of type `License.Unknown Text` 
+  for them.
+
+* Improved `--print-type` and `--print-default` output to use
+  multi-binding `let`.
 
 ## 1.3.2.0 -- 2019-02-12
 

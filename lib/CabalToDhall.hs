@@ -22,7 +22,6 @@ import Data.Foldable ( foldMap )
 import Data.Functor.Contravariant ( (>$<), Contravariant( contramap ) )
 import Data.Monoid ( First(..) )
 import Data.Semigroup ( Semigroup, (<>) )
-import GHC.Stack
 import Numeric.Natural ( Natural )
 
 import qualified Data.ByteString as ByteString
@@ -83,6 +82,7 @@ import DhallToCabal.ConfigTree ( ConfigTree(..) )
 
 type DhallExpr =
   Dhall.Core.Expr Dhall.Parser.Src Dhall.TypeCheck.X
+
 
 dhallString :: String -> Expr.Expr s a
 dhallString = Expr.TextLit . Dhall.Core.Chunks [] . StrictText.pack
@@ -306,7 +306,7 @@ emptyListDefault
   -> Expr.Expr s a
   -> ( StrictText.Text, Expr.Expr s a )
 emptyListDefault name ty =
-  ( name, Expr.ListLit ( Just ty ) mempty )
+  ( name, Expr.ListLit ( Just ( Expr.App Expr.List ty ) ) mempty )
 
 
 emptyOptionalDefault
@@ -526,7 +526,7 @@ packageDefault resolve = fields
               ( generaliseDeclared library )
           )
       , ( "license"
-        , resolveType TypeLicense `Expr.Field` "Unspecified"
+        , resolveType TypeLicense `Expr.Field` "AllRightsReserved"
         )
       , emptyListDefault "license-files" Expr.Text
       , textFieldDefault "maintainer" ""
@@ -566,7 +566,7 @@ sourceRepoDefault _ = fields
       , emptyOptionalDefault "tag" Expr.Text
       , emptyOptionalDefault "subdir" Expr.Text
       , ( "kind"
-        , generaliseEmbed repoKind Cabal.RepoHead
+        , resolveType TypeRepoKind `Expr.Field` "RepoHead"
         )
       , emptyOptionalDefault "commit" Expr.Text
       ]
@@ -873,8 +873,9 @@ spdxLicenseIdToDhall :: Dhall.InputType SPDX.LicenseId
 spdxLicenseIdToDhall =
   Dhall.InputType
     { Dhall.embed = \ident ->
-        licenseIdType `Expr.Field` identName ident
-    , Dhall.declared = licenseIdType
+        Expr.Var "types" `Expr.Field` "LicenseId" `Expr.Field` identName ident
+    , Dhall.declared =
+        Expr.Var "types" `Expr.Field` "LicenseId"
     }
 
   where
@@ -887,8 +888,9 @@ spdxLicenseExceptionIdToDhall :: Dhall.InputType SPDX.LicenseExceptionId
 spdxLicenseExceptionIdToDhall =
   Dhall.InputType
     { Dhall.embed = \ident ->
-        licenseExIdType `Expr.Field` identName ident
-    , Dhall.declared = licenseExIdType
+        Expr.Var "types" `Expr.Field` "LicenseExceptionId" `Expr.Field` identName ident
+    , Dhall.declared =
+        Expr.Var "types" `Expr.Field` "LicenseExceptionId"
     }
 
   where
@@ -897,48 +899,6 @@ spdxLicenseExceptionIdToDhall =
     identName e =
       StrictText.pack ( show e )
 --}
-
-newtype Union a =
-  Union
-    { _unUnion ::
-        ( a ->
-          ( First ( Dhall.Text, DhallExpr )
-          , Map.Map Dhall.Text DhallExpr
-          )
-        , Map.Map Dhall.Text DhallExpr
-        )
-    }
-  deriving ( Semigroup, Monoid )
-
-
-runUnion :: ( Show a ) => Union a -> Dhall.InputType a
-runUnion ( Union ( f, t ) ) =
-  Dhall.InputType
-    { Dhall.embed =
-        \a ->
-          case f a of
-            ( First Nothing, _ ) ->
-              error $ "Union did not match anything. Given " ++ show a
-
-            ( First ( Just ( k, v ) ), alts ) ->
-              Expr.UnionLit k v ( Just <$> alts )
-    , Dhall.declared =
-        sortExpr ( Expr.Union ( Just <$> t ) )
-    }
-
-
-unionAlt :: Dhall.Text -> ( a -> Maybe b ) -> Dhall.InputType b -> Union a
-unionAlt k f t =
-  Union
-    ( \a ->
-        case f a of
-          Nothing ->
-            ( mempty, Map.singleton k ( Dhall.declared t ) )
-
-          Just _ ->
-            ( First ( fmap ( \b -> ( k, Dhall.embed t b ) ) ( f a ) ), mempty )
-    , Map.singleton k ( Dhall.declared t )
-    )
 
 
 maybeToDhall :: Dhall.InputType a -> Dhall.InputType ( Maybe a )
@@ -958,7 +918,7 @@ listOf t =
     { Dhall.embed =
         \a ->
           Expr.ListLit
-            ( foldl ( \_ _ -> Nothing ) ( Just ( Dhall.declared t ) ) a )
+            ( foldl ( \_ _ -> Nothing ) ( Just ( Expr.App Expr.List ( Dhall.declared t ) ) ) a )
             ( foldMap ( pure . Dhall.embed t ) a )
     , Dhall.declared = Expr.App Expr.List ( Dhall.declared t )
     }
@@ -981,6 +941,7 @@ compilerFlavor =
     nullary k = compilerType `Expr.Field` k
     appCompiler k v = Expr.App ( nullary k ) v
     compiler k = appCompiler k ( Expr.RecordLit mempty )
+
   in
   Dhall.InputType
     { Dhall.embed = \case
@@ -1202,7 +1163,8 @@ setupBuildInfo =
           ]
       )
   )
-    { Dhall.declared = resolveType TypeCustomSetup
+    { Dhall.declared =
+        Expr.Var "types" `Expr.Field` "SetupBuildInfo"
     }
 
 
@@ -1378,27 +1340,52 @@ os =
 
 arch :: Dhall.InputType Cabal.Arch
 arch =
-  runUnion
-    ( mconcat
-        [ unionAlt "I386" ( \x -> case x of Cabal.I386 -> Just () ; _ -> Nothing ) Dhall.inject
-        , unionAlt "X86_64" ( \x -> case x of Cabal.X86_64 -> Just () ; _ -> Nothing ) Dhall.inject
-        , unionAlt "PPC" ( \x -> case x of Cabal.PPC -> Just () ; _ -> Nothing ) Dhall.inject
-        , unionAlt "PPC64" ( \x -> case x of Cabal.PPC64 -> Just () ; _ -> Nothing ) Dhall.inject
-        , unionAlt "Sparc" ( \x -> case x of Cabal.Sparc -> Just () ; _ -> Nothing ) Dhall.inject
-        , unionAlt "Arm" ( \x -> case x of Cabal.Arm -> Just () ; _ -> Nothing ) Dhall.inject
-        , unionAlt "Mips" ( \x -> case x of Cabal.Mips -> Just () ; _ -> Nothing ) Dhall.inject
-        , unionAlt "SH" ( \x -> case x of Cabal.SH -> Just () ; _ -> Nothing ) Dhall.inject
-        , unionAlt "IA64" ( \x -> case x of Cabal.IA64 -> Just () ; _ -> Nothing ) Dhall.inject
-        , unionAlt "S390" ( \x -> case x of Cabal.S390 -> Just () ; _ -> Nothing ) Dhall.inject
-        , unionAlt "Alpha" ( \x -> case x of Cabal.Alpha -> Just () ; _ -> Nothing ) Dhall.inject
-        , unionAlt "Hppa" ( \x -> case x of Cabal.Hppa -> Just () ; _ -> Nothing ) Dhall.inject
-        , unionAlt "Rs6000" ( \x -> case x of Cabal.Rs6000 -> Just () ; _ -> Nothing ) Dhall.inject
-        , unionAlt "M68k" ( \x -> case x of Cabal.M68k -> Just () ; _ -> Nothing ) Dhall.inject
-        , unionAlt "Vax" ( \x -> case x of Cabal.Vax -> Just () ; _ -> Nothing ) Dhall.inject
-        , unionAlt "JavaScript" ( \x -> case x of Cabal.JavaScript -> Just () ; _ -> Nothing ) Dhall.inject
-        , unionAlt "OtherArch" ( \x -> case x of Cabal.OtherArch s -> Just s ; _ -> Nothing ) ( runRecordInputType ( recordField "_1" stringToDhall ) )
-        ]
-    )
+  Dhall.InputType
+    { Dhall.embed = \case
+        Cabal.I386 ->
+          arch "I386"
+        Cabal.X86_64 ->
+          arch "X86_64"
+        Cabal.PPC ->
+          arch "PPC"
+        Cabal.PPC64 ->
+          arch "PPC64"
+        Cabal.Sparc ->
+          arch "Sparc"
+        Cabal.Arm ->
+          arch "Arm"
+        Cabal.Mips ->
+          arch "Mips"
+        Cabal.SH ->
+          arch "SH"
+        Cabal.IA64 ->
+          arch "IA64"
+        Cabal.S390 ->
+          arch "S390"
+        Cabal.Alpha ->
+          arch "Alpha"
+        Cabal.Hppa ->
+          arch "Hppa"
+        Cabal.Rs6000 ->
+          arch "Rs6000"
+        Cabal.M68k ->
+          arch "M68k"
+        Cabal.Vax ->
+          arch "Vax"
+        Cabal.JavaScript ->
+          arch "JavaScript"
+--        Cabal.AArch64 ->
+--          arch "AArch64"
+        Cabal.OtherArch s ->
+          Expr.App
+            ( arch "OtherArch" )
+            ( Expr.RecordLit ( Map.singleton "_1" ( dhallString s ) ) )
+    , Dhall.declared =
+        Expr.Var "types" `Expr.Field` "Arch"
+    }
+  where
+  arch name =
+    Expr.Var "types" `Expr.Field` "Arch" `Expr.Field` name
 
 
 buildInfoRecord :: RecordInputType Cabal.BuildInfo
@@ -1512,17 +1499,19 @@ language =
   Dhall.InputType
     { Dhall.embed = \case
         Cabal.Haskell2010 ->
-          lang "Haskell2010" ( Expr.RecordLit mempty )
+          lang "Haskell2010"
         Cabal.Haskell98 ->
-          lang "Haskell98" ( Expr.RecordLit mempty )
+          lang "Haskell98"
         Cabal.UnknownLanguage s ->
-          lang "UnknownLanguage" ( Dhall.embed pairInputType s ) 
-      
-    , Dhall.declared = langType  
+          Expr.App
+            ( lang "UnknownLanguage" )
+            ( Expr.RecordLit ( Map.singleton "_1" ( dhallString s ) ) )
+    , Dhall.declared =
+        langType
     }
-  where langType = resolveType TypeLanguage
-        lang name = Expr.App ( langType `Expr.Field` name )
-        pairInputType = runRecordInputType ( recordField "_1" stringToDhall )
+  where
+    langType = resolveType TypeLanguage
+    lang name = langType  `Expr.Field` name
 
 
 extension :: Dhall.InputType Cabal.Extension
@@ -1564,7 +1553,7 @@ compilerOptions =
                   ( map
                       ( \( c, opts ) ->
                           ( StrictText.pack ( show c )
-                          , Expr.ListLit ( Just Expr.Text ) ( dhallString <$> Seq.fromList opts )
+                          , Expr.ListLit ( Just ( Expr.App Expr.List Expr.Text ) ) ( dhallString <$> Seq.fromList opts )
                           )
                       )
                       xs
@@ -1660,32 +1649,28 @@ testSuite =
 
 testSuiteInterface :: Dhall.InputType Cabal.TestSuiteInterface
 testSuiteInterface =
-  runUnion
-    ( mconcat
-        [ unionAlt
-            "exitcode-stdio"
-            ( \x ->
-                case x of
-                  Cabal.TestSuiteExeV10 _ main ->
-                    Just main
-
-                  _ ->
-                    Nothing
+  Dhall.InputType
+    { Dhall.embed = \case
+        Cabal.TestSuiteExeV10 _ main ->
+          Expr.App
+            ( interface "exitcode-stdio" )
+            ( Dhall.embed
+              ( runRecordInputType ( recordField "main-is" stringToDhall ) )
+              main
             )
-            ( runRecordInputType ( recordField "main-is" stringToDhall ) )
-        , unionAlt
-            "detailed"
-            ( \x ->
-                case x of
-                  Cabal.TestSuiteLibV09 _ m ->
-                    Just m
-
-                  _ ->
-                    Nothing
+        Cabal.TestSuiteLibV09 _ m ->
+          Expr.App
+            ( interface "detailed" )
+            ( Dhall.embed
+              ( runRecordInputType ( recordField "module" moduleName ) )
+              m
             )
-            ( runRecordInputType ( recordField "module" moduleName ) )
-        ]
-    )
+    , Dhall.declared =
+        Expr.Var "types" `Expr.Field` "TestType"
+    }
+  where
+  interface name =
+    Expr.Var "types" `Expr.Field` "TestType" `Expr.Field` name
 
 
 executable :: Dhall.InputType Cabal.Executable
@@ -1744,16 +1729,26 @@ versionInfo =
 
 foreignLibOption :: Dhall.InputType Cabal.ForeignLibOption
 foreignLibOption =
-  runUnion
-    ( unionAlt "Standalone" ( \x -> case x of Cabal.ForeignLibStandalone -> Just () ) Dhall.inject
-    )
+  Dhall.InputType
+    { Dhall.embed = \case
+        Cabal.ForeignLibStandalone ->
+          Expr.Var "types" `Expr.Field` "ForeignLibOption" `Expr.Field` "Standalone"
+    , Dhall.declared =
+        Expr.Var "types" `Expr.Field` "ForeignLibOption"
+    }
 
 
 foreignLibType :: Dhall.InputType Cabal.ForeignLibType
 foreignLibType =
-  runUnion
-    ( mconcat
-        [ unionAlt "Shared" ( \x -> case x of Cabal.ForeignLibNativeShared -> Just () ; _ -> Nothing ) Dhall.inject
-        , unionAlt "Static" ( \x -> case x of Cabal.ForeignLibNativeStatic -> Just () ; _ -> Nothing ) Dhall.inject
-        ]
-    )
+  Dhall.InputType
+    { Dhall.embed = \case
+        Cabal.ForeignLibNativeShared ->
+          ty "Shared"
+        Cabal.ForeignLibNativeStatic ->
+          ty "Static"
+    , Dhall.declared =
+        Expr.Var "types" `Expr.Field` "ForeignLibType"
+    }
+  where
+  ty name =
+    Expr.Var "types" `Expr.Field` "ForeignLibType" `Expr.Field` name

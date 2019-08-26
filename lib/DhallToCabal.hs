@@ -36,12 +36,19 @@ module DhallToCabal
   , buildInfoType
 --  , executableScope
   , moduleRenaming
+  , foreignLibOption
+  , foreignLibType
+  , setupBuildInfo
+  , dependency
+  , testSuiteInterface
+  , mixin
+  , flag
 
   , sortExpr
   ) where
 
 import Data.List ( partition )
-import Data.Maybe ( fromMaybe )
+import Data.Maybe ( fromMaybe, fromJust )
 import Data.Monoid ( (<>) )
 
 import qualified Control.Exception
@@ -155,10 +162,10 @@ version =
     go =
       \case
         Expr.App "v" ( Expr.TextLit ( Expr.Chunks [] text ) ) ->
-          return ( parse text )
+          pure ( parse text )
 
         e ->
-          error ( show e )
+          Dhall.extractError ( StrictText.pack ( show e ) )
 
     expected =
       Expr.Pi "Version" ( Expr.Const Expr.Type )
@@ -250,6 +257,7 @@ testSuiteInterface = Dhall.union
               ( Dhall.record ( Dhall.field "module" moduleName ) )
     ]
   )
+
 
 
 unqualComponentName :: Dhall.Type Cabal.UnqualComponentName
@@ -380,10 +388,10 @@ versionRange =
     go =
       \case
         "anyVersion" ->
-          return Cabal.anyVersion
+          pure Cabal.anyVersion
 
         "noVersion" ->
-          return Cabal.noVersion
+          pure Cabal.noVersion
 
         Expr.App "thisVersion" components ->
           Cabal.thisVersion <$> Dhall.extract version components
@@ -424,8 +432,8 @@ versionRange =
         Expr.App "intervalsVersionRange" intervals ->
           Cabal.fromVersionIntervals <$> Dhall.extract versionIntervals intervals
         
-        _ ->
-          Nothing
+        e ->
+          Dhall.typeError e expected
 
     expected =
       let
@@ -477,7 +485,7 @@ versionIntervals =
   let
     (Dhall.Type extractIn expectedIn) = Dhall.list versionInterval
     
-    extract vis = Cabal.mkVersionIntervals =<< extractIn vis
+    extract = fmap ( fromJust . Cabal.mkVersionIntervals ) . extractIn
     
     expected = expectedIn
 
@@ -493,16 +501,14 @@ versionInterval :: Dhall.Type Cabal.VersionInterval
 versionInterval =
   let extract = \case
         Expr.TextLit (Expr.Chunks [] txt) ->
-          let str = StrictText.unpack txt
-          in maybe
-               ( Control.Exception.throw
-                 ( VersionIntervalParseError
-                   ( "Unable to parse interval: " ++ str ) ) ) 
-               Just
-               ( Cabal.simpleParse str )
+          let str = StrictText.unpack txt 
+          in pure ( fromMaybe
+                    ( Control.Exception.throw
+                      ( VersionIntervalParseError
+                        ( "Unable to parse interval: " ++ str ) ) )
+                    ( Cabal.simpleParse str ) )
              
-        _ ->
-          Nothing
+        e -> Dhall.extractError ( StrictText.pack ( show e ) )
         
       expected = Expr.Text
 
@@ -537,6 +543,29 @@ license = Dhall.union
   )
 
 {--
+license :: Dhall.Type (Either SPDX.License Cabal.License)
+license = Dhall.union
+  ( mconcat
+    [ Right . Cabal.GPL <$> Dhall.constructor "GPL" ( Dhall.maybe version )
+    , Right . Cabal.AGPL <$> Dhall.constructor "AGPL" ( Dhall.maybe version )
+    , Right . Cabal.LGPL <$> Dhall.constructor "LGPL" ( Dhall.maybe version )
+    , Right Cabal.BSD2 <$ Dhall.constructor "BSD2" Dhall.unit
+    , Right Cabal.BSD3 <$ Dhall.constructor "BSD3" Dhall.unit
+    , Right Cabal.BSD4 <$ Dhall.constructor "BSD4" Dhall.unit
+    , Right Cabal.MIT <$ Dhall.constructor "MIT" Dhall.unit
+    , Right Cabal.ISC <$ Dhall.constructor "ISC" Dhall.unit
+    , Right . Cabal.MPL <$> Dhall.constructor "MPL" version
+    , Right . Cabal.Apache <$> Dhall.constructor "Apache" ( Dhall.maybe version )
+    , Right Cabal.PublicDomain <$ Dhall.constructor "PublicDomain" Dhall.unit
+    , Right Cabal.AllRightsReserved <$ Dhall.constructor "AllRightsReserved" Dhall.unit
+    , Right Cabal.UnspecifiedLicense <$ Dhall.constructor "Unspecified" Dhall.unit
+    , Right . Cabal.UnknownLicense <$> Dhall.constructor "Unknown" Dhall.string
+    , Right Cabal.OtherLicense <$ Dhall.constructor "Other" Dhall.unit
+    , Left . SPDX.License <$> Dhall.constructor "SPDX" spdxLicense
+    ]
+  )
+
+
 spdxLicense :: Dhall.Type SPDX.LicenseExpression
 spdxLicense =
   let
@@ -584,8 +613,8 @@ spdxLicense =
         Expr.App ( Expr.App ( Expr.Var (Expr.V "or"  0)) a ) b ->
           SPDX.EOr <$> go a <*> go b
 
-        _ ->
-          Nothing
+        e ->
+          Dhall.typeError e expected
 
     expected =
       let
@@ -715,6 +744,16 @@ pkgconfigName :: Dhall.Type Cabal.PkgconfigName
 pkgconfigName =
   Cabal.mkPkgconfigName <$> Dhall.string
 
+
+{--
+executableScope :: Dhall.Type Cabal.ExecutableScope
+executableScope = Dhall.union
+  ( mconcat
+    [ Cabal.ExecutablePublic <$ Dhall.constructor "Public" Dhall.unit
+    , Cabal.ExecutablePrivate <$ Dhall.constructor "Private" Dhall.unit
+    ]
+  )
+--}
 
 
 moduleReexport :: Dhall.Type Cabal.ModuleReexport

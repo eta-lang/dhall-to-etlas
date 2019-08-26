@@ -38,7 +38,7 @@ let deps =
       , directory =
           pkgVer "directory" "1.2.7.1" "1.4"
       , dhall =
-          pkgVer "dhall" "1.23.0" "1.24"
+          pkgVer "dhall" "1.25.0" "1.26"
       , dhall-to-etlas =
           pkg "dhall-to-etlas" anyVersion
       , filepath =
@@ -46,11 +46,11 @@ let deps =
       , microlens =
           pkgVer "microlens" "0.1.0.0" "0.5"
       , optparse-applicative =
-          pkgVer "optparse-applicative" "0.13.2" "0.15"
+          pkgVer "optparse-applicative" "0.15" "0.16"
       , prettyprinter =
-          pkgVer "prettyprinter" "1.2.0.1" "1.3"
+          pkgVer "prettyprinter" "1.3.0" "1.4"
       , contravariant =
-          pkgVer "contravariant" "1.4" "1.5"
+          pkgVer "contravariant" "1.5" "1.6"
       , tasty =
           pkgVer "tasty" "0.11" "1.3"
       , tasty-golden =
@@ -146,6 +146,7 @@ in    prelude.utils.GitHub-project
                   [ "CabalToDhall"
                   , "DhallLocation"
                   , "DhallToCabal"
+                  , "DhallToCabal.FactorType"
                   , "DhallToCabal.Util"
                   ]
               , hs-source-dirs =
@@ -174,6 +175,7 @@ in    prelude.utils.GitHub-project
               ⫽ { build-depends =
                     [ deps.etlas-cabal
                     , deps.base
+                    , deps.containers
                     , deps.dhall
                     , deps.dhall-to-etlas
                     , deps.directory
