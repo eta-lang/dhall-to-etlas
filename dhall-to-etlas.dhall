@@ -2,7 +2,7 @@ let prelude =
       https://github.com/eta-lang/dhall-to-etlas/raw/cabal/dhall/prelude.dhall sha256:280437801619269835a8faba6dfcf9e72ba14b638b8525feca4860fc00d67257
 
 let types =
-      https://github.com/eta-lang/dhall-to-etlas/raw/cabal/dhall/types.dhall sha256:5edab63819daa9e2cd373f90931999234b4eec44f7bd6d5b720cff25f15b87b2
+      https://github.com/eta-lang/dhall-to-etlas/raw/cabal/dhall/types.dhall sha256:874d625ef72e31d4291deedf516e34f5ff0cb9856759a1f63a6114c42e53b615
 
 let v = prelude.v
 
