@@ -59,7 +59,8 @@ in  updateRepo
               }
             ]
         , library =
-            [   λ(config : types.Config)
+            Some
+            (   λ(config : types.Config)
               →   prelude.defaults.empty.Library
                 ⫽ { exposed-modules =
                       [ "Network.Wai.Servlet", "Network.Wai.Servlet.Examples" ]
@@ -133,6 +134,6 @@ in  updateRepo
                           else  [] : List Text
                         )
                   }
-            ] : Optional (./../../dhall/types/Guarded.dhall types.Library)
+            )
         }
     )
