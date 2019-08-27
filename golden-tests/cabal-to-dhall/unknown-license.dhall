@@ -3,8 +3,8 @@ let prelude = ./../../dhall/prelude.dhall
 let types = ./../../dhall/types.dhall
 
 in    prelude.defaults.Package
-    ⫽ { cabal-version =
-          prelude.v "1.12"
+    ⫽ { build-type =
+          None types.BuildType
       , license =
           types.License.Unknown "MYUnknownLicense"
       , name =
