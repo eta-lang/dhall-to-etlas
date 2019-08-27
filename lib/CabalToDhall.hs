@@ -20,6 +20,7 @@ module CabalToDhall
 
 import Data.Foldable ( foldMap )
 import Data.Functor.Contravariant ( (>$<), Contravariant( contramap ) )
+import Data.List.NonEmpty (  NonEmpty(..) )
 import Data.Monoid ( First(..) )
 import Data.Semigroup ( Semigroup, (<>) )
 import Numeric.Natural ( Natural )
@@ -78,7 +79,7 @@ import qualified Language.Haskell.Extension as Cabal
 import DhallLocation ( DhallLocation(..) )
 import DhallToCabal ( sortExpr )
 import DhallToCabal.ConfigTree ( ConfigTree(..) )
-
+import Debug.Trace
 
 type DhallExpr =
   Dhall.Core.Expr Dhall.Parser.Src Dhall.TypeCheck.X
@@ -105,17 +106,15 @@ cabalToDhall
   :: DhallLocation
   -> Cabal.GenericPackageDescription
   -> Expr.Expr Dhall.Parser.Src Dhall.Core.Import
-cabalToDhall dhallLocation genericPackageDescription = 
-  Expr.Let ( NonEmpty.fromList
-               [ Expr.Binding "prelude"
-                 Nothing ( Expr.Embed ( preludeLocation dhallLocation ) )
-               , Expr.Binding  "types"
-                 Nothing ( Expr.Embed ( typesLocation dhallLocation ) )
-               ]
-           ) $ Dhall.TypeCheck.absurd <$>
-                 Dhall.embed
-                 genericPackageDescriptionToDhall
-                 genericPackageDescription
+cabalToDhall dhallLocation genericPackageDescription =
+  Expr.Let
+    ( Expr.Binding "prelude" Nothing ( Expr.Embed ( preludeLocation dhallLocation ) )
+   :| [ Expr.Binding "types" Nothing ( Expr.Embed ( typesLocation dhallLocation ) ) ]
+    )
+    $ Dhall.TypeCheck.absurd <$>
+        Dhall.embed
+          genericPackageDescriptionToDhall
+          genericPackageDescription
 
 
 -- Note: the Show instance is used by --print-type.
@@ -185,7 +184,7 @@ resolveDefaultVar :: Dhall.Text -> Expr.Expr s a
 resolveDefaultVar name =
   Expr.Var "prelude" `Expr.Field` "defaults" `Expr.Field` name
 
-resolvePreludeVar :: PreludeReference -> Expr.Expr s a 
+resolvePreludeVar :: PreludeReference -> Expr.Expr s a
 resolvePreludeVar = \case
   PreludeDefault typ ->
     resolveDefaultVar ( StrictText.pack ( show typ ) )
@@ -267,7 +266,7 @@ getDefault
 getDefault typesLoc resolve typ = withTypesImport expr
   where
     withTypesImport =
-      Expr.Let $ pure $ Expr.Binding "types" Nothing ( Expr.Embed typesLoc )
+      Expr.Let (Expr.Binding "types" Nothing ( Expr.Embed typesLoc ) :| [])
 
     factorBuildInfo fields =
       let
@@ -282,7 +281,8 @@ getDefault typesLoc resolve typ = withTypesImport expr
                   ( resolve ( PreludeDefault BuildInfo ) )
                   ( Expr.RecordLit ( Map.difference fields shared ) )
 
-    expr =      case typ of
+    expr =
+      case typ of
         CompilerOptions ->
           Expr.RecordLit ( compilerOptionsDefault resolve )
         BuildInfo ->
@@ -376,10 +376,7 @@ buildInfoDefault resolve = fields
       , ( "default-extensions" , defaultExtensions )
       , ( "default-language"
         , Expr.Some
-            ( Expr.App
-              ( resolveType TypeLanguage `Expr.Field` "Haskell2010" )
-              ( Expr.RecordLit mempty )
-            )
+          ( resolveType TypeLanguage `Expr.Field` "Haskell2010" )
         )
       , emptyListDefault "extra-framework-dirs" Expr.Text
       , emptyListDefault "extra-ghci-libraries" Expr.Text
@@ -418,7 +415,7 @@ defaultExtensions :: Expr.Expr s a
 defaultExtensions =
   Expr.ListLit ( Just ( generaliseDeclared extension ) )
                ( fmap ( generaliseEmbed extension ) ( Seq.fromList cabalExts ) )
-  where cabalExts = 
+  where cabalExts =
           map Cabal.EnableExtension
             [ Cabal.BangPatterns
             , Cabal.DataKinds
@@ -588,13 +585,13 @@ extractDefaultComparisonReplace ( DefaultComparisonReplace expr ) =
 
 
 nonDefaultFields
-  :: ( Eq a )
+  :: ( Eq a, Show s, Show a )
   => Map.Map StrictText.Text ( Expr.Expr s a )
   -> Map.Map StrictText.Text ( Expr.Expr s a )
   -> Map.Map StrictText.Text ( Expr.Expr s a )
 nonDefaultFields defs fields =
   let
-    withoutDefaults = Map.difference fields defs
+    withoutDefaults = Map.difference (traceShow "fields" $ traceShowId fields) (traceShow "defs" $ traceShowId defs)
     compared = Map.intersectionWith compareToDefault defs fields
     changed = Map.mapMaybe extractDefaultComparisonReplace compared
   in
@@ -608,7 +605,7 @@ compareToDefault _ expr =
   DefaultComparisonReplace expr
 
 
-withDefault :: ( Eq a ) => KnownDefault -> Default s a -> Expr.Expr s a -> Expr.Expr s a
+withDefault :: ( Eq a, Show a, Show s ) => KnownDefault -> Default s a -> Expr.Expr s a -> Expr.Expr s a
 withDefault typ defs ( Expr.RecordLit fields ) =
   let
     nonDefaults = nonDefaultFields ( defs resolvePreludeVar ) fields
@@ -1051,7 +1048,7 @@ versionRange =
                   )
                   b
               )
-              
+
           in
           go ( Cabal.fromVersionIntervals ( Cabal.toVersionIntervals versionRange0 ) )
     , Dhall.declared = resolveType TypeVersionRange
@@ -1409,7 +1406,7 @@ buildInfoRecord =
     , recordField "other-languages" ( contramap Cabal.otherLanguages ( listOf language ) )
     , recordField "default-extensions" ( Cabal.defaultExtensions >$< listOf extension )
     , recordField "other-extensions" ( Cabal.otherExtensions >$< listOf extension )
---    , recordField "extra-libraries" ( Cabal.extraLibs >$< listOf stringToDhall )
+    --    , recordField "extra-libraries" ( Cabal.extraLibs >$< listOf stringToDhall )
     , recordField "maven-depends" ( Cabal.extraLibs >$< listOf stringToDhall )
     , recordField "extra-ghci-libraries" ( Cabal.extraGHCiLibs >$< listOf stringToDhall )
     , recordField "extra-lib-dirs" ( Cabal.extraLibDirs >$< listOf stringToDhall )
@@ -1419,10 +1416,10 @@ buildInfoRecord =
     , recordField "compiler-options" ( Cabal.options >$< compilerOptions )
     , recordField "profiling-options" ( Cabal.profOptions >$< compilerOptions )
     , recordField "shared-options" ( Cabal.sharedOptions >$< compilerOptions )
---    , recordField "static-options" ( Cabal.staticOptions >$< compilerOptions )
+    --    , recordField "static-options" ( Cabal.staticOptions >$< compilerOptions )
     , recordField "build-depends" ( Cabal.targetBuildDepends >$< listOf dependency )
     , recordField "mixins" ( Cabal.mixins >$< listOf mixin )
-{--
+    {--
     , recordField "asm-options" ( Cabal.asmOptions >$< listOf stringToDhall)
     , recordField "asm-sources" ( Cabal.asmSources >$< listOf stringToDhall)
     , recordField "cmm-options" ( Cabal.cmmOptions >$< listOf stringToDhall )
@@ -1432,7 +1429,7 @@ buildInfoRecord =
     , recordField "virtual-modules" ( Cabal.virtualModules >$< listOf moduleName )
     , recordField "extra-lib-flavours" ( Cabal.extraLibFlavours >$< listOf stringToDhall )
     , recordField "extra-bundled-libs" ( Cabal.extraBundledLibs >$< listOf stringToDhall )
---}
+    --}
     ]
 
 
