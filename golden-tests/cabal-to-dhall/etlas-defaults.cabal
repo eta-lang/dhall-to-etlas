@@ -1,0 +1,41 @@
+cabal-version: 1.12
+name: etlas-defaults
+version: 1
+build-type: Simple
+license: AllRightsReserved
+         
+executable hello
+  main-is: Main.hs
+  default-language: Haskell2010
+  default-extensions: BangPatterns
+                      DataKinds
+                      DeriveFoldable
+                      DeriveFunctor
+                      DeriveGeneric
+                      DeriveTraversable
+                      EmptyCase
+                      ExistentialQuantification
+                      FlexibleContexts
+                      FlexibleInstances
+                      FunctionalDependencies
+                      GeneralizedNewtypeDeriving
+                      MagicHash
+                      MultiParamTypeClasses
+                      MultiWayIf
+                      LambdaCase
+                      OverloadedStrings
+                      RankNTypes
+                      RecordWildCards
+                      StandaloneDeriving
+                      ScopedTypeVariables
+                      TupleSections
+                      TypeFamilies
+                      TypeOperators
+  ghc-options: -Wall
+               -fno-warn-safe
+               -fno-warn-unsafe
+               -fno-warn-implicit-prelude
+               -fno-warn-missing-import-lists
+               -fno-warn-missing-local-sigs
+               -fno-warn-monomorphism-restriction
+               -fno-warn-name-shadowing
