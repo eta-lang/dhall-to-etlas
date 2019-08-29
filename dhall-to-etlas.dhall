@@ -80,227 +80,227 @@ let warning-options =
       , "-fno-warn-name-shadowing"
       ]
 
-in    prelude.utils.GitHub-project
-      { owner = "eta-lang", repo = "dhall-to-etlas" }
-    ⫽ { cabal-version =
-          v "1.12"
-      , synopsis =
-          "Compile Dhall expressions to Etlas files"
-      , description =
-          ''
-          dhall-to-etlas takes Dhall expressions and compiles them into Etlas
-          files. All of the features of Dhall are supported, such as let
-          bindings and imports, and all features of Etlas are supported
-          (including conditional stanzas).
-          ''
-      , category =
-          "Distribution"
-      , build-type =
-          Some types.BuildType.Simple
-      , maintainer =
-          "Javier Neira <atreyu.bbb@gmail.com>"
-      , author =
-          "Ollie Charles <ollie@ocharles.org.uk>"
-      , extra-source-files =
-          [ "Changelog.md"
-          , "README.md"
-          , "dhall/*.dhall"
-          , "dhall/defaults/*.dhall"
-          , "dhall/Dependency/*.dhall"
-          , "dhall/SPDX/*.dhall"
-          , "dhall/types/*.dhall"
-          , "dhall/types/SPDX/*.dhall"
-          , "dhall/utils/*.dhall"
-          , "dhall/Version/*.dhall"
-          , "dhall/VersionRange/*.dhall"
-          , "golden-tests/dhall-to-cabal/*.dhall"
-          , "golden-tests/dhall-to-cabal/*.cabal"
-          , "golden-tests/cabal-to-dhall/*.dhall"
-          , "golden-tests/cabal-to-dhall/*.cabal"
-          ]
-      , license =
-          types.License.MIT
-      , license-files =
-          [ "LICENSE" ]
-      , version =
-          v "1.4.0.0"
-      , library =
-          prelude.unconditional.library
-          (   prelude.defaults.Library
-            ⫽ { build-depends =
-                  [ deps.etlas-cabal
-                  , deps.base
-                  , deps.bytestring
-                  , deps.containers
-                  , deps.contravariant
-                  , deps.dhall
-                  , deps.filepath
-                  , deps.text
-                  , deps.transformers
-                  , deps.vector
-                  , deps.semigroups
-                  ]
-              , compiler-options =
-                  prelude.defaults.CompilerOptions ⫽ { GHC = warning-options }
-              , exposed-modules =
-                  [ "CabalToDhall"
-                  , "DhallLocation"
-                  , "DhallToCabal"
-                  , "DhallToCabal.FactorType"
-                  , "DhallToCabal.Util"
-                  ]
-              , hs-source-dirs =
-                  [ "lib" ]
-              , other-extensions =
-                  [ types.Extension.GADTs True
-                  , types.Extension.GeneralizedNewtypeDeriving True
-                  , types.Extension.LambdaCase True
-                  , types.Extension.OverloadedStrings True
-                  , types.Extension.RecordWildCards True
-                  ]
-              , other-modules =
-                  [ "DhallToCabal.ConfigTree"
-                  , "DhallToCabal.Diff"
-                  , "Dhall.Extra"
-                  , "Paths_dhall_to_etlas"
-                  ]
-              , default-language =
-                  Some types.Language.Haskell2010
-              }
-          )
-      , executables =
-          [ prelude.unconditional.executable
-            "dhall-to-etlas"
-            (   prelude.defaults.Executable
+let addWarningOptions =
+        λ(component : types.BuildInfo)
+      →   component
+        ⫽ { compiler-options =
+                component.compiler-options
+              ⫽ { GHC = component.compiler-options.GHC # warning-options }
+          }
+
+in  prelude.utils.mapBuildInfo
+    addWarningOptions
+    (   prelude.utils.GitHub-project
+        { owner = "eta-lang", repo = "dhall-to-etlas" }
+      ⫽ { cabal-version =
+            v "1.12"
+        , synopsis =
+            "Compile Dhall expressions to Etlas files"
+        , description =
+            ''
+            dhall-to-etlas takes Dhall expressions and compiles them into Etlas
+            files. All of the features of Dhall are supported, such as let
+            bindings and imports, and all features of Etlas are supported
+            (including conditional stanzas).
+            ''
+        , category =
+            "Distribution"
+        , build-type =
+            Some types.BuildType.Simple
+        , maintainer =
+            "Javier Neira <atreyu.bbb@gmail.com>"
+        , author =
+            "Ollie Charles <ollie@ocharles.org.uk>"
+        , extra-source-files =
+            [ "Changelog.md"
+            , "README.md"
+            , "dhall/*.dhall"
+            , "dhall/defaults/*.dhall"
+            , "dhall/Dependency/*.dhall"
+            , "dhall/SPDX/*.dhall"
+            , "dhall/types/*.dhall"
+            , "dhall/types/SPDX/*.dhall"
+            , "dhall/utils/*.dhall"
+            , "dhall/Version/*.dhall"
+            , "dhall/VersionRange/*.dhall"
+            , "golden-tests/dhall-to-cabal/*.dhall"
+            , "golden-tests/dhall-to-cabal/*.cabal"
+            , "golden-tests/cabal-to-dhall/*.dhall"
+            , "golden-tests/cabal-to-dhall/*.cabal"
+            ]
+        , license =
+            types.License.MIT
+        , license-files =
+            [ "LICENSE" ]
+        , version =
+            v "1.4.0.0"
+        , library =
+            prelude.unconditional.library
+            (   prelude.defaults.Library
               ⫽ { build-depends =
                     [ deps.etlas-cabal
                     , deps.base
+                    , deps.bytestring
                     , deps.containers
+                    , deps.contravariant
                     , deps.dhall
-                    , deps.dhall-to-etlas
-                    , deps.directory
                     , deps.filepath
-                    , deps.microlens
-                    , deps.optparse-applicative
-                    , deps.prettyprinter
-                    , deps.semigroups
                     , deps.text
                     , deps.transformers
+                    , deps.vector
+                    , deps.semigroups
                     ]
-                , compiler-options =
-                    prelude.defaults.CompilerOptions ⫽ { GHC = warning-options }
+                , exposed-modules =
+                    [ "CabalToDhall"
+                    , "DhallLocation"
+                    , "DhallToCabal"
+                    , "DhallToCabal.FactorType"
+                    , "DhallToCabal.Util"
+                    ]
                 , hs-source-dirs =
-                    [ "exe" ]
-                , main-is =
-                    "Main.hs"
+                    [ "lib" ]
                 , other-extensions =
-                    [ types.Extension.NamedFieldPuns True ]
+                    [ types.Extension.GADTs True
+                    , types.Extension.GeneralizedNewtypeDeriving True
+                    , types.Extension.LambdaCase True
+                    , types.Extension.OverloadedStrings True
+                    , types.Extension.RecordWildCards True
+                    ]
                 , other-modules =
-                    [ "Paths_dhall_to_etlas" ]
-                , default-language =
-                    Some types.Language.Haskell2010
-                }
-            )
-          , prelude.unconditional.executable
-            "etlas-to-dhall"
-            (   prelude.defaults.Executable
-              ⫽ { build-depends =
-                    [ deps.base
-                    , deps.dhall
-                    , deps.bytestring
-                    , deps.dhall-to-etlas
-                    , deps.optparse-applicative
-                    , deps.prettyprinter
-                    , deps.text
+                    [ "DhallToCabal.ConfigTree"
+                    , "DhallToCabal.Diff"
+                    , "Dhall.Extra"
+                    , "Paths_dhall_to_etlas"
                     ]
-                , compiler-options =
-                    prelude.defaults.CompilerOptions ⫽ { GHC = warning-options }
-                , hs-source-dirs =
-                    [ "cabal-to-dhall" ]
-                , main-is =
-                    "Main.hs"
-                , other-extensions =
-                    [ types.Extension.NamedFieldPuns True ]
-                , other-modules =
-                    [ "Paths_dhall_to_etlas" ]
                 , default-language =
                     Some types.Language.Haskell2010
                 }
             )
-          , prelude.unconditional.executable
-            "dhall-to-etlas-meta"
-            (   prelude.defaults.Executable
-              ⫽ { build-depends =
-                    [ deps.base
-                    , deps.directory
-                    , deps.dhall
-                    , deps.dhall-to-etlas
-                    , deps.filepath
-                    , deps.optparse-applicative
-                    , deps.prettyprinter
-                    ]
-                , hs-source-dirs =
-                    [ "meta" ]
-                , default-language =
-                    Some types.Language.Haskell2010
-                , compiler-options =
-                    prelude.defaults.CompilerOptions ⫽ { GHC = warning-options }
-                , main-is =
-                    "Main.hs"
-                }
-            )
-          ]
-      , test-suites =
-          [ prelude.unconditional.test-suite
-            "golden-tests"
-            (   prelude.defaults.TestSuite
-              ⫽ { build-depends =
-                    [ deps.base
-                    , deps.etlas-cabal
-                    , deps.Diff
-                    , deps.bytestring
-                    , deps.dhall
-                    , deps.dhall-to-etlas
-                    , deps.filepath
-                    , deps.microlens
-                    , deps.prettyprinter
-                    , deps.tasty
-                    , deps.tasty-golden
-                    , deps.text
-                    ]
-                , compiler-options =
-                    prelude.defaults.CompilerOptions ⫽ { GHC = warning-options }
-                , hs-source-dirs =
-                    [ "golden-tests" ]
-                , type =
-                    types.TestType.exitcode-stdio { main-is = "GoldenTests.hs" }
-                , default-language =
-                    Some types.Language.Haskell2010
-                }
-            )
-          , prelude.unconditional.test-suite
-            "unit-tests"
-            (   prelude.defaults.TestSuite
-              ⫽ { build-depends =
-                    [ deps.base
-                    , deps.etlas-cabal
-                    , deps.dhall
-                    , deps.dhall-to-etlas
-                    , deps.tasty
-                    , deps.tasty-hunit
-                    , deps.text
-                    ]
-                , compiler-options =
-                    prelude.defaults.CompilerOptions ⫽ { GHC = warning-options }
-                , hs-source-dirs =
-                    [ "tests" ]
-                , type =
-                    types.TestType.exitcode-stdio { main-is = "Tests.hs" }
-                , default-language =
-                    Some types.Language.Haskell2010
-                , other-modules =
-                    [ "DhallToCabal.Tests" ]
-                }
-            )
-          ]
-      }
+        , executables =
+            [ prelude.unconditional.executable
+              "dhall-to-etlas"
+              (   prelude.defaults.Executable
+                ⫽ { build-depends =
+                      [ deps.etlas-cabal
+                      , deps.base
+                      , deps.containers
+                      , deps.dhall
+                      , deps.dhall-to-etlas
+                      , deps.directory
+                      , deps.filepath
+                      , deps.microlens
+                      , deps.optparse-applicative
+                      , deps.prettyprinter
+                      , deps.semigroups
+                      , deps.text
+                      , deps.transformers
+                      ]
+                  , hs-source-dirs =
+                      [ "exe" ]
+                  , main-is =
+                      "Main.hs"
+                  , other-extensions =
+                      [ types.Extension.NamedFieldPuns True ]
+                  , other-modules =
+                      [ "Paths_dhall_to_etlas" ]
+                  , default-language =
+                      Some types.Language.Haskell2010
+                  }
+              )
+            , prelude.unconditional.executable
+              "etlas-to-dhall"
+              (   prelude.defaults.Executable
+                ⫽ { build-depends =
+                      [ deps.base
+                      , deps.dhall
+                      , deps.bytestring
+                      , deps.dhall-to-etlas
+                      , deps.optparse-applicative
+                      , deps.prettyprinter
+                      , deps.text
+                      ]
+                  , hs-source-dirs =
+                      [ "cabal-to-dhall" ]
+                  , main-is =
+                      "Main.hs"
+                  , other-extensions =
+                      [ types.Extension.NamedFieldPuns True ]
+                  , other-modules =
+                      [ "Paths_dhall_to_etlas" ]
+                  , default-language =
+                      Some types.Language.Haskell2010
+                  }
+              )
+            , prelude.unconditional.executable
+              "dhall-to-etlas-meta"
+              (   prelude.defaults.Executable
+                ⫽ { build-depends =
+                      [ deps.base
+                      , deps.directory
+                      , deps.dhall
+                      , deps.dhall-to-etlas
+                      , deps.filepath
+                      , deps.optparse-applicative
+                      , deps.prettyprinter
+                      ]
+                  , hs-source-dirs =
+                      [ "meta" ]
+                  , default-language =
+                      Some types.Language.Haskell2010
+                  , main-is =
+                      "Main.hs"
+                  }
+              )
+            ]
+        , test-suites =
+            [ prelude.unconditional.test-suite
+              "golden-tests"
+              (   prelude.defaults.TestSuite
+                ⫽ { build-depends =
+                      [ deps.base
+                      , deps.etlas-cabal
+                      , deps.Diff
+                      , deps.bytestring
+                      , deps.dhall
+                      , deps.dhall-to-etlas
+                      , deps.filepath
+                      , deps.microlens
+                      , deps.prettyprinter
+                      , deps.tasty
+                      , deps.tasty-golden
+                      , deps.text
+                      ]
+                  , hs-source-dirs =
+                      [ "golden-tests" ]
+                  , type =
+                      types.TestType.exitcode-stdio
+                      { main-is = "GoldenTests.hs" }
+                  , default-language =
+                      Some types.Language.Haskell2010
+                  }
+              )
+            , prelude.unconditional.test-suite
+              "unit-tests"
+              (   prelude.defaults.TestSuite
+                ⫽ { build-depends =
+                      [ deps.base
+                      , deps.etlas-cabal
+                      , deps.dhall
+                      , deps.dhall-to-etlas
+                      , deps.tasty
+                      , deps.tasty-hunit
+                      , deps.text
+                      ]
+                  , hs-source-dirs =
+                      [ "tests" ]
+                  , type =
+                      types.TestType.exitcode-stdio { main-is = "Tests.hs" }
+                  , default-language =
+                      Some types.Language.Haskell2010
+                  , other-modules =
+                      [ "DhallToCabal.Tests" ]
+                  }
+              )
+            ]
+        }
+    )
