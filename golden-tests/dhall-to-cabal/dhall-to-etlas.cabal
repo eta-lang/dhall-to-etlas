@@ -159,7 +159,7 @@ test-suite  unit-tests
                         ExistentialQuantification FlexibleContexts FlexibleInstances
                         FunctionalDependencies GeneralizedNewtypeDeriving MagicHash
                         MultiParamTypeClasses MultiWayIf LambdaCase OverloadedStrings
-                        RankNTypes RecordWildCards StandaloneDeriving ScopedTypeVariables
+                        RankNTypes StandaloneDeriving ScopedTypeVariables
                         TupleSections TypeFamilies TypeOperators
     hs-source-dirs: tests
     other-modules:

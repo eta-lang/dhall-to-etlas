@@ -85,8 +85,8 @@ library
                         ExistentialQuantification FlexibleContexts FlexibleInstances
                         FunctionalDependencies GeneralizedNewtypeDeriving MagicHash
                         MultiParamTypeClasses MultiWayIf LambdaCase OverloadedStrings
-                        RankNTypes RecordWildCards StandaloneDeriving ScopedTypeVariables
-                        TupleSections TypeFamilies TypeOperators
+                        RankNTypes StandaloneDeriving ScopedTypeVariables TupleSections
+                        TypeFamilies TypeOperators
     hs-source-dirs: src/main/eta
     other-modules:
         Dhall.Eta.Map
@@ -105,8 +105,8 @@ executable  dhall-eta-all
                         ExistentialQuantification FlexibleContexts FlexibleInstances
                         FunctionalDependencies GeneralizedNewtypeDeriving MagicHash
                         MultiParamTypeClasses MultiWayIf LambdaCase OverloadedStrings
-                        RankNTypes RecordWildCards StandaloneDeriving ScopedTypeVariables
-                        TupleSections TypeFamilies TypeOperators
+                        RankNTypes StandaloneDeriving ScopedTypeVariables TupleSections
+                        TypeFamilies TypeOperators
     hs-source-dirs: examples/src/main/eta
     ghc-prof-options: -Wall -fwarn-incomplete-uni-patterns -fwarn-incomplete-record-updates
     ghc-shared-options: -Wall -fwarn-incomplete-uni-patterns -fwarn-incomplete-record-updates
@@ -131,8 +131,8 @@ test-suite  tasty
                         ExistentialQuantification FlexibleContexts FlexibleInstances
                         FunctionalDependencies GeneralizedNewtypeDeriving MagicHash
                         MultiParamTypeClasses MultiWayIf LambdaCase OverloadedStrings
-                        RankNTypes RecordWildCards StandaloneDeriving ScopedTypeVariables
-                        TupleSections TypeFamilies TypeOperators
+                        RankNTypes StandaloneDeriving ScopedTypeVariables TupleSections
+                        TypeFamilies TypeOperators
     hs-source-dirs: src/test/eta
     other-modules:
         Dhall.Eta.Test.Common

@@ -3,23 +3,25 @@ let prelude = ./../../dhall/prelude.dhall
 let types = ./../../dhall/types.dhall
 
 in    prelude.defaults.Package
-    ⫽ { name =
-          "blah"
-      , version =
-          prelude.v "1"
-      , cabal-version =
+    ⫽ { cabal-version =
           prelude.v "2.0"
       , executables =
           [ { executable =
                   λ(config : types.Config)
                 →   prelude.defaults.Executable
-                  ⫽ { main-is =
-                        "Main.hs"
-                    , default-extensions =
+                  ⫽ { default-extensions =
                         [] : List types.Extension
+                    , main-is =
+                        "Main.hs"
                     }
             , name =
                 "hello"
             }
           ]
+      , license =
+          types.License.Unspecified
+      , name =
+          "blah"
+      , version =
+          prelude.v "1"
       }

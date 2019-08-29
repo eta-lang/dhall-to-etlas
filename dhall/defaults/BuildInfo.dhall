@@ -39,7 +39,6 @@ in  { autogen-modules =
         , types.Extension.LambdaCase True
         , types.Extension.OverloadedStrings True
         , types.Extension.RankNTypes True
-        , types.Extension.RecordWildCards True
         , types.Extension.StandaloneDeriving True
         , types.Extension.ScopedTypeVariables True
         , types.Extension.TupleSections True

@@ -3,11 +3,7 @@ let prelude = ./../../dhall/prelude.dhall
 let types = ./../../dhall/types.dhall
 
 in    prelude.defaults.Package
-    ⫽ { name =
-          "dhall-to-etlas"
-      , version =
-          prelude.v "1.2.0.0"
-      , author =
+    ⫽ { author =
           "Ollie Charles <ollie@ocharles.org.uk>"
       , bug-reports =
           "https://github.com/eta-lang/dhall-to-etlas/issues"
@@ -24,9 +20,7 @@ in    prelude.defaults.Package
           [ { executable =
                   λ(config : types.Config)
                 →   prelude.defaults.Executable
-                  ⫽ { main-is =
-                        "Main.hs"
-                    , build-depends =
+                  ⫽ { build-depends =
                         [ { bounds =
                               prelude.intervalVersionRange
                               ([ "[1.3.0.0,1.4)" ] : List Text)
@@ -98,6 +92,8 @@ in    prelude.defaults.Package
                         [] : List types.Extension
                     , hs-source-dirs =
                         [ "exe" ]
+                    , main-is =
+                        "Main.hs"
                     , other-extensions =
                         [ types.Extension.NamedFieldPuns True ]
                     , other-modules =
@@ -109,9 +105,7 @@ in    prelude.defaults.Package
           , { executable =
                   λ(config : types.Config)
                 →   prelude.defaults.Executable
-                  ⫽ { main-is =
-                        "Main.hs"
-                    , build-depends =
+                  ⫽ { build-depends =
                         [ { bounds =
                               prelude.intervalVersionRange
                               ([ "[4.5,5)" ] : List Text)
@@ -171,6 +165,8 @@ in    prelude.defaults.Package
                         [] : List types.Extension
                     , hs-source-dirs =
                         [ "cabal-to-dhall" ]
+                    , main-is =
+                        "Main.hs"
                     , other-extensions =
                         [ types.Extension.NamedFieldPuns True ]
                     , other-modules =
@@ -182,9 +178,7 @@ in    prelude.defaults.Package
           , { executable =
                   λ(config : types.Config)
                 →   prelude.defaults.Executable
-                  ⫽ { main-is =
-                        "Main.hs"
-                    , build-depends =
+                  ⫽ { build-depends =
                         [ { bounds =
                               prelude.intervalVersionRange
                               ([ "[4.5,5)" ] : List Text)
@@ -244,6 +238,8 @@ in    prelude.defaults.Package
                         [] : List types.Extension
                     , hs-source-dirs =
                         [ "meta" ]
+                    , main-is =
+                        "Main.hs"
                     }
             , name =
                 "dhall-to-cabal-meta"
@@ -421,6 +417,8 @@ in    prelude.defaults.Package
                       }
                 , default-extensions =
                     [] : List types.Extension
+                , exposed-modules =
+                    [ "DhallToCabal", "DhallLocation", "CabalToDhall" ]
                 , hs-source-dirs =
                     [ "lib" ]
                 , other-extensions =
@@ -436,8 +434,6 @@ in    prelude.defaults.Package
                     , "Dhall.Extra"
                     , "Paths_dhall_to_etlas"
                     ]
-                , exposed-modules =
-                    [ "DhallToCabal", "DhallLocation", "CabalToDhall" ]
                 }
           )
       , license =
@@ -446,12 +442,14 @@ in    prelude.defaults.Package
           [ "LICENSE" ]
       , maintainer =
           "atreyu.bbb@gmail.com"
+      , name =
+          "dhall-to-etlas"
       , source-repos =
           [   prelude.defaults.SourceRepo
-            ⫽ { type =
-                  Some types.RepoType.Git
-              , location =
+            ⫽ { location =
                   Some "https://github.com/eta-lang/dhall-to-etlas"
+              , type =
+                  Some types.RepoType.Git
               }
           ]
       , synopsis =
@@ -462,13 +460,7 @@ in    prelude.defaults.Package
             , test-suite =
                   λ(config : types.Config)
                 →   prelude.defaults.TestSuite
-                  ⫽ { type =
-                        < exitcode-stdio =
-                            { main-is = "GoldenTests.hs" }
-                        | detailed :
-                            { module : Text }
-                        >
-                    , build-depends =
+                  ⫽ { build-depends =
                         [ { bounds =
                               prelude.intervalVersionRange
                               ([ "[4.5,5)" ] : List Text)
@@ -552,7 +544,12 @@ in    prelude.defaults.Package
                         [] : List types.Extension
                     , hs-source-dirs =
                         [ "golden-tests" ]
+                    , type =
+                        types.TestType.exitcode-stdio
+                        { main-is = "GoldenTests.hs" }
                     }
             }
           ]
+      , version =
+          prelude.v "1.2.0.0"
       }

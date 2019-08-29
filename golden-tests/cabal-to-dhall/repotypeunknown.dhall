@@ -3,14 +3,18 @@ let prelude = ./../../dhall/prelude.dhall
 let types = ./../../dhall/types.dhall
 
 in    prelude.defaults.Package
-    ⫽ { cabal-version =
+    ⫽ { build-type =
+          None types.BuildType
+      , cabal-version =
           prelude.v "2.4"
+      , license =
+          types.License.Unspecified
       , name =
           "foo"
       , source-repos =
           [   prelude.defaults.SourceRepo
             ⫽ { kind =
-                  types.RepoKind.RepoKindUnknown { _1 = "blargh" }
+                  types.RepoKind.RepoThis { _1 = "blargh" }
               , location =
                   Some "https://example.com"
               , type =

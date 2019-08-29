@@ -6,9 +6,7 @@ in    prelude.defaults.Package
     ⫽ { executables =
           [ { executable =
                   λ(config : types.Config)
-                →   prelude.defaults.Executable
-                  ⫽ { main-is = "Main.hs"
-                    }
+                → prelude.defaults.Executable ⫽ { main-is = "Main.hs" }
             , name =
                 "hello"
             }

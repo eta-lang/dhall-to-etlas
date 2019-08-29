@@ -79,7 +79,7 @@ import qualified Language.Haskell.Extension as Cabal
 import DhallLocation ( DhallLocation(..) )
 import DhallToCabal ( sortExpr )
 import DhallToCabal.ConfigTree ( ConfigTree(..) )
-import Debug.Trace
+
 
 type DhallExpr =
   Dhall.Core.Expr Dhall.Parser.Src Dhall.TypeCheck.X
@@ -435,7 +435,6 @@ defaultExtensions =
             , Cabal.LambdaCase
             , Cabal.OverloadedStrings
             , Cabal.RankNTypes
-            , Cabal.RecordWildCards
             , Cabal.StandaloneDeriving
             , Cabal.ScopedTypeVariables
             , Cabal.TupleSections
@@ -585,13 +584,13 @@ extractDefaultComparisonReplace ( DefaultComparisonReplace expr ) =
 
 
 nonDefaultFields
-  :: ( Eq a, Show s, Show a )
+  :: ( Eq a )
   => Map.Map StrictText.Text ( Expr.Expr s a )
   -> Map.Map StrictText.Text ( Expr.Expr s a )
   -> Map.Map StrictText.Text ( Expr.Expr s a )
 nonDefaultFields defs fields =
   let
-    withoutDefaults = Map.difference (traceShow "fields" $ traceShowId fields) (traceShow "defs" $ traceShowId defs)
+    withoutDefaults = Map.difference fields defs
     compared = Map.intersectionWith compareToDefault defs fields
     changed = Map.mapMaybe extractDefaultComparisonReplace compared
   in
@@ -605,7 +604,7 @@ compareToDefault _ expr =
   DefaultComparisonReplace expr
 
 
-withDefault :: ( Eq a, Show a, Show s ) => KnownDefault -> Default s a -> Expr.Expr s a -> Expr.Expr s a
+withDefault :: ( Eq a ) => KnownDefault -> Default s a -> Expr.Expr s a -> Expr.Expr s a
 withDefault typ defs ( Expr.RecordLit fields ) =
   let
     nonDefaults = nonDefaultFields ( defs resolvePreludeVar ) fields
@@ -1006,7 +1005,12 @@ intervalVersionRange = Dhall.InputType
                  vis' = map ( StrictText.pack . show . Cabal.disp ) vis
 
              in Expr.App ( resolveVersionRange IntervalVersionRange )
-                         ( (Dhall.embed Dhall.inject) vis' )
+                         -- workaround https://github.com/dhall-lang/dhall-haskell/issues/1254
+                         (Expr.Annot
+                           ( Expr.ListLit Nothing
+                             (fmap (\t-> Expr.TextLit (Dhall.Core.Chunks [] t))
+                               (Seq.fromList vis')))
+                           (Expr.App Expr.List Expr.Text))
 
 versionRange :: Dhall.InputType Cabal.VersionRange
 versionRange =

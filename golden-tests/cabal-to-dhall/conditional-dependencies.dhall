@@ -3,11 +3,7 @@ let prelude = ./../../dhall/prelude.dhall
 let types = ./../../dhall/types.dhall
 
 in    prelude.defaults.Package
-    ⫽ { name =
-          "Name"
-      , version =
-          prelude.v "1"
-      , cabal-version =
+    ⫽ { cabal-version =
           prelude.v "2.0"
       , library =
           Some
@@ -68,4 +64,10 @@ in    prelude.defaults.Package
                           [] : List types.Extension
                       }
           )
+      , license =
+          types.License.Unspecified
+      , name =
+          "Name"
+      , version =
+          prelude.v "1"
       }
