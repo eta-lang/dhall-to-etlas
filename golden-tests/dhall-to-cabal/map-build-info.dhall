@@ -2,12 +2,14 @@ let prelude = ../../dhall/prelude.dhall
 
 let types = ../../dhall/types.dhall
 
+let thisVersions = prelude.Dependency.thisVersions
+
 let f =
         λ(buildInfo : types.BuildInfo)
       →   buildInfo
         ⫽ { build-depends =
                 buildInfo.build-depends
-              # [ prelude.utils.majorVersions "injected" [ prelude.v "1.0" ] ]
+              # [ thisVersions "injected" [ prelude.v "1.0" ] ]
           }
 
 in  prelude.utils.mapBuildInfo
@@ -20,9 +22,9 @@ in  prelude.utils.mapBuildInfo
         , library =
             Some
             (   λ(config : types.Config)
-              →   prelude.defaults.Library
+              →   prelude.defaults.empty.Library
                 ⫽ { build-depends =
-                      [ prelude.utils.majorVersions
+                      [ thisVersions
                         "library"
                         [ prelude.v "1.0" ]
                       ]
@@ -31,18 +33,18 @@ in  prelude.utils.mapBuildInfo
         , custom-setup =
             Some
             { setup-depends =
-                [ prelude.utils.majorVersions "setup" [ prelude.v "1.0" ] ]
+                [ thisVersions "setup" [ prelude.v "1.0" ] ]
             }
         , benchmarks =
             [ { name =
                   "bench"
               , benchmark =
                     λ(config : types.Config)
-                  →   prelude.defaults.Benchmark
+                  →   prelude.defaults.empty.Benchmark
                     ⫽ { main-is =
                           "Bench.hs"
                       , build-depends =
-                          [ prelude.utils.majorVersions
+                          [ thisVersions
                             "bench"
                             [ prelude.v "1.0" ]
                           ]
@@ -54,11 +56,11 @@ in  prelude.utils.mapBuildInfo
                   "exe"
               , executable =
                     λ(config : types.Config)
-                  →   prelude.defaults.Executable
+                  →   prelude.defaults.empty.Executable
                     ⫽ { main-is =
                           "Exe.hs"
                       , build-depends =
-                          [ prelude.utils.majorVersions
+                          [ thisVersions
                             "exe"
                             [ prelude.v "1.0" ]
                           ]
@@ -77,7 +79,7 @@ in  prelude.utils.mapBuildInfo
                       , lib-version-info = None { current : Natural, revision : Natural, age : Natural }
                       , lib-version-linux = None types.Version
                       , build-depends =
-                          [ prelude.utils.majorVersions
+                          [ thisVersions
                             "flib"
                             [ prelude.v "1.0" ]
                           ]
@@ -89,9 +91,9 @@ in  prelude.utils.mapBuildInfo
                   "sublib"
               , library =
                     λ(config : types.Config)
-                  →   prelude.defaults.Library
+                  →   prelude.defaults.empty.Library
                     ⫽ { build-depends =
-                          [ prelude.utils.majorVersions
+                          [ thisVersions
                             "sublib"
                             [ prelude.v "1.0" ]
                           ]
@@ -103,11 +105,11 @@ in  prelude.utils.mapBuildInfo
                   "tests"
               , test-suite =
                     λ(config : types.Config)
-                  →   prelude.defaults.TestSuite
+                  →   prelude.defaults.empty.TestSuite
                     ⫽ { type =
                           types.TestType.exitcode-stdio { main-is = "Test.hs" }
                       , build-depends =
-                          [ prelude.utils.majorVersions
+                          [ thisVersions
                             "tests"
                             [ prelude.v "1.0" ]
                           ]
