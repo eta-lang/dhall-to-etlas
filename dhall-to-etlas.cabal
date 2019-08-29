@@ -67,14 +67,14 @@ library
                  -fno-warn-missing-local-sigs -fno-warn-monomorphism-restriction
                  -fno-warn-name-shadowing
     build-depends:
-        etlas-cabal -any,
         base >=4.5 && <5,
+        dhall >=1.25.0 && <1.26,
+        etlas-cabal -any,
         bytestring >=0.10 && <0.11,
         containers >=0.5 && <0.6,
         contravariant >=1.4 && <1.5,
-        dhall >=1.25.0 && <1.26,
         filepath >=1.4 && <1.5,
-        microlens >=0.4.0.0 && <0.5,
+        microlens >=0.1.0.0 && <0.5,
         text >=1.2 && <1.3,
         transformers >=0.2.0.0 && <0.6,
         vector >=0.11.0.0 && <0.13,
@@ -92,9 +92,10 @@ executable dhall-to-etlas
                  -fno-warn-missing-local-sigs -fno-warn-monomorphism-restriction
                  -fno-warn-name-shadowing
     build-depends:
-        etlas-cabal -any,
         base >=4.5 && <5,
         dhall >=1.25.0 && <1.26,
+        etlas-cabal -any,
+        containers >=0.5 && <0.6,
         dhall-to-etlas -any,
         directory >=1.2.7.1 && <1.4,
         filepath >=1.4 && <1.5,
@@ -135,8 +136,8 @@ executable dhall-to-etlas-meta
                  -fno-warn-name-shadowing
     build-depends:
         base >=4.5 && <5,
-        directory >=1.2.7.1 && <1.4,
         dhall >=1.25.0 && <1.26,
+        directory >=1.2.7.1 && <1.4,
         dhall-to-etlas -any,
         filepath >=1.4 && <1.5,
         optparse-applicative >=0.13.2 && <0.15,
@@ -153,10 +154,10 @@ test-suite golden-tests
                  -fno-warn-name-shadowing
     build-depends:
         base >=4.5 && <5,
+        dhall >=1.25.0 && <1.26,
         etlas-cabal -any,
         Diff >=0.3.4 && <0.4,
         bytestring >=0.10 && <0.11,
-        dhall >=1.25.0 && <1.26,
         dhall-to-etlas -any,
         filepath >=1.4 && <1.5,
         microlens >=0.1.0.0 && <0.5,
@@ -178,8 +179,8 @@ test-suite unit-tests
                  -fno-warn-name-shadowing
     build-depends:
         base >=4.5 && <5,
-        etlas-cabal -any,
         dhall >=1.25.0 && <1.26,
+        etlas-cabal -any,
         dhall-to-etlas -any,
         tasty >=0.11 && <1.3,
         tasty-hunit >=0.10.0.1 && <0.11,

@@ -46,11 +46,11 @@ let deps =
       , microlens =
           pkgVer "microlens" "0.1.0.0" "0.5"
       , optparse-applicative =
-          pkgVer "optparse-applicative" "0.15" "0.16"
+          pkgVer "optparse-applicative" "0.13.2" "0.15"
       , prettyprinter =
-          pkgVer "prettyprinter" "1.3.0" "1.4"
+          pkgVer "prettyprinter" "1.2.0.1" "1.3"
       , contravariant =
-          pkgVer "contravariant" "1.5" "1.6"
+          pkgVer "contravariant" "1.4" "1.5"
       , tasty =
           pkgVer "tasty" "0.11" "1.3"
       , tasty-golden =
@@ -80,16 +80,20 @@ let warning-options =
       , "-fno-warn-name-shadowing"
       ]
 
-let addWarningOptions =
+let addCommonBuildInfo =
         λ(component : types.BuildInfo)
       →   component
         ⫽ { compiler-options =
                 component.compiler-options
               ⫽ { GHC = component.compiler-options.GHC # warning-options }
+          , build-depends =
+              [ deps.base, deps.dhall ] # component.build-depends
+          , default-language =
+              Some types.Language.Haskell2010
           }
 
 in  prelude.utils.mapBuildInfo
-    addWarningOptions
+    addCommonBuildInfo
     (   prelude.utils.GitHub-project
         { owner = "eta-lang", repo = "dhall-to-etlas" }
       ⫽ { cabal-version =
@@ -139,12 +143,11 @@ in  prelude.utils.mapBuildInfo
             (   prelude.defaults.Library
               ⫽ { build-depends =
                     [ deps.etlas-cabal
-                    , deps.base
                     , deps.bytestring
                     , deps.containers
                     , deps.contravariant
-                    , deps.dhall
                     , deps.filepath
+                    , deps.microlens
                     , deps.text
                     , deps.transformers
                     , deps.vector
@@ -172,8 +175,6 @@ in  prelude.utils.mapBuildInfo
                     , "Dhall.Extra"
                     , "Paths_dhall_to_etlas"
                     ]
-                , default-language =
-                    Some types.Language.Haskell2010
                 }
             )
         , executables =
@@ -182,9 +183,7 @@ in  prelude.utils.mapBuildInfo
               (   prelude.defaults.Executable
                 ⫽ { build-depends =
                       [ deps.etlas-cabal
-                      , deps.base
                       , deps.containers
-                      , deps.dhall
                       , deps.dhall-to-etlas
                       , deps.directory
                       , deps.filepath
@@ -203,17 +202,13 @@ in  prelude.utils.mapBuildInfo
                       [ types.Extension.NamedFieldPuns True ]
                   , other-modules =
                       [ "Paths_dhall_to_etlas" ]
-                  , default-language =
-                      Some types.Language.Haskell2010
                   }
               )
             , prelude.unconditional.executable
               "etlas-to-dhall"
               (   prelude.defaults.Executable
                 ⫽ { build-depends =
-                      [ deps.base
-                      , deps.dhall
-                      , deps.bytestring
+                      [ deps.bytestring
                       , deps.dhall-to-etlas
                       , deps.optparse-applicative
                       , deps.prettyprinter
@@ -227,17 +222,13 @@ in  prelude.utils.mapBuildInfo
                       [ types.Extension.NamedFieldPuns True ]
                   , other-modules =
                       [ "Paths_dhall_to_etlas" ]
-                  , default-language =
-                      Some types.Language.Haskell2010
                   }
               )
             , prelude.unconditional.executable
               "dhall-to-etlas-meta"
               (   prelude.defaults.Executable
                 ⫽ { build-depends =
-                      [ deps.base
-                      , deps.directory
-                      , deps.dhall
+                      [ deps.directory
                       , deps.dhall-to-etlas
                       , deps.filepath
                       , deps.optparse-applicative
@@ -245,8 +236,6 @@ in  prelude.utils.mapBuildInfo
                       ]
                   , hs-source-dirs =
                       [ "meta" ]
-                  , default-language =
-                      Some types.Language.Haskell2010
                   , main-is =
                       "Main.hs"
                   }
@@ -257,11 +246,9 @@ in  prelude.utils.mapBuildInfo
               "golden-tests"
               (   prelude.defaults.TestSuite
                 ⫽ { build-depends =
-                      [ deps.base
-                      , deps.etlas-cabal
+                      [ deps.etlas-cabal
                       , deps.Diff
                       , deps.bytestring
-                      , deps.dhall
                       , deps.dhall-to-etlas
                       , deps.filepath
                       , deps.microlens
@@ -275,17 +262,13 @@ in  prelude.utils.mapBuildInfo
                   , type =
                       types.TestType.exitcode-stdio
                       { main-is = "GoldenTests.hs" }
-                  , default-language =
-                      Some types.Language.Haskell2010
                   }
               )
             , prelude.unconditional.test-suite
               "unit-tests"
               (   prelude.defaults.TestSuite
                 ⫽ { build-depends =
-                      [ deps.base
-                      , deps.etlas-cabal
-                      , deps.dhall
+                      [ deps.etlas-cabal
                       , deps.dhall-to-etlas
                       , deps.tasty
                       , deps.tasty-hunit
@@ -295,8 +278,6 @@ in  prelude.utils.mapBuildInfo
                       [ "tests" ]
                   , type =
                       types.TestType.exitcode-stdio { main-is = "Tests.hs" }
-                  , default-language =
-                      Some types.Language.Haskell2010
                   , other-modules =
                       [ "DhallToCabal.Tests" ]
                   }
