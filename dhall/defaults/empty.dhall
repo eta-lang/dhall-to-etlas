@@ -1,4 +1,4 @@
-let mapBI = ./../utils/mapBuildInfo.dhall
+let mapBI = ./../utils/mapComponentBuildInfo.dhall
 
 let resetBI = ./../utils/resetBuildInfo.dhall
 

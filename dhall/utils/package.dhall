@@ -4,8 +4,8 @@
     ./GitHubTag-project.dhall
 , GitHubTag-simple-project =
     ./GitHubTag-simple-project.dhall
-, mapBuildInfo =
-    ./mapBuildInfo.dhall
+, mapComponentBuildInfo =
+    ./mapComponentBuildInfo.dhall
 , mapSourceRepos =
     ./mapSourceRepos.dhall
 , resetBuildInfo =
