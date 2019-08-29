@@ -1,8 +1,8 @@
 let types = ../types.dhall
 
-let mapOptional = https://prelude.dhall-lang.org/v8.0.0/Optional/map
+let mapOptional = https://github.com/dhall-lang/dhall-lang/raw/v8.0.0/Prelude/Optional/map
 
-let mapList = https://prelude.dhall-lang.org/v8.0.0/List/map
+let mapList = https://github.com/dhall-lang/dhall-lang/raw/v8.0.0/Prelude/List/map
 
 let mapGuarded =
         λ(a : Type)
