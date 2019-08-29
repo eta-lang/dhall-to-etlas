@@ -1,8 +1,8 @@
 let prelude =
-      https://github.com/eta-lang/dhall-to-etlas/raw/cabal/dhall/prelude.dhall sha256:280437801619269835a8faba6dfcf9e72ba14b638b8525feca4860fc00d67257
+      https://github.com/eta-lang/dhall-to-etlas/raw/cabal/dhall/prelude.dhall sha256:e1749f19b6729bbb00f6cd6ca111d76100b032edc528cc067d1f159b2ac03c3b
 
 let types =
-      https://github.com/eta-lang/dhall-to-etlas/raw/cabal/dhall/types.dhall sha256:874d625ef72e31d4291deedf516e34f5ff0cb9856759a1f63a6114c42e53b615
+      https://github.com/eta-lang/dhall-to-etlas/raw/cabal/dhall/types.dhall sha256:5e1cebe4f823c7f05c14e7c54a5c826bc4db4da45a2cda3633671e7be33cc0c3
 
 let v = prelude.v
 
