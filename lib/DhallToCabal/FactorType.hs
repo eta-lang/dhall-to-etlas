@@ -13,9 +13,10 @@ module DhallToCabal.FactorType
   where
 
 import Control.Monad ( guard )
-import Data.Foldable ( foldl', toList )
+import Data.Foldable ( foldl' )
 import Data.Maybe ( fromMaybe )
 import Data.Text (Text)
+import Data.Void ( absurd )
 import Dhall.Optics ( transformOf )
 import Lens.Micro ( over )
 
@@ -28,7 +29,6 @@ import qualified Dhall.Core as Dhall
 import qualified Dhall.Core as Expr ( Expr(..), Var(..), Binding(..) )
 import qualified Dhall.Map as Map
 import qualified Dhall.Parser
-import qualified Dhall.TypeCheck as Dhall
 
 
 -- Note: this needs to be in topological order of CSEability, from
@@ -57,16 +57,19 @@ data KnownType
   | Dependency
   | VersionRange
   | Version
---  | SPDX
---  | LicenseId
---  | LicenseExceptionId
---  | Scope
+  | PkgconfigVersionRange
+  | SPDX
+  | LicenseId
+  | LicenseExceptionId
+  | Scope
   | Mixin
   | ModuleRenaming
   | ForeignLibOption
   | ForeignLibType
   | TestType
   | Flag
+  | LibraryName
+  | LibraryVisibility
   deriving (Bounded, Enum, Eq, Ord, Read, Show)
 
 
@@ -80,7 +83,7 @@ isCandidateSubrecord _ = False
 
 
 dhallType :: KnownType -> Dhall.Expr Dhall.Parser.Src a
-dhallType t = fmap Dhall.absurd
+dhallType t = fmap absurd
   ( case t of
       Config -> configRecordType
       Library -> Dhall.expected library
@@ -115,6 +118,9 @@ dhallType t = fmap Dhall.absurd
       ForeignLibType -> Dhall.expected foreignLibType
       TestType -> Dhall.expected testSuiteInterface
       Flag -> Dhall.expected flag
+      PkgconfigVersionRange -> Dhall.expected pkgconfigVersionRange
+      LibraryName -> Dhall.expected libraryName
+      LibraryVisibility -> Dhall.expected libraryVisibility
   )
 
 
@@ -198,15 +204,8 @@ subtractRecordFields a b = do
   return ( Expr.Record extra )
 
 
-chunkExprs
-  :: ( Applicative f )
-  => ( Expr.Expr s a -> f ( Expr.Expr t b ) )
-  -> Dhall.Chunks s a -> f ( Dhall.Chunks t b )
-chunkExprs f ( Dhall.Chunks chunks final ) =
-  flip Dhall.Chunks final <$> traverse ( traverse f ) chunks
-
-
--- | The return value of this should be linted.
+-- | Map over the embedded values in the `Expr`, with access to a
+-- function to get the outermost variable with a given name.
 mapWithBindings
   :: ( ( Text -> Expr.Var ) -> a -> b )
   -> Expr.Expr s a
@@ -234,23 +233,10 @@ mapWithBindings f =
       Expr.App f a ->
         Expr.App ( go bindings f ) ( go bindings a )
 
-      Expr.Let bs e ->
-        go' ( toList bs ) bindings
-          where
-            -- Since we lint afterwards, it's fine to transform one
-            -- let with many bindings into many lets with one
-            -- binding each.
-            go' ( Expr.Binding n t b : bs ) bindings' =
-              Expr.Let
-                ( pure
-                  ( Expr.Binding n
-                    ( fmap ( go bindings' ) t )
-                    ( go bindings' b )
-                  )
-                )
-                ( go' bs ( shiftName n bindings' ) )
-            go' [] bindings' =
-              go bindings' e
+      Expr.Let b e ->
+        Expr.Let
+          ( over Dhall.bindingExprs ( go bindings ) b )
+          ( go ( shiftName ( Expr.variable b ) bindings ) e )
 
       Expr.Annot a b ->
         Expr.Annot ( go bindings a ) ( go bindings b )
@@ -307,9 +293,6 @@ mapWithBindings f =
 
       Expr.Union fields ->
         Expr.Union ( fmap ( fmap ( go bindings ) ) fields )
-
-      Expr.UnionLit n a fields ->
-        Expr.UnionLit n ( go bindings a ) ( fmap ( fmap ( go bindings ) ) fields )
 
       Expr.Merge a b t ->
         Expr.Merge ( go bindings a ) ( go bindings b ) ( fmap ( go bindings ) t )
@@ -380,6 +363,9 @@ mapWithBindings f =
       Expr.NaturalShow ->
         Expr.NaturalShow
 
+      Expr.NaturalSubtract ->
+        Expr.NaturalSubtract
+
       Expr.Integer ->
         Expr.Integer
 
@@ -402,7 +388,7 @@ mapWithBindings f =
         Expr.Text
 
       Expr.TextLit t ->
-        Expr.TextLit ( over chunkExprs ( go bindings ) t )
+        Expr.TextLit ( over Dhall.chunkExprs ( go bindings ) t )
 
       Expr.TextShow ->
         Expr.TextShow
@@ -439,3 +425,12 @@ mapWithBindings f =
 
       Expr.OptionalBuild ->
         Expr.OptionalBuild
+
+      Expr.Assert a ->
+        Expr.Assert
+          ( go bindings a )
+
+      Expr.Equivalent a b ->
+        Expr.Equivalent
+          ( go bindings a )
+          ( go bindings b )

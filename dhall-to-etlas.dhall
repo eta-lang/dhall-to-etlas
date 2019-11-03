@@ -140,7 +140,7 @@ in  prelude.utils.mapBuildInfo
             v "1.3.4.0"
         , library =
             prelude.unconditional.library
-            (   prelude.defaults.Library
+            (   prelude.defaults.MainLibrary
               ⫽ { build-depends =
                     [ deps.etlas-cabal
                     , deps.bytestring

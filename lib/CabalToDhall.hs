@@ -18,11 +18,10 @@ module CabalToDhall
   , getDefault
   ) where
 
-import Data.Foldable ( foldMap )
+import Data.Foldable ( foldMap, toList )
 import Data.Functor.Contravariant ( (>$<), Contravariant( contramap ) )
-import Data.List.NonEmpty (  NonEmpty(..) )
-import Data.Monoid ( First(..) )
 import Data.Semigroup ( Semigroup, (<>) )
+import Data.Void ( absurd )
 import Numeric.Natural ( Natural )
 
 import qualified Data.ByteString as ByteString
@@ -33,7 +32,7 @@ import qualified Data.Text as StrictText
 import qualified Data.Text.Encoding as StrictText
 import qualified Dhall
 import qualified Dhall.Core
-import qualified Dhall.Core as Expr ( Expr(..), Var(..), Binding(..) )
+import qualified Dhall.Core as Expr ( Expr(..), Var(..), Chunks(..), makeBinding )
 import qualified Dhall.Map as Map
 import qualified Dhall.Parser
 import qualified Dhall.TypeCheck
@@ -41,9 +40,9 @@ import qualified Distribution.Compiler as Cabal
 import qualified Distribution.License as Cabal
 import qualified Distribution.ModuleName as Cabal
 import qualified Distribution.PackageDescription.Parse as Cabal
+-- import qualified Distribution.Pretty as Cabal
 -- import qualified Distribution.SPDX as SPDX
 import qualified Distribution.System as Cabal
-import qualified Distribution.Text as Cabal
 import qualified Distribution.Types.Benchmark as Cabal
 import qualified Distribution.Types.BenchmarkInterface as Cabal
 import qualified Distribution.Types.BuildInfo as Cabal
@@ -60,6 +59,8 @@ import qualified Distribution.Types.GenericPackageDescription as Cabal
 import qualified Distribution.Types.IncludeRenaming as Cabal
 import qualified Distribution.Types.LegacyExeDependency as Cabal
 import qualified Distribution.Types.Library as Cabal
+import qualified Distribution.Types.LibraryName as Cabal
+import qualified Distribution.Types.LibraryVisibility as Cabal
 import qualified Distribution.Types.Mixin as Cabal
 import qualified Distribution.Types.ModuleReexport as Cabal
 import qualified Distribution.Types.ModuleRenaming as Cabal
@@ -68,6 +69,8 @@ import qualified Distribution.Types.PackageId as Cabal
 import qualified Distribution.Types.PackageName as Cabal
 import qualified Distribution.Types.PkgconfigDependency as Cabal
 import qualified Distribution.Types.PkgconfigName as Cabal
+import qualified Distribution.Types.PkgconfigVersion as Cabal
+import qualified Distribution.Types.PkgconfigVersionRange as Cabal
 import qualified Distribution.Types.SetupBuildInfo as Cabal
 import qualified Distribution.Types.SourceRepo as Cabal
 import qualified Distribution.Types.TestSuite as Cabal
@@ -106,22 +109,23 @@ cabalToDhall
   :: DhallLocation
   -> Cabal.GenericPackageDescription
   -> Expr.Expr Dhall.Parser.Src Dhall.Core.Import
-cabalToDhall dhallLocation genericPackageDescription =
-  Expr.Let
-    ( Expr.Binding "prelude" Nothing ( Expr.Embed ( preludeLocation dhallLocation ) )
-   :| [ Expr.Binding "types" Nothing ( Expr.Embed ( typesLocation dhallLocation ) ) ]
-    )
-    $ Dhall.TypeCheck.absurd <$>
-        Dhall.embed
-          genericPackageDescriptionToDhall
-          genericPackageDescription
+cabalToDhall dhallLocation genericPackageDescription
+  = Expr.Let
+      ( Expr.makeBinding "prelude" ( Expr.Embed ( preludeLocation dhallLocation ) ) )
+  $ Expr.Let
+      ( Expr.makeBinding "types" ( Expr.Embed ( typesLocation dhallLocation ) ) )
+  $ absurd <$>
+      Dhall.embed
+        genericPackageDescriptionToDhall
+        genericPackageDescription
 
 
 -- Note: the Show instance is used by --print-type.
 data KnownDefault
   = CompilerOptions
   | BuildInfo
-  | Library
+  | MainLibrary
+  | NamedLibrary
   | Executable
   | Benchmark
   | TestSuite
@@ -266,7 +270,7 @@ getDefault
 getDefault typesLoc resolve typ = withTypesImport expr
   where
     withTypesImport =
-      Expr.Let (Expr.Binding "types" Nothing ( Expr.Embed typesLoc ) :| [])
+      Expr.Let ( Expr.makeBinding "types" ( Expr.Embed typesLoc ) )
 
     factorBuildInfo fields =
       let
@@ -287,8 +291,10 @@ getDefault typesLoc resolve typ = withTypesImport expr
           Expr.RecordLit ( compilerOptionsDefault resolve )
         BuildInfo ->
           Expr.RecordLit ( buildInfoDefault resolve )
-        Library ->
-          factorBuildInfo ( libraryDefault resolve )
+        MainLibrary ->
+          factorBuildInfo ( libraryDefault False resolve )
+        NamedLibrary ->
+          factorBuildInfo ( libraryDefault True resolve )
         Executable ->
           factorBuildInfo ( executableDefault resolve )
         Benchmark ->
@@ -328,7 +334,7 @@ textFieldDefault name def =
 
 generaliseDeclared :: Dhall.InputType t -> Expr.Expr s a
 generaliseDeclared =
-  Dhall.Core.denote . fmap Dhall.TypeCheck.absurd . Dhall.declared
+  Dhall.Core.denote . fmap absurd . Dhall.declared
 
 generaliseEmbed :: Dhall.InputType t -> t -> Expr.Expr s a
 generaliseEmbed a =
@@ -341,14 +347,6 @@ compilerOptionsDefault _resolve =
     [ emptyListDefault "Eta" Expr.Text
     , ( "GHC" , Expr.ListLit ( Just Expr.Text ) opts )
     , emptyListDefault "GHCJS" Expr.Text
-    , emptyListDefault "HBC" Expr.Text
-    , emptyListDefault "Helium" Expr.Text
-    , emptyListDefault "Hugs" Expr.Text
-    , emptyListDefault "JHC" Expr.Text
-    , emptyListDefault "LHC" Expr.Text
-    , emptyListDefault "NHC" Expr.Text
-    , emptyListDefault "UHC" Expr.Text
-    , emptyListDefault "YHC" Expr.Text
     ]
   )
   where opts =
@@ -408,6 +406,8 @@ buildInfoDefault resolve = fields
       , emptyListDefault "virtual-modules" Expr.Text
       , emptyListDefault "extra-lib-flavours" Expr.Text
       , emptyListDefault "extra-bundled-libs" Expr.Text
+      , emptyListDefault "autogen-includes" Expr.Text
+      , emptyListDefault "extra-dyn-lib-flavours" Expr.Text
 --}
       ]
 
@@ -442,8 +442,21 @@ defaultExtensions =
             , Cabal.TypeOperators
             ]
 
-libraryDefault :: Default s a
-libraryDefault resolve = buildInfoDefault resolve <> specificFields
+libraryVisibility :: Dhall.InputType Cabal.LibraryVisibility
+libraryVisibility =
+  Dhall.InputType
+    { Dhall.embed = \case
+        Cabal.LibraryVisibilityPublic ->
+            Expr.Var "types" `Expr.Field` "LibraryVisibility" `Expr.Field` "public"
+        Cabal.LibraryVisibilityPrivate ->
+            Expr.Var "types" `Expr.Field` "LibraryVisibility" `Expr.Field` "private"
+    , Dhall.declared =
+        Expr.Var "types" `Expr.Field` "LibraryVisibility"
+    }
+
+
+libraryDefault :: Bool -> Default s a
+libraryDefault named resolve = buildInfoDefault resolve <> specificFields
   where
     specificFields = Map.fromList
       [ emptyListDefault "exposed-modules" Expr.Text
@@ -451,7 +464,13 @@ libraryDefault resolve = buildInfoDefault resolve <> specificFields
       , emptyListDefault "reexported-modules"
           ( generaliseDeclared moduleReexport )
       , emptyListDefault "signatures" Expr.Text
+      , ( "visibility"
+        , ( resolve PreludeConstructorsLibraryVisibility `Expr.Field` visibility )
+        )
       ]
+    visibility = if named
+      then "private"
+      else "public"
 
 
 benchmarkDefault :: Default s a
@@ -529,7 +548,7 @@ packageDefault resolve = fields
       , textFieldDefault "package-url" ""
       , emptyListDefault "source-repos" ( generaliseDeclared sourceRepo )
       , textFieldDefault "stability" ""
-      , emptyListDefault "sub-libraries" ( named "library" library )
+      , emptyListDefault "sub-libraries" ( named "library" ( library True ) )
       , textFieldDefault "synopsis" ""
       , emptyListDefault "test-suites" ( named "test-suite" testSuite )
       , emptyListDefault "tested-with"
@@ -673,8 +692,8 @@ genericPackageDescriptionToDhall =
     ( mconcat
         [ Cabal.packageDescription >$< packageDescriptionToRecord
         , recordField "flags" ( Cabal.genPackageFlags >$< ( listOf flag ) )
-        , recordField "library" ( Cabal.condLibrary >$< maybeToDhall ( condTree library ) )
-        , recordField "sub-libraries" ( Cabal.condSubLibraries >$< named "library" ( condTree library ) )
+        , recordField "library" ( Cabal.condLibrary >$< maybeToDhall ( condTree ( library False ) ) )
+        , recordField "sub-libraries" ( Cabal.condSubLibraries >$< named "library" ( condTree ( library True ) ) )
         , recordField "foreign-libraries" ( Cabal.condForeignLibs >$< named "foreign-lib" ( condTree foreignLibrary ) )
         , recordField "executables" ( Cabal.condExecutables >$< named "executable" ( condTree executable ) )
         , recordField "test-suites" ( Cabal.condTestSuites >$< named "test-suite" ( condTree testSuite ) )
@@ -1169,14 +1188,33 @@ setupBuildInfo =
     }
 
 
+libraryName :: Dhall.InputType Cabal.LibraryName
+libraryName =
+  Dhall.InputType
+    { Dhall.embed = \case
+        Cabal.LMainLibName ->
+          Expr.Var "types" `Expr.Field` "LibraryName" `Expr.Field` "main-library"
+        Cabal.LSubLibName c ->
+          Expr.App
+            ( Expr.Var "types" `Expr.Field` "LibraryName" `Expr.Field` "sub-library" )
+            ( Dhall.embed unqualComponentName c )
+    , Dhall.declared =
+        Expr.Var "types" `Expr.Field` "LibraryName"
+    }
+
+
 dependency :: Dhall.InputType Cabal.Dependency
 dependency =
-  runRecordInputType
+  ( runRecordInputType
     ( mconcat
         [ recordField "package" ( contramap ( \( Cabal.Dependency p _ ) -> p ) packageNameToDhall )
         , recordField "bounds" ( contramap ( \( Cabal.Dependency _ a ) -> a ) intervalVersionRange )
         ]
     )
+  )
+    { Dhall.declared =
+        Expr.Var "types" `Expr.Field` "Dependency"
+    }
 
 
 flag :: Dhall.InputType Cabal.Flag
@@ -1196,9 +1234,11 @@ flagName =
   contramap Cabal.unFlagName stringToDhall
 
 
-library :: Dhall.InputType Cabal.Library
-library =
-  ( runRecordInputTypeWithDefault Library libraryDefault
+library :: Bool -> Dhall.InputType Cabal.Library
+library named =
+  ( runRecordInputTypeWithDefault
+      ( if named then NamedLibrary else MainLibrary )
+      ( libraryDefault named )
       ( mconcat
           [ contramap Cabal.libBuildInfo buildInfoRecord
           , recordField
@@ -1210,6 +1250,9 @@ library =
           , recordField
               "signatures"
               ( contramap Cabal.signatures ( listOf moduleName ) )
+          , recordField
+              "visibility"
+              ( contramap Cabal.libVisibility libraryVisibility )
           ]
       )
   )
@@ -1272,7 +1315,7 @@ condTree t =
 
 moduleName :: Dhall.InputType Cabal.ModuleName
 moduleName =
-  contramap ( show . Cabal.disp ) stringToDhall
+  contramap ( show . Cabal.pretty ) stringToDhall
 
 
 condBranchCondition :: Dhall.InputType (Cabal.Condition Cabal.ConfVar)
@@ -1433,6 +1476,8 @@ buildInfoRecord =
     , recordField "virtual-modules" ( Cabal.virtualModules >$< listOf moduleName )
     , recordField "extra-lib-flavours" ( Cabal.extraLibFlavours >$< listOf stringToDhall )
     , recordField "extra-bundled-libs" ( Cabal.extraBundledLibs >$< listOf stringToDhall )
+    , recordField "autogen-includes" ( Cabal.autogenIncludes >$< listOf stringToDhall )
+    , recordField "extra-dyn-lib-flavours" ( Cabal.extraDynLibFlavours >$< listOf stringToDhall )
     --}
     ]
 
@@ -1477,7 +1522,7 @@ exeDependency =
 
 unqualComponentName :: Dhall.InputType Cabal.UnqualComponentName
 unqualComponentName =
-  show . Cabal.disp >$< stringToDhall
+  show . Cabal.pretty >$< stringToDhall
 
 
 pkgconfigDependency :: Dhall.InputType Cabal.PkgconfigDependency
@@ -1492,7 +1537,59 @@ pkgconfigDependency =
 
 pkgconfigName :: Dhall.InputType Cabal.PkgconfigName
 pkgconfigName =
-  show . Cabal.disp >$< stringToDhall
+  show . Cabal.pretty >$< stringToDhall
+
+
+-- PkgconfigVersion is restricted to ASCII-only characters.
+pkgconfigVersion :: Dhall.InputType Cabal.PkgconfigVersion
+pkgconfigVersion = (\ ( Cabal.PkgconfigVersion a ) -> StrictText.decodeLatin1 a ) >$< Dhall.inject
+
+pkgconfigVersionRange :: Dhall.InputType Cabal.PkgconfigVersionRange
+pkgconfigVersionRange =  Dhall.InputType
+    { Dhall.embed =
+          let
+            go = \case
+              Cabal.PcAnyVersion ->
+                Expr.Var "prelude" `Expr.Field` "pkg-config" `Expr.Field` "anyVersion"
+              Cabal.PcThisVersion v ->
+                Expr.App
+                  ( Expr.Var "prelude" `Expr.Field` "pkg-config" `Expr.Field` "thisVersion" )
+                  ( Dhall.embed pkgconfigVersion v )
+              Cabal.PcLaterVersion v ->
+                Expr.App
+                  ( Expr.Var "prelude" `Expr.Field` "pkg-config" `Expr.Field` "laterVersion" )
+                  ( Dhall.embed pkgconfigVersion v )
+              Cabal.PcEarlierVersion v ->
+                Expr.App
+                  ( Expr.Var "prelude" `Expr.Field` "pkg-config" `Expr.Field` "earlierVersion" )
+                  ( Dhall.embed pkgconfigVersion v )
+              Cabal.PcOrLaterVersion v ->
+                Expr.App
+                  ( Expr.Var "prelude" `Expr.Field` "pkg-config" `Expr.Field` "orLaterVersion" )
+                  ( Dhall.embed pkgconfigVersion v )
+              Cabal.PcOrEarlierVersion v ->
+                Expr.App
+                  ( Expr.Var "prelude" `Expr.Field` "pkg-config" `Expr.Field` "orEarlierVersion" )
+                  ( Dhall.embed pkgconfigVersion v )
+              Cabal.PcUnionVersionRanges a b ->
+                Expr.App
+                  ( Expr.App
+                    ( Expr.Var "prelude" `Expr.Field` "pkg-config" `Expr.Field` "unionVersionRanges" )
+                    ( go a )
+                  )
+                  ( go b )
+              Cabal.PcIntersectVersionRanges a b ->
+                Expr.App
+                  ( Expr.App
+                    ( Expr.Var "prelude" `Expr.Field` "pkg-config" `Expr.Field` "intersectVersionRanges" )
+                    ( go a )
+                  )
+                  ( go b )
+          in
+          go
+    , Dhall.declared =
+        Expr.Var "types" `Expr.Field` "PkgconfigVersionRange"
+    }
 
 
 language :: Dhall.InputType Cabal.Language
@@ -1544,7 +1641,7 @@ extension =
                           ( Expr.BoolLit trueFalse )
 
 
-compilerOptions :: Dhall.InputType [ ( Cabal.CompilerFlavor, [ String ] ) ]
+compilerOptions :: Dhall.InputType ( Cabal.PerCompilerFlavor [ String ] )
 compilerOptions =
   Dhall.InputType
     { Dhall.embed = \xs ->

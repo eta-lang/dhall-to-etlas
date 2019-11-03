@@ -4,10 +4,16 @@ let types = ./../types.dhall
 in  { autogen-modules =
         [] : List Text
     , build-depends =
-        [] : List { bounds : types.VersionRange, package : Text }
+        [] : List types.Dependency
     , build-tool-depends =
         [] : List
-             { component : Text, package : Text, version : types.VersionRange }
+               { component :
+                   Text
+               , package :
+                   Text
+               , version :
+                   types.VersionRange
+               }
     , build-tools =
         [] : List { exe : Text, version : types.VersionRange }
     , buildable =
@@ -76,7 +82,7 @@ in  { autogen-modules =
     , other-modules =
         [] : List Text
     , pkgconfig-depends =
-        [] : List { name : Text, version : types.VersionRange }
+        [] : List { name : Text, version : types.PkgconfigVersionRange }
     , profiling-options =
         ././CompilerOptions.dhall
     , shared-options =
@@ -84,5 +90,9 @@ in  { autogen-modules =
     , mixins =
         [] : List types.Mixin
     , java-sources =
+        [] : List Text
+    , autogen-includes =
+        [] : List Text
+    , extra-dyn-lib-flavours =
         [] : List Text
     }
