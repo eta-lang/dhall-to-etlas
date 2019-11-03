@@ -49,6 +49,7 @@ extra-deps:
 - text-1.2.3.1
 - th-lift-instances-0.1.13
 - th-lift-0.8.0.1
+- data-fix-0.2.0
 # golden-tests
 - Diff-0.3.4
 - tasty-hunit-0.10.0.1
