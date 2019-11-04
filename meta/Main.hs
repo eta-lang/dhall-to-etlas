@@ -89,9 +89,9 @@ typeFile = \case
   TestType -> "types/TestType.dhall"
   Mixin -> "types/Mixin.dhall"
   Flag -> "types/Flag.dhall"
-  PkgconfigVersionRange -> "types/PkgconfigVersionRange.dhall"
-  LibraryName -> "types/LibraryName.dhall"
-  LibraryVisibility -> "types/LibraryVisibility.dhall"
+--  PkgconfigVersionRange -> "types/PkgconfigVersionRange.dhall"
+--  LibraryName -> "types/LibraryName.dhall"
+--  LibraryVisibility -> "types/LibraryVisibility.dhall"
 
 
 importFile :: FilePath -> Dhall.Core.Import

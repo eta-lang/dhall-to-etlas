@@ -56,19 +56,19 @@ data KnownType
   | Dependency
   | VersionRange
   | Version
-  | PkgconfigVersionRange
-  | SPDX
-  | LicenseId
-  | LicenseExceptionId
-  | Scope
+--  | PkgconfigVersionRange
+--  | SPDX
+--  | LicenseId
+--  | LicenseExceptionId
+--  | Scope
   | Mixin
   | ModuleRenaming
   | ForeignLibOption
   | ForeignLibType
   | TestType
   | Flag
-  | LibraryName
-  | LibraryVisibility
+--  | LibraryName
+--  | LibraryVisibility
   deriving (Bounded, Enum, Eq, Ord, Read, Show)
 
 
