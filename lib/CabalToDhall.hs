@@ -59,8 +59,8 @@ import qualified Distribution.Types.GenericPackageDescription as Cabal
 import qualified Distribution.Types.IncludeRenaming as Cabal
 import qualified Distribution.Types.LegacyExeDependency as Cabal
 import qualified Distribution.Types.Library as Cabal
-import qualified Distribution.Types.LibraryName as Cabal
-import qualified Distribution.Types.LibraryVisibility as Cabal
+-- import qualified Distribution.Types.LibraryName as Cabal
+-- import qualified Distribution.Types.LibraryVisibility as Cabal
 import qualified Distribution.Types.Mixin as Cabal
 import qualified Distribution.Types.ModuleReexport as Cabal
 import qualified Distribution.Types.ModuleRenaming as Cabal
@@ -69,8 +69,8 @@ import qualified Distribution.Types.PackageId as Cabal
 import qualified Distribution.Types.PackageName as Cabal
 import qualified Distribution.Types.PkgconfigDependency as Cabal
 import qualified Distribution.Types.PkgconfigName as Cabal
-import qualified Distribution.Types.PkgconfigVersion as Cabal
-import qualified Distribution.Types.PkgconfigVersionRange as Cabal
+-- import qualified Distribution.Types.PkgconfigVersion as Cabal
+-- import qualified Distribution.Types.PkgconfigVersionRange as Cabal
 import qualified Distribution.Types.SetupBuildInfo as Cabal
 import qualified Distribution.Types.SourceRepo as Cabal
 import qualified Distribution.Types.TestSuite as Cabal

@@ -54,11 +54,7 @@ import Data.List ( partition )
 import Data.Maybe ( fromMaybe, fromJust )
 import Data.Monoid ( (<>) )
 
-<<<<<<< HEAD
 import qualified Control.Exception
-=======
-import qualified Data.Set as Set
->>>>>>> cabal
 import qualified Data.Text as StrictText
 import qualified Data.Text.Encoding as StrictText
 import qualified Dhall
@@ -82,14 +78,14 @@ import qualified Distribution.Types.ForeignLibOption as Cabal
 import qualified Distribution.Types.ForeignLibType as Cabal
 import qualified Distribution.Types.IncludeRenaming as Cabal
 import qualified Distribution.Types.LegacyExeDependency as Cabal
-import qualified Distribution.Types.LibraryVisibility as Cabal
+-- import qualified Distribution.Types.LibraryVisibility as Cabal
 import qualified Distribution.Types.Mixin as Cabal
 import qualified Distribution.Types.PackageId as Cabal
 import qualified Distribution.Types.PackageName as Cabal
 import qualified Distribution.Types.PkgconfigDependency as Cabal
 import qualified Distribution.Types.PkgconfigName as Cabal
-import qualified Distribution.Types.PkgconfigVersion as Cabal
-import qualified Distribution.Types.PkgconfigVersionRange as Cabal
+-- import qualified Distribution.Types.PkgconfigVersion as Cabal
+-- import qualified Distribution.Types.PkgconfigVersionRange as Cabal
 import qualified Distribution.Types.UnqualComponentName as Cabal
 import qualified Distribution.Version as Cabal
 import qualified Language.Haskell.Extension as Cabal
@@ -242,122 +238,6 @@ buildInfo = Cabal.BuildInfo
   <*> Dhall.field "build-depends" ( Dhall.list dependency )
   <*> Dhall.field "mixins" ( Dhall.list mixin )
 
-<<<<<<< HEAD
-=======
-  pkgconfigDepends <-
-    Dhall.field "pkgconfig-depends" ( Dhall.list pkgconfigDependency )
-
-  frameworks <-
-    Dhall.field "frameworks" ( Dhall.list Dhall.string )
-
-  extraFrameworkDirs <-
-    Dhall.field "extra-framework-dirs" ( Dhall.list Dhall.string )
-
-  cSources <-
-    Dhall.field "c-sources" ( Dhall.list Dhall.string )
-
-  jsSources <-
-    Dhall.field "js-sources" ( Dhall.list Dhall.string )
-
-  hsSourceDirs <-
-    Dhall.field "hs-source-dirs" ( Dhall.list Dhall.string )
-
-  otherModules <-
-    Dhall.field "other-modules" ( Dhall.list moduleName )
-
-  autogenModules <-
-    Dhall.field "autogen-modules" ( Dhall.list moduleName )
-
-  defaultLanguage <-
-    Dhall.field "default-language" ( Dhall.maybe language )
-
-  otherLanguages <-
-    Dhall.field "other-languages" ( Dhall.list language )
-
-  defaultExtensions <-
-    Dhall.field "default-extensions" ( Dhall.list extension )
-
-  otherExtensions <-
-    Dhall.field "other-extensions" ( Dhall.list extension )
-
-  oldExtensions <-
-    pure []
-
-  extraLibs <-
-    Dhall.field "extra-libraries" ( Dhall.list Dhall.string )
-
-  extraGHCiLibs <-
-    Dhall.field "extra-ghci-libraries" ( Dhall.list Dhall.string )
-
-  extraLibDirs <-
-    Dhall.field "extra-lib-dirs" ( Dhall.list Dhall.string )
-
-  includeDirs <-
-    Dhall.field "include-dirs" ( Dhall.list Dhall.string )
-
-  includes <-
-    Dhall.field "includes" ( Dhall.list Dhall.string )
-
-  installIncludes <-
-    Dhall.field "install-includes" ( Dhall.list Dhall.string )
-
-  options <-
-    Dhall.field "compiler-options" compilerOptions
-
-  profOptions <-
-    Dhall.field "profiling-options" compilerOptions
-
-  sharedOptions <-
-    Dhall.field "shared-options" compilerOptions
-
-  staticOptions <-
-    Dhall.field "static-options" compilerOptions
-
-  customFieldsBI <-
-    pure []
-
-  targetBuildDepends <-
-    Dhall.field "build-depends" ( Dhall.list dependency )
-
-  mixins <-
-    Dhall.field "mixins" ( Dhall.list mixin )
-
-  asmOptions <-
-    Dhall.field "asm-options" ( Dhall.list Dhall.string )
-
-  asmSources <-
-    Dhall.field "asm-sources" ( Dhall.list Dhall.string )
-
-  cmmOptions <-
-    Dhall.field "cmm-options" ( Dhall.list Dhall.string )
-
-  cmmSources <-
-    Dhall.field "cmm-sources" ( Dhall.list Dhall.string )
-
-  cxxOptions <-
-    Dhall.field "cxx-options" ( Dhall.list Dhall.string )
-
-  cxxSources <-
-    Dhall.field "cxx-sources" ( Dhall.list Dhall.string )
-
-  virtualModules <-
-    Dhall.field "virtual-modules" ( Dhall.list moduleName )
-
-  extraLibFlavours <-
-    Dhall.field "extra-lib-flavours" ( Dhall.list Dhall.string )
-
-  extraBundledLibs <-
-    Dhall.field "extra-bundled-libs" ( Dhall.list Dhall.string )
-
-  extraDynLibFlavours <-
-    Dhall.field "extra-dyn-lib-flavours" ( Dhall.list Dhall.string )
-
-  autogenIncludes <-
-    Dhall.field "autogen-includes" ( Dhall.list Dhall.string )
-
-  return Cabal.BuildInfo { .. }
->>>>>>> cabal
-
 
 buildInfoType :: Expr.Expr Dhall.Parser.Src Dhall.TypeCheck.X
 buildInfoType =
@@ -425,22 +305,15 @@ foreignLibType = Dhall.union
 
 
 
-library :: Dhall.Type ( Cabal.LibraryName -> Cabal.Library )
+library :: Dhall.Type Cabal.Library
 library =
-<<<<<<< HEAD
-  Dhall.record $
-    Cabal.Library <$> pure Nothing -- libName
-                  <*> Dhall.field "exposed-modules"
-                      ( Dhall.list moduleName )
-                  <*> Dhall.field "reexported-modules"
-                      ( Dhall.list moduleReexport )
-                  <*> Dhall.field "signatures" ( Dhall.list moduleName )
-                  <*> pure True -- libExposed
-                  <*> buildInfo
-=======
   Dhall.record $ do
+
     libBuildInfo <-
       buildInfo
+
+    libName <-
+      pure Nothing
 
     exposedModules <-
       Dhall.field "exposed-modules" ( Dhall.list moduleName )
@@ -454,14 +327,10 @@ library =
     libExposed <-
       pure True
 
-    libVisibility <-
-      Dhall.field "visibility" libraryVisibility
-
-    pure ( \ libName -> Cabal.Library { .. } )
+    pure ( Cabal.Library { .. } )
 
 
->>>>>>> cabal
-
+{--
 subLibrary :: Dhall.Type ( Cabal.UnqualComponentName, Cabal.CondTree Cabal.ConfVar [ Cabal.Dependency ] Cabal.Library )
 subLibrary =
   Dhall.Type {..}
@@ -491,7 +360,7 @@ subLibrary =
           , ( "library", Expr.Pi "_" configRecordType ( Dhall.expected library ) )
           ]
         )
-
+--}
 
 sourceRepo :: Dhall.Type Cabal.SourceRepo
 sourceRepo =
@@ -532,7 +401,7 @@ moduleName =
     Cabal.simpleParse <$> Dhall.string
 
 
-
+{--
 libraryName :: Dhall.Type Cabal.LibraryName
 libraryName = Dhall.union
   ( mconcat
@@ -542,7 +411,7 @@ libraryName = Dhall.union
         <$> Dhall.constructor "sub-library" unqualComponentName
     ]
   )
-
+--}
 
 
 dhallToCabal
@@ -554,7 +423,7 @@ dhallToCabal settings =
   Dhall.inputWithSettings settings genericPackageDescription
 
 
-
+{--
 -- Cabal only parses ASCII characters into a PkgconfigVersion.
 pkgconfigVersion :: Dhall.Type Cabal.PkgconfigVersion
 pkgconfigVersion = Cabal.PkgconfigVersion . StrictText.encodeUtf8 <$> Dhall.strictText
@@ -637,7 +506,7 @@ pkgconfigVersionRange =
         $ pkgconfigVersionRange
 
   in Dhall.Type { .. }
-
+--}
 
 
 versionRange :: Dhall.Type Cabal.VersionRange
@@ -975,12 +844,22 @@ legacyExeDependency =
 
 
 
-compilerOptions :: Dhall.Type ( Cabal.PerCompilerFlavor [ String ] )
+compilerOptions :: Dhall.Type [ ( Cabal.CompilerFlavor, [ String ] ) ]
 compilerOptions =
   Dhall.record $
-    Cabal.PerCompilerFlavor
-      <$> Dhall.field "GHC" options
-      <*> Dhall.field "GHCJS" options
+    sequenceA
+      [ (,) <$> pure Cabal.Eta <*> Dhall.field "Eta" options
+      , (,) <$> pure Cabal.GHC <*> Dhall.field "GHC" options
+      , (,) <$> pure Cabal.GHCJS <*> Dhall.field "GHCJS" options
+      , (,) <$> pure Cabal.NHC <*> Dhall.field "NHC" options
+      , (,) <$> pure Cabal.YHC <*> Dhall.field "YHC" options
+      , (,) <$> pure Cabal.Hugs <*> Dhall.field "Hugs" options
+      , (,) <$> pure Cabal.HBC <*> Dhall.field "HBC" options
+      , (,) <$> pure Cabal.Helium <*> Dhall.field "Helium" options
+      , (,) <$> pure Cabal.JHC <*> Dhall.field "JHC" options
+      , (,) <$> pure Cabal.LHC <*> Dhall.field "LHC" options
+      , (,) <$> pure Cabal.UHC <*> Dhall.field "UHC" options
+      ]
 
   where
 
@@ -1006,18 +885,9 @@ language =
 
 pkgconfigDependency :: Dhall.Type Cabal.PkgconfigDependency
 pkgconfigDependency =
-  Dhall.record $ do
-    name <-
-      Dhall.field "name" pkgconfigName
-
-    version <-
-      Dhall.field "version" pkgconfigVersionRange
-
-    return
-      ( Cabal.PkgconfigDependency
-          name
-          version
-      )
+  Dhall.record $
+  Cabal.PkgconfigDependency <$> Dhall.field "name" pkgconfigName
+                            <*> Dhall.field "version" versionRange
 
 
 
@@ -1293,10 +1163,10 @@ genericPackageDescription =
 
       condLibrary <-
         Dhall.field "library" ( Dhall.maybe ( guarded library ) )
-
+      {--
       condSubLibraries <-
         Dhall.field "sub-libraries" ( Dhall.list subLibrary )
-
+      --}
       condForeignLibs <-
         Dhall.field "foreign-libraries" ( namedList "foreign-lib" foreignLib )
 
@@ -1386,7 +1256,7 @@ moduleRenaming = Dhall.union
     ]
   )
 
-
+{--
 libraryVisibility :: Dhall.Type Cabal.LibraryVisibility
 libraryVisibility = Dhall.union
   ( mconcat
@@ -1394,7 +1264,7 @@ libraryVisibility = Dhall.union
     , Cabal.LibraryVisibilityPrivate <$ Dhall.constructor "private" Dhall.unit
     ]
   )
-
+--}
 
 sortType :: Dhall.Type a -> Dhall.Type a
 sortType t =
