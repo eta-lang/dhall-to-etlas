@@ -1,8 +1,8 @@
 let prelude =
-      https://github.com/eta-lang/dhall-to-etlas/raw/master/dhall/prelude.dhall sha256:22685aa004763d3d783a116b307a3b3d61cc49aa48e6ff07257668336c27b4a9
+      https://github.com/eta-lang/dhall-to-etlas/raw/cabal/dhall/prelude.dhall
 
 let types =
-      https://github.com/eta-lang/dhall-to-etlas/raw/master/dhall/types.dhall sha256:4de5daf77713923a6510c4eff516a6f9caf9a52761fc0558d7a924eef0050e09
+      https://github.com/eta-lang/dhall-to-etlas/raw/cabal/dhall/types.dhall
 
 let v = prelude.v
 
@@ -11,7 +11,7 @@ let anyVersion = prelude.anyVersion
 let pkg =
         λ(name : Text)
       → λ(version-range : types.VersionRange)
-      → { bounds = version-range, package = name }
+      → { bounds = version-range, package = name, library-names = [ types.LibraryName.main-library ] }
 
 let pkgVer =
         λ(packageName : Text)
@@ -25,7 +25,7 @@ let pkgVer =
           )
 
 let deps =
-      { etlas-cabal = pkg "etlas-cabal" anyVersion
+      { etlas-cabal = pkg "etlas-cabal" anyVersion 
       , Diff = pkgVer "Diff" "0.3.4" "0.4"
       , base = pkgVer "base" "4.5" "5"
       , bytestring = pkgVer "bytestring" "0.10" "0.11"
@@ -109,7 +109,7 @@ in  prelude.utils.mapBuildInfo
           , version = v "1.3.4.0"
           , library =
               prelude.unconditional.library
-                (   prelude.defaults.Library
+                (   prelude.defaults.MainLibrary
                   ⫽ { build-depends =
                         [ deps.etlas-cabal
                         , deps.bytestring
