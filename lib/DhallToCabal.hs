@@ -43,9 +43,9 @@ module DhallToCabal
   , testSuiteInterface
   , mixin
   , flag
-  , libraryName
-  , pkgconfigVersionRange
-  , libraryVisibility
+--  , libraryName
+--  , pkgconfigVersionRange
+ -- , libraryVisibility
 
   , sortExpr
   ) where
@@ -56,7 +56,6 @@ import Data.Monoid ( (<>) )
 
 import qualified Control.Exception
 import qualified Data.Text as StrictText
-import qualified Data.Text.Encoding as StrictText
 import qualified Dhall
 import qualified Dhall.Core
 import qualified Dhall.Map as Map
@@ -72,7 +71,6 @@ import qualified Distribution.Text as Cabal ( simpleParse )
 import qualified Distribution.Types.CondTree as Cabal
 import qualified Distribution.Types.Dependency as Cabal
 import qualified Distribution.Types.ExeDependency as Cabal
-import qualified Distribution.Types.Executable as Cabal
 import qualified Distribution.Types.ForeignLib as Cabal
 import qualified Distribution.Types.ForeignLibOption as Cabal
 import qualified Distribution.Types.ForeignLibType as Cabal
@@ -91,7 +89,7 @@ import qualified Distribution.Version as Cabal
 import qualified Language.Haskell.Extension as Cabal
 
 import qualified Dhall.Core as Expr
-  ( Chunks(..), Const(..), Expr(..), Var(..) )
+  ( Chunks(..), Const(..), Expr(..) )
 
 import Dhall.Extra
 import DhallToCabal.ConfigTree ( ConfigTree(..), toConfigTree )
@@ -307,27 +305,15 @@ foreignLibType = Dhall.union
 
 library :: Dhall.Type Cabal.Library
 library =
-  Dhall.record $ do
-
-    libBuildInfo <-
-      buildInfo
-
-    libName <-
-      pure Nothing
-
-    exposedModules <-
-      Dhall.field "exposed-modules" ( Dhall.list moduleName )
-
-    reexportedModules <-
-      Dhall.field "reexported-modules" ( Dhall.list moduleReexport )
-
-    signatures <-
-      Dhall.field "signatures" ( Dhall.list moduleName )
-
-    libExposed <-
-      pure True
-
-    pure ( Cabal.Library { .. } )
+  Dhall.record $
+    Cabal.Library <$> pure Nothing -- libName
+                  <*> Dhall.field "exposed-modules"
+                      ( Dhall.list moduleName )
+                  <*> Dhall.field "reexported-modules"
+                      ( Dhall.list moduleReexport )
+                  <*> Dhall.field "signatures" ( Dhall.list moduleName )
+                  <*> pure True -- libExposed
+                  <*> buildInfo
 
 
 {--
@@ -384,14 +370,9 @@ repoKind =
 
 dependency :: Dhall.Type Cabal.Dependency
 dependency =
-  Dhall.record $ do
-    packageName <-
-      Dhall.field "package" packageName
-
-    versionRange <-
-      Dhall.field "bounds" versionRange
-
-    pure ( Cabal.Dependency packageName versionRange )
+  Dhall.record $ 
+  Cabal.Dependency <$> Dhall.field "package" packageName
+                   <*> Dhall.field "bounds" versionRange
 
 
 
@@ -1154,32 +1135,15 @@ genericPackageDescription =
         )
 
   in
-    Dhall.record $ do
-      packageDescription <-
-        packageDescription
-
-      genPackageFlags <-
-        Dhall.field "flags" ( Dhall.list flag )
-
-      condLibrary <-
-        Dhall.field "library" ( Dhall.maybe ( guarded library ) )
-      {--
-      condSubLibraries <-
-        Dhall.field "sub-libraries" ( Dhall.list subLibrary )
-      --}
-      condForeignLibs <-
-        Dhall.field "foreign-libraries" ( namedList "foreign-lib" foreignLib )
-
-      condExecutables <-
-        Dhall.field "executables" ( namedList "executable" executable )
-
-      condTestSuites <-
-        Dhall.field "test-suites" ( namedList "test-suite" testSuite )
-
-      condBenchmarks <-
-        Dhall.field "benchmarks" ( namedList "benchmark" benchmark )
-
-      return Cabal.GenericPackageDescription { .. }
+    Dhall.record $ Cabal.GenericPackageDescription
+      <$> packageDescription
+      <*> Dhall.field "flags" ( Dhall.list flag )
+      <*> Dhall.field "library" ( Dhall.maybe ( guarded library ) )
+      <*> Dhall.field "sub-libraries" ( namedList "library" library )
+      <*> Dhall.field "foreign-libraries" ( namedList "foreign-lib" foreignLib )
+      <*> Dhall.field "executables" ( namedList "executable" executable )
+      <*> Dhall.field "test-suites" ( namedList "test-suite" testSuite )
+      <*> Dhall.field "benchmarks" ( namedList "benchmark" benchmark )
 
 
 

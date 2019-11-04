@@ -21,7 +21,6 @@ import Dhall.Optics ( transformOf )
 import Lens.Micro ( over )
 
 import DhallToCabal
-import Dhall.Extra ( sortExpr )
 
 import qualified Data.Map as UnorderedMap
 import qualified Dhall
@@ -118,9 +117,9 @@ dhallType t = fmap absurd
       ForeignLibType -> Dhall.expected foreignLibType
       TestType -> Dhall.expected testSuiteInterface
       Flag -> Dhall.expected flag
-      PkgconfigVersionRange -> Dhall.expected pkgconfigVersionRange
-      LibraryName -> Dhall.expected libraryName
-      LibraryVisibility -> Dhall.expected libraryVisibility
+--      PkgconfigVersionRange -> Dhall.expected pkgconfigVersionRange
+--      LibraryName -> Dhall.expected libraryName
+--      LibraryVisibility -> Dhall.expected libraryVisibility
   )
 
 

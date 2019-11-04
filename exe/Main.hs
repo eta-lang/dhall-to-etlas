@@ -26,7 +26,6 @@ import DhallToCabal.FactorType ( KnownType(..), factored, mapWithBindings )
 import DhallToCabal.Util ( relativeTo )
 import qualified Paths_dhall_to_etlas as Paths
 
-import qualified Data.List.NonEmpty as NonEmpty
 import qualified Data.Text.IO as StrictText
 import qualified Data.Text.Prettyprint.Doc as Pretty
 import qualified Data.Text.Prettyprint.Doc.Render.Text as Pretty
