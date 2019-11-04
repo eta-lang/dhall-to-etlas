@@ -1,8 +1,8 @@
 let prelude =
-      https://github.com/eta-lang/dhall-to-etlas/raw/cabal/dhall/prelude.dhall sha256:178fe6b8efdcaaf0d5fac3612c8e1afdedf2a50b824b216562217a1c86075a16
+      https://github.com/eta-lang/dhall-to-etlas/raw/master/dhall/prelude.dhall sha256:22685aa004763d3d783a116b307a3b3d61cc49aa48e6ff07257668336c27b4a9
 
 let types =
-      https://github.com/eta-lang/dhall-to-etlas/raw/cabal/dhall/types.dhall sha256:d9dcd228892be63a07a9f20f3714f7d0e3c104673969bd397ee36963bd628edd
+      https://github.com/eta-lang/dhall-to-etlas/raw/master/dhall/types.dhall sha256:4de5daf77713923a6510c4eff516a6f9caf9a52761fc0558d7a924eef0050e09
 
 let v = prelude.v
 
@@ -109,7 +109,7 @@ in  prelude.utils.mapBuildInfo
           , version = v "1.3.4.0"
           , library =
               prelude.unconditional.library
-                (   prelude.defaults.MainLibrary
+                (   prelude.defaults.Library
                   ⫽ { build-depends =
                         [ deps.etlas-cabal
                         , deps.bytestring
