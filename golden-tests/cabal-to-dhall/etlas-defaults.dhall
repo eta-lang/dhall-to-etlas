@@ -7,12 +7,9 @@ in    prelude.defaults.Package
           [ { executable =
                   λ(config : types.Config)
                 → prelude.defaults.Executable ⫽ { main-is = "Main.hs" }
-            , name =
-                "hello"
+            , name = "hello"
             }
           ]
-      , name =
-          "etlas-defaults"
-      , version =
-          prelude.v "1"
+      , name = "etlas-defaults"
+      , version = prelude.v "1"
       }

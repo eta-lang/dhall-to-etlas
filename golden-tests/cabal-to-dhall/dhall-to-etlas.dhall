@@ -3,12 +3,9 @@ let prelude = ./../../dhall/prelude.dhall
 let types = ./../../dhall/types.dhall
 
 in    prelude.defaults.Package
-    ⫽ { author =
-          "Ollie Charles <ollie@ocharles.org.uk>"
-      , bug-reports =
-          "https://github.com/eta-lang/dhall-to-etlas/issues"
-      , category =
-          "Distribution"
+    ⫽ { author = "Ollie Charles <ollie@ocharles.org.uk>"
+      , bug-reports = "https://github.com/eta-lang/dhall-to-etlas/issues"
+      , category = "Distribution"
       , description =
           ''
           dhall-to-etlas takes Dhall expressions and compiles them into Etlas
@@ -23,56 +20,46 @@ in    prelude.defaults.Package
                   ⫽ { build-depends =
                         [ { bounds =
                               prelude.intervalVersionRange
-                              ([ "[1.3.0.0,1.4)" ] : List Text)
-                          , package =
-                              "etlas-cabal"
+                                ([ "[1.3.0.0,1.4)" ] : List Text)
+                          , package = "etlas-cabal"
                           }
                         , { bounds =
                               prelude.intervalVersionRange
-                              ([ "[4.5,5)" ] : List Text)
-                          , package =
-                              "base"
+                                ([ "[4.5,5)" ] : List Text)
+                          , package = "base"
                           }
                         , { bounds =
                               prelude.intervalVersionRange
-                              ([ "[1.15.0,1.16)" ] : List Text)
-                          , package =
-                              "dhall"
+                                ([ "[1.15.0,1.16)" ] : List Text)
+                          , package = "dhall"
                           }
-                        , { bounds =
-                              prelude.anyVersion
-                          , package =
-                              "dhall-to-etlas"
+                        , { bounds = prelude.anyVersion
+                          , package = "dhall-to-etlas"
                           }
                         , { bounds =
                               prelude.intervalVersionRange
-                              ([ "[0.2.1.0,0.3)" ] : List Text)
-                          , package =
-                              "insert-ordered-containers"
+                                ([ "[0.2.1.0,0.3)" ] : List Text)
+                          , package = "insert-ordered-containers"
                           }
                         , { bounds =
                               prelude.intervalVersionRange
-                              ([ "[0.13.2,0.15)" ] : List Text)
-                          , package =
-                              "optparse-applicative"
+                                ([ "[0.13.2,0.15)" ] : List Text)
+                          , package = "optparse-applicative"
                           }
                         , { bounds =
                               prelude.intervalVersionRange
-                              ([ "[1.2.0.1,1.3)" ] : List Text)
-                          , package =
-                              "prettyprinter"
+                                ([ "[1.2.0.1,1.3)" ] : List Text)
+                          , package = "prettyprinter"
                           }
                         , { bounds =
                               prelude.intervalVersionRange
-                              ([ "[1.2,1.3)" ] : List Text)
-                          , package =
-                              "text"
+                                ([ "[1.2,1.3)" ] : List Text)
+                          , package = "text"
                           }
                         , { bounds =
                               prelude.intervalVersionRange
-                              ([ "[0.2.0.0,0.6)" ] : List Text)
-                          , package =
-                              "transformers"
+                                ([ "[0.2.0.0,0.6)" ] : List Text)
+                          , package = "transformers"
                           }
                         ]
                     , compiler-options =
@@ -88,19 +75,13 @@ in    prelude.defaults.Package
                               , "-fno-warn-name-shadowing"
                               ] : List Text
                           }
-                    , default-extensions =
-                        [] : List types.Extension
-                    , hs-source-dirs =
-                        [ "exe" ]
-                    , main-is =
-                        "Main.hs"
-                    , other-extensions =
-                        [ types.Extension.NamedFieldPuns True ]
-                    , other-modules =
-                        [ "Paths_dhall_to_cabal" ]
+                    , default-extensions = [] : List types.Extension
+                    , hs-source-dirs = [ "exe" ]
+                    , main-is = "Main.hs"
+                    , other-extensions = [ types.Extension.NamedFieldPuns True ]
+                    , other-modules = [ "Paths_dhall_to_cabal" ]
                     }
-            , name =
-                "dhall-to-etlas"
+            , name = "dhall-to-etlas"
             }
           , { executable =
                   λ(config : types.Config)
@@ -108,44 +89,36 @@ in    prelude.defaults.Package
                   ⫽ { build-depends =
                         [ { bounds =
                               prelude.intervalVersionRange
-                              ([ "[4.5,5)" ] : List Text)
-                          , package =
-                              "base"
+                                ([ "[4.5,5)" ] : List Text)
+                          , package = "base"
                           }
                         , { bounds =
                               prelude.intervalVersionRange
-                              ([ "[1.15.0,1.16)" ] : List Text)
-                          , package =
-                              "dhall"
+                                ([ "[1.15.0,1.16)" ] : List Text)
+                          , package = "dhall"
                           }
                         , { bounds =
                               prelude.intervalVersionRange
-                              ([ "[0.10,0.11)" ] : List Text)
-                          , package =
-                              "bytestring"
+                                ([ "[0.10,0.11)" ] : List Text)
+                          , package = "bytestring"
                           }
-                        , { bounds =
-                              prelude.anyVersion
-                          , package =
-                              "dhall-to-etlas"
+                        , { bounds = prelude.anyVersion
+                          , package = "dhall-to-etlas"
                           }
                         , { bounds =
                               prelude.intervalVersionRange
-                              ([ "[0.13.2,0.15)" ] : List Text)
-                          , package =
-                              "optparse-applicative"
+                                ([ "[0.13.2,0.15)" ] : List Text)
+                          , package = "optparse-applicative"
                           }
                         , { bounds =
                               prelude.intervalVersionRange
-                              ([ "[1.2.0.1,1.3)" ] : List Text)
-                          , package =
-                              "prettyprinter"
+                                ([ "[1.2.0.1,1.3)" ] : List Text)
+                          , package = "prettyprinter"
                           }
                         , { bounds =
                               prelude.intervalVersionRange
-                              ([ "[1.2,1.3)" ] : List Text)
-                          , package =
-                              "text"
+                                ([ "[1.2,1.3)" ] : List Text)
+                          , package = "text"
                           }
                         ]
                     , compiler-options =
@@ -161,19 +134,13 @@ in    prelude.defaults.Package
                               , "-fno-warn-name-shadowing"
                               ] : List Text
                           }
-                    , default-extensions =
-                        [] : List types.Extension
-                    , hs-source-dirs =
-                        [ "cabal-to-dhall" ]
-                    , main-is =
-                        "Main.hs"
-                    , other-extensions =
-                        [ types.Extension.NamedFieldPuns True ]
-                    , other-modules =
-                        [ "Paths_dhall_to_etlas" ]
+                    , default-extensions = [] : List types.Extension
+                    , hs-source-dirs = [ "cabal-to-dhall" ]
+                    , main-is = "Main.hs"
+                    , other-extensions = [ types.Extension.NamedFieldPuns True ]
+                    , other-modules = [ "Paths_dhall_to_etlas" ]
                     }
-            , name =
-                "etlas-to-dhall"
+            , name = "etlas-to-dhall"
             }
           , { executable =
                   λ(config : types.Config)
@@ -181,44 +148,36 @@ in    prelude.defaults.Package
                   ⫽ { build-depends =
                         [ { bounds =
                               prelude.intervalVersionRange
-                              ([ "[4.5,5)" ] : List Text)
-                          , package =
-                              "base"
+                                ([ "[4.5,5)" ] : List Text)
+                          , package = "base"
                           }
                         , { bounds =
                               prelude.intervalVersionRange
-                              ([ "[1.3.0.2,1.4)" ] : List Text)
-                          , package =
-                              "directory"
+                                ([ "[1.3.0.2,1.4)" ] : List Text)
+                          , package = "directory"
                           }
                         , { bounds =
                               prelude.intervalVersionRange
-                              ([ "[1.15.0,1.16)" ] : List Text)
-                          , package =
-                              "dhall"
+                                ([ "[1.15.0,1.16)" ] : List Text)
+                          , package = "dhall"
                           }
-                        , { bounds =
-                              prelude.anyVersion
-                          , package =
-                              "dhall-to-etlas"
+                        , { bounds = prelude.anyVersion
+                          , package = "dhall-to-etlas"
                           }
                         , { bounds =
                               prelude.intervalVersionRange
-                              ([ "[1.4,1.5)" ] : List Text)
-                          , package =
-                              "filepath"
+                                ([ "[1.4,1.5)" ] : List Text)
+                          , package = "filepath"
                           }
                         , { bounds =
                               prelude.intervalVersionRange
-                              ([ "[0.13.2,0.15)" ] : List Text)
-                          , package =
-                              "optparse-applicative"
+                                ([ "[0.13.2,0.15)" ] : List Text)
+                          , package = "optparse-applicative"
                           }
                         , { bounds =
                               prelude.intervalVersionRange
-                              ([ "[1.2.0.1,1.3)" ] : List Text)
-                          , package =
-                              "prettyprinter"
+                                ([ "[1.2.0.1,1.3)" ] : List Text)
+                          , package = "prettyprinter"
                           }
                         ]
                     , compiler-options =
@@ -234,15 +193,11 @@ in    prelude.defaults.Package
                               , "-fno-warn-name-shadowing"
                               ] : List Text
                           }
-                    , default-extensions =
-                        [] : List types.Extension
-                    , hs-source-dirs =
-                        [ "meta" ]
-                    , main-is =
-                        "Main.hs"
+                    , default-extensions = [] : List types.Extension
+                    , hs-source-dirs = [ "meta" ]
+                    , main-is = "Main.hs"
                     }
-            , name =
-                "dhall-to-cabal-meta"
+            , name = "dhall-to-cabal-meta"
             }
           ]
       , extra-source-files =
@@ -322,8 +277,7 @@ in    prelude.defaults.Package
           , "golden-tests/cabal-to-dhall/*.dhall"
           , "golden-tests/cabal-to-dhall/*.cabal"
           ]
-      , homepage =
-          "https://github.com/eta-lang/dhall-to-etlas"
+      , homepage = "https://github.com/eta-lang/dhall-to-etlas"
       , library =
           Some
           (   λ(config : types.Config)
@@ -331,75 +285,63 @@ in    prelude.defaults.Package
               ⫽ { build-depends =
                     [ { bounds =
                           prelude.intervalVersionRange
-                          ([ "[1.3.0.0,1.4)" ] : List Text)
-                      , package =
-                          "etlas-cabal"
+                            ([ "[1.3.0.0,1.4)" ] : List Text)
+                      , package = "etlas-cabal"
                       }
                     , { bounds =
                           prelude.intervalVersionRange
-                          ([ "[4.5,5)" ] : List Text)
-                      , package =
-                          "base"
+                            ([ "[4.5,5)" ] : List Text)
+                      , package = "base"
                       }
                     , { bounds =
                           prelude.intervalVersionRange
-                          ([ "[0.10,0.11)" ] : List Text)
-                      , package =
-                          "bytestring"
+                            ([ "[0.10,0.11)" ] : List Text)
+                      , package = "bytestring"
                       }
                     , { bounds =
                           prelude.intervalVersionRange
-                          ([ "[0.5,0.6)" ] : List Text)
-                      , package =
-                          "containers"
+                            ([ "[0.5,0.6)" ] : List Text)
+                      , package = "containers"
                       }
                     , { bounds =
                           prelude.intervalVersionRange
-                          ([ "[1.4,1.5)" ] : List Text)
-                      , package =
-                          "contravariant"
+                            ([ "[1.4,1.5)" ] : List Text)
+                      , package = "contravariant"
                       }
                     , { bounds =
                           prelude.intervalVersionRange
-                          ([ "[1.15.0,1.16)" ] : List Text)
-                      , package =
-                          "dhall"
+                            ([ "[1.15.0,1.16)" ] : List Text)
+                      , package = "dhall"
                       }
                     , { bounds =
                           prelude.intervalVersionRange
-                          ([ "[1.2.6.1,1.3)" ] : List Text)
-                      , package =
-                          "hashable"
+                            ([ "[1.2.6.1,1.3)" ] : List Text)
+                      , package = "hashable"
                       }
                     , { bounds =
                           prelude.intervalVersionRange
-                          ([ "[0.2.1.0,0.3)" ] : List Text)
-                      , package =
-                          "insert-ordered-containers"
+                            ([ "[0.2.1.0,0.3)" ] : List Text)
+                      , package = "insert-ordered-containers"
                       }
                     , { bounds =
                           prelude.intervalVersionRange
-                          ([ "[1.2,1.3)" ] : List Text)
-                      , package =
-                          "text"
+                            ([ "[1.2,1.3)" ] : List Text)
+                      , package = "text"
                       }
                     , { bounds =
                           prelude.intervalVersionRange
-                          ([ "[0.2.0.0,0.6)" ] : List Text)
-                      , package =
-                          "transformers"
+                            ([ "[0.2.0.0,0.6)" ] : List Text)
+                      , package = "transformers"
                       }
                     , { bounds =
                           prelude.intervalVersionRange
-                          ([ "[0.11.0.0,0.13)" ] : List Text)
-                      , package =
-                          "vector"
+                            ([ "[0.11.0.0,0.13)" ] : List Text)
+                      , package = "vector"
                       }
                     , { bounds =
                           prelude.intervalVersionRange
-                          ([ "[0.18.0,0.19)" ] : List Text)
-                      , package =
-                          "semigroups"
+                            ([ "[0.18.0,0.19)" ] : List Text)
+                      , package = "semigroups"
                       }
                     ]
                 , compiler-options =
@@ -415,12 +357,10 @@ in    prelude.defaults.Package
                           , "-fno-warn-name-shadowing"
                           ] : List Text
                       }
-                , default-extensions =
-                    [] : List types.Extension
+                , default-extensions = [] : List types.Extension
                 , exposed-modules =
                     [ "DhallToCabal", "DhallLocation", "CabalToDhall" ]
-                , hs-source-dirs =
-                    [ "lib" ]
+                , hs-source-dirs = [ "lib" ]
                 , other-extensions =
                     [ types.Extension.GADTs True
                     , types.Extension.GeneralizedNewtypeDeriving True
@@ -436,95 +376,75 @@ in    prelude.defaults.Package
                     ]
                 }
           )
-      , license =
-          types.License.MIT
-      , license-files =
-          [ "LICENSE" ]
-      , maintainer =
-          "atreyu.bbb@gmail.com"
-      , name =
-          "dhall-to-etlas"
+      , license = types.License.MIT
+      , license-files = [ "LICENSE" ]
+      , maintainer = "atreyu.bbb@gmail.com"
+      , name = "dhall-to-etlas"
       , source-repos =
           [   prelude.defaults.SourceRepo
-            ⫽ { location =
-                  Some "https://github.com/eta-lang/dhall-to-etlas"
-              , type =
-                  Some types.RepoType.Git
+            ⫽ { location = Some "https://github.com/eta-lang/dhall-to-etlas"
+              , type = Some types.RepoType.Git
               }
           ]
-      , synopsis =
-          "Compile Dhall expressions to Etlas files"
+      , synopsis = "Compile Dhall expressions to Etlas files"
       , test-suites =
-          [ { name =
-                "golden-tests"
+          [ { name = "golden-tests"
             , test-suite =
                   λ(config : types.Config)
                 →   prelude.defaults.TestSuite
                   ⫽ { build-depends =
                         [ { bounds =
                               prelude.intervalVersionRange
-                              ([ "[4.5,5)" ] : List Text)
-                          , package =
-                              "base"
+                                ([ "[4.5,5)" ] : List Text)
+                          , package = "base"
                           }
                         , { bounds =
                               prelude.intervalVersionRange
-                              ([ "[1.3.0.0,1.4)" ] : List Text)
-                          , package =
-                              "etlas-cabal"
+                                ([ "[1.3.0.0,1.4)" ] : List Text)
+                          , package = "etlas-cabal"
                           }
                         , { bounds =
                               prelude.intervalVersionRange
-                              ([ "[0.3.4,0.4)" ] : List Text)
-                          , package =
-                              "Diff"
+                                ([ "[0.3.4,0.4)" ] : List Text)
+                          , package = "Diff"
                           }
                         , { bounds =
                               prelude.intervalVersionRange
-                              ([ "[0.10,0.11)" ] : List Text)
-                          , package =
-                              "bytestring"
+                                ([ "[0.10,0.11)" ] : List Text)
+                          , package = "bytestring"
                           }
                         , { bounds =
                               prelude.intervalVersionRange
-                              ([ "[1.15.0,1.16)" ] : List Text)
-                          , package =
-                              "dhall"
+                                ([ "[1.15.0,1.16)" ] : List Text)
+                          , package = "dhall"
                           }
-                        , { bounds =
-                              prelude.anyVersion
-                          , package =
-                              "dhall-to-etlas"
+                        , { bounds = prelude.anyVersion
+                          , package = "dhall-to-etlas"
                           }
                         , { bounds =
                               prelude.intervalVersionRange
-                              ([ "[1.4,1.5)" ] : List Text)
-                          , package =
-                              "filepath"
+                                ([ "[1.4,1.5)" ] : List Text)
+                          , package = "filepath"
                           }
                         , { bounds =
                               prelude.intervalVersionRange
-                              ([ "[1.2.0.1,1.3)" ] : List Text)
-                          , package =
-                              "prettyprinter"
+                                ([ "[1.2.0.1,1.3)" ] : List Text)
+                          , package = "prettyprinter"
                           }
                         , { bounds =
                               prelude.intervalVersionRange
-                              ([ "[0.11,1.2)" ] : List Text)
-                          , package =
-                              "tasty"
+                                ([ "[0.11,1.2)" ] : List Text)
+                          , package = "tasty"
                           }
                         , { bounds =
                               prelude.intervalVersionRange
-                              ([ "[2.3,2.4)" ] : List Text)
-                          , package =
-                              "tasty-golden"
+                                ([ "[2.3,2.4)" ] : List Text)
+                          , package = "tasty-golden"
                           }
                         , { bounds =
                               prelude.intervalVersionRange
-                              ([ "[1.2,1.3)" ] : List Text)
-                          , package =
-                              "text"
+                                ([ "[1.2,1.3)" ] : List Text)
+                          , package = "text"
                           }
                         ]
                     , compiler-options =
@@ -540,16 +460,13 @@ in    prelude.defaults.Package
                               , "-fno-warn-name-shadowing"
                               ] : List Text
                           }
-                    , default-extensions =
-                        [] : List types.Extension
-                    , hs-source-dirs =
-                        [ "golden-tests" ]
+                    , default-extensions = [] : List types.Extension
+                    , hs-source-dirs = [ "golden-tests" ]
                     , type =
                         types.TestType.exitcode-stdio
-                        { main-is = "GoldenTests.hs" }
+                          { main-is = "GoldenTests.hs" }
                     }
             }
           ]
-      , version =
-          prelude.v "1.2.0.0"
+      , version = prelude.v "1.2.0.0"
       }
