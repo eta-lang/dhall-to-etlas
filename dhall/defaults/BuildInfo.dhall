@@ -82,7 +82,7 @@ in  { autogen-modules =
     , other-modules =
         [] : List Text
     , pkgconfig-depends =
-        [] : List { name : Text, version : types.PkgconfigVersionRange }
+        [] : List { name : Text, version : types.VersionRange }
     , profiling-options =
         ././CompilerOptions.dhall
     , shared-options =
@@ -91,8 +91,8 @@ in  { autogen-modules =
         [] : List types.Mixin
     , java-sources =
         [] : List Text
-    , autogen-includes =
-        [] : List Text
-    , extra-dyn-lib-flavours =
-        [] : List Text
+--    , autogen-includes =
+--        [] : List Text
+--    , extra-dyn-lib-flavours =
+--        [] : List Text
     }
