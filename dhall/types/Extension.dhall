@@ -24,7 +24,7 @@
 | DuplicateRecordFields : Bool
 | EmptyCase : Bool
 | EmptyDataDecls : Bool
-| EmptyDataDeriving : Bool
+-- | EmptyDataDeriving : Bool
 | ExistentialQuantification : Bool
 | ExplicitForAll : Bool
 | ExplicitNamespaces : Bool
@@ -37,7 +37,7 @@
 | GADTSyntax : Bool
 | GADTs : Bool
 | GHCForeignImportPrim : Bool
-| GeneralisedNewtypeDeriving : Bool
+-- | GeneralisedNewtypeDeriving : Bool
 | GeneralizedNewtypeDeriving : Bool
 | Generics : Bool
 | HereDocuments : Bool
